@@ -488,6 +488,7 @@ enum StoryboardId: String {
     case settingsVC
     case historyVC
     case workspaceListVC
+    case webCodeEditorVC
 }
 
 /// The request option elements

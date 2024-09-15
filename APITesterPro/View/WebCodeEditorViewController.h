@@ -14,7 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 /*!
  Code editor using a web view.
  */
-@interface WebCodeEditorViewController : UIViewController<WKNavigationDelegate, WKUIDelegate, WKScriptMessageHandler>
+@interface WebCodeEditorOCViewController : UIViewController<WKNavigationDelegate, WKUIDelegate, WKScriptMessageHandler>
 /*! The editor content */
 @property (nonatomic, strong) NSString *text;
 /*! The editor language: json, xml. */

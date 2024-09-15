@@ -10,7 +10,7 @@
 #import "APITesterPro-Swift.h"
 #import "Utils.h"
 
-@interface WebCodeEditorViewController ()
+@interface WebCodeEditorOCViewController ()
 @property (nonatomic, strong) App *app;
 @property (nonatomic, strong) WKWebView *webView;
 @property (nonatomic, strong) UINavigationBar *navBar;
@@ -23,7 +23,7 @@ typedef NS_ENUM(NSInteger, WCEditorTheme) {
 };
 @end
 
-@implementation WebCodeEditorViewController
+@implementation WebCodeEditorOCViewController
 
 - (instancetype)init {
     self = [super init];
@@ -188,7 +188,7 @@ typedef NS_ENUM(NSInteger, WCEditorTheme) {
 }
 
 - (void)getEditorText:(void (^)(NSString *))completionHandler {
-    WebCodeEditorViewController * __weak weakSelf = self;
+    WebCodeEditorOCViewController * __weak weakSelf = self;
     [self executeJavaScriptFn:@"ob.getText" params:nil completionHandler:^(id _Nullable result, NSError * _Nullable err) {
         if (err) {
             error(@"error getting editor content: %@", err);
@@ -198,7 +198,7 @@ typedef NS_ENUM(NSInteger, WCEditorTheme) {
         if ([result isKindOfClass:[NSString class]]) {
             text = (NSString *)result;
         }
-        WebCodeEditorViewController *this = weakSelf;
+        WebCodeEditorOCViewController *this = weakSelf;
         this->_text = text;
         [self.nc postNotificationName:self.editorTextDidChangeKey object:nil 
                              userInfo:@{@"text": text, @"mode": this.mode}];

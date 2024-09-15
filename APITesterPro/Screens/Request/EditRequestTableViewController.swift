@@ -567,16 +567,14 @@ class EditRequestTableViewController: APITesterProTableViewController, UITextFie
     
     @objc func presentWebCodeEditor(_ notif: Notification) {
         Log.debug("present web code editor")
-        let editor = WebCodeEditorViewController()
+        let editor = self.storyboard?.instantiateViewController(withIdentifier: StoryboardId.webCodeEditorVC.rawValue) as! WebCodeEditorViewController
         var text = ""
         var mode = "json"
         if let info = notif.userInfo, let txt = info["text"] as? String { text = txt }
         if let info = notif.userInfo, let _mode = info["mode"] as? String { mode = _mode }
         editor.text = text
         editor.mode = mode
-//        if UI.getDeviceType() == .phone {
-//            editor.isModalInPresentation = true
-//        }
+        editor.modalPresentationStyle = .fullScreen
         self.navigationController?.present(editor, animated: true)
     }
     
