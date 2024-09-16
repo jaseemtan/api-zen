@@ -638,6 +638,9 @@
                                                 <color key="backgroundColor" name="table-view-cell-bg"/>
                                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="16"/>
                                                 <state key="normal" title="Done"/>
+                                                <connections>
+                                                    <action selector="doneBtnDidTap:" destination="E8S-85-FeU" eventType="touchUpInside" id="qz9-hx-hZS"/>
+                                                </connections>
                                             </button>
                                         </subviews>
                                         <constraints>
@@ -666,11 +669,12 @@
                     <connections>
                         <outlet property="cancelBtn" destination="4dC-3j-CzI" id="bSb-5S-MdZ"/>
                         <outlet property="doneBtn" destination="21t-7b-Jje" id="r0p-sB-obK"/>
+                        <outlet property="navbarView" destination="QNV-WI-03F" id="2mR-P0-EI1"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4Fu-Nu-rdk" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="5390" y="860"/>
+            <point key="canvasLocation" x="5389.8550724637689" y="859.82142857142856"/>
         </scene>
         <!--Base64 View Controller-->
         <scene sceneID="FHs-Ft-a4d">
