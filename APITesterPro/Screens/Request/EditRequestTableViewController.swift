@@ -19,6 +19,12 @@ extension Notification.Name {
     static let codeEditorShouldPresent = Notification.Name("web-code-editor-should-present")
 }
 
+enum PostRequestBodyMode: String {
+    case json
+    case xml
+    case raw
+}
+
 class ValidateSSLCell: UITableViewCell {
     @IBOutlet weak var validateSwitch: UISwitch!
     private let nc = NotificationCenter.default
@@ -569,9 +575,9 @@ class EditRequestTableViewController: APITesterProTableViewController, UITextFie
         Log.debug("present web code editor")
         let editor = self.storyboard?.instantiateViewController(withIdentifier: StoryboardId.webCodeEditorVC.rawValue) as! WebCodeEditorViewController
         var text = ""
-        var mode = "json"
+        var mode: PostRequestBodyMode = .json
         if let info = notif.userInfo, let txt = info["text"] as? String { text = txt }
-        if let info = notif.userInfo, let _mode = info["mode"] as? String { mode = _mode }
+        if let info = notif.userInfo, let _mode = info["mode"] as? String { mode = PostRequestBodyMode(rawValue: _mode) ?? .json }
         editor.text = text
         editor.mode = mode
         editor.modalPresentationStyle = .fullScreen
@@ -1032,15 +1038,15 @@ class KVEditBodyContentCell: UITableViewCell, KVEditContentCellType, UICollectio
     
     @objc func rawTextViewDidTap(_ recog: UITapGestureRecognizer) {
         Log.debug("raw text view did tap")
-        var mode = "json"
+        var mode: PostRequestBodyMode = .json
         if let editTVDelegate = self.editTVDelegate {
             let idx = editTVDelegate.getRequest().body!.selected
             if idx == 0 {
-                mode = "json"
+                mode = .json
             } else if idx == 1 {
-                mode = "xml"
+                mode = .xml
             } else if idx == 2 {
-                mode = "raw"
+                mode = .raw
             }
         }
         // present web code editor
