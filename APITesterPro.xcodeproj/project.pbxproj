@@ -19,6 +19,7 @@
 		9E4875E82AF5856A00D624DA /* AppDelegateMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E81D0812AF44CBF004095CF /* AppDelegateMock.swift */; };
 		9E4935AD2C96FAC000A50721 /* WebCodeEditorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E4935AC2C96FAC000A50721 /* WebCodeEditorViewController.swift */; };
 		9E571CE62B24B7F60090F1CF /* EAExtensionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E571CE52B24B7F60090F1CF /* EAExtensionsTests.swift */; };
+		9E755BC62CA31ABF001099EC /* GenesisViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E755BC52CA31ABF001099EC /* GenesisViewController.swift */; };
 		9E81D0522AF44BE9004095CF /* APITesterProUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E81D0512AF44BE9004095CF /* APITesterProUITestsLaunchTests.swift */; };
 		9E81D0822AF44CC0004095CF /* APITesterProTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E81D07D2AF44CBD004095CF /* APITesterProTests.swift */; };
 		9E81D0842AF44CC0004095CF /* IMG_6109.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 9E81D07F2AF44CBE004095CF /* IMG_6109.jpeg */; };
@@ -104,7 +105,6 @@
 		9EA431C32BC2A429001E1508 /* editor.html in Resources */ = {isa = PBXBuildFile; fileRef = 9EC705752BA6E8E500CF4DE3 /* editor.html */; };
 		9EA431C52BC2AC7C001E1508 /* 5.65.16 in Resources */ = {isa = PBXBuildFile; fileRef = 9EA431C42BC2AC7C001E1508 /* 5.65.16 */; };
 		9EA431C82BC2E578001E1508 /* Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = 9EA431C72BC2E578001E1508 /* Utils.m */; };
-		9EACC4982BC16879006E2A63 /* WebCodeEditorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9EACC4972BC16879006E2A63 /* WebCodeEditorViewController.m */; };
 		9EBE3C8C2B79363600EE8A0B /* EACopiableLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EBE3C8B2B79363600EE8A0B /* EACopiableLabel.swift */; };
 		9ECA32FF2B417D4000B4B937 /* EAPopQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9ECA32FE2B417D4000B4B937 /* EAPopQueue.swift */; };
 		9ECA33012B41825100B4B937 /* EAPopQueueTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9ECA33002B41825100B4B937 /* EAPopQueueTests.swift */; };
@@ -148,6 +148,7 @@
 		9E4875EB2AF590A300D624DA /* APITesterPro.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = APITesterPro.xctestplan; sourceTree = "<group>"; };
 		9E4935AC2C96FAC000A50721 /* WebCodeEditorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebCodeEditorViewController.swift; sourceTree = "<group>"; };
 		9E571CE52B24B7F60090F1CF /* EAExtensionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EAExtensionsTests.swift; sourceTree = "<group>"; };
+		9E755BC52CA31ABF001099EC /* GenesisViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenesisViewController.swift; sourceTree = "<group>"; };
 		9E81D0282AF44BE7004095CF /* APITesterPro.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = APITesterPro.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9E81D03C2AF44BE8004095CF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9E81D0412AF44BE9004095CF /* APITesterProTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = APITesterProTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -157,7 +158,6 @@
 		9E81D07F2AF44CBE004095CF /* IMG_6109.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = IMG_6109.jpeg; sourceTree = "<group>"; };
 		9E81D0812AF44CBF004095CF /* AppDelegateMock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegateMock.swift; sourceTree = "<group>"; };
 		9E81D0872AF44CFC004095CF /* APITesterProUITests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APITesterProUITests.swift; sourceTree = "<group>"; };
-		9E81D0892AF44F4E004095CF /* APITesterPro-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "APITesterPro-Bridging-Header.h"; sourceTree = "<group>"; };
 		9E81D08B2AF44F4E004095CF /* main.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		9E81D08D2AF44F4E004095CF /* SceneDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		9E81D08F2AF44F4E004095CF /* App.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
@@ -239,8 +239,6 @@
 		9EA431C42BC2AC7C001E1508 /* 5.65.16 */ = {isa = PBXFileReference; lastKnownFileType = folder; path = 5.65.16; sourceTree = "<group>"; };
 		9EA431C62BC2E578001E1508 /* Utils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Utils.h; sourceTree = "<group>"; };
 		9EA431C72BC2E578001E1508 /* Utils.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Utils.m; sourceTree = "<group>"; };
-		9EACC4962BC16879006E2A63 /* WebCodeEditorViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WebCodeEditorViewController.h; sourceTree = "<group>"; };
-		9EACC4972BC16879006E2A63 /* WebCodeEditorViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WebCodeEditorViewController.m; sourceTree = "<group>"; };
 		9EBAD0992B60D76F00E172A1 /* APITesterPro 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "APITesterPro 2.xcdatamodel"; sourceTree = "<group>"; };
 		9EBE3C8B2B79363600EE8A0B /* EACopiableLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EACopiableLabel.swift; sourceTree = "<group>"; };
 		9EC705752BA6E8E500CF4DE3 /* editor.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = editor.html; sourceTree = "<group>"; };
@@ -333,7 +331,6 @@
 				9E81D0A82AF44FB7004095CF /* Resources */,
 				9E81D0962AF44F4E004095CF /* Assets.xcassets */,
 				9E81D03C2AF44BE8004095CF /* Info.plist */,
-				9E81D0892AF44F4E004095CF /* APITesterPro-Bridging-Header.h */,
 			);
 			path = APITesterPro;
 			sourceTree = "<group>";
@@ -434,6 +431,7 @@
 				9E81D0B22AF45145004095CF /* Response */,
 				9E81D0B32AF4514E004095CF /* Settings */,
 				9E81D0B42AF45156004095CF /* Workspace */,
+				9E755BC52CA31ABF001099EC /* GenesisViewController.swift */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
@@ -461,8 +459,6 @@
 				9E81D1232AF45241004095CF /* PopupViewController.swift */,
 				9E81D1282AF45241004095CF /* UI.swift */,
 				9EE60B0C2B6F82A0006A5D77 /* EmptyMessageCell.swift */,
-				9EACC4962BC16879006E2A63 /* WebCodeEditorViewController.h */,
-				9EACC4972BC16879006E2A63 /* WebCodeEditorViewController.m */,
 				9E4935AC2C96FAC000A50721 /* WebCodeEditorViewController.swift */,
 			);
 			path = View;
@@ -726,7 +722,6 @@
 				9E81D0CC2AF451EA004095CF /* EACrypto.swift in Sources */,
 				9E81D1202AF4522C004095CF /* EnvironmentEditViewController.swift in Sources */,
 				9E81D0FC2AF45208004095CF /* APITesterProNavigationController.swift in Sources */,
-				9EACC4982BC16879006E2A63 /* WebCodeEditorViewController.m in Sources */,
 				9E81D1302AF45242004095CF /* EATextView.swift in Sources */,
 				9E81D11E2AF4522C004095CF /* EnvironmentVariableTableViewController.swift in Sources */,
 				9E81D12A2AF45241004095CF /* PopupViewController.swift in Sources */,
@@ -739,6 +734,7 @@
 				9E81D11C2AF4522C004095CF /* SettingsTableViewController.swift in Sources */,
 				9EDDE3B92B1C4C8B0074141A /* EALogger.swift in Sources */,
 				9E81D10B2AF45218004095CF /* EnvironmentPickerViewController.swift in Sources */,
+				9E755BC62CA31ABF001099EC /* GenesisViewController.swift in Sources */,
 				9E81D0D22AF451EA004095CF /* EAFileManager.swift in Sources */,
 				9E81D0A52AF44F4F004095CF /* AppState.swift in Sources */,
 				9EE60B0D2B6F82A0006A5D77 /* EmptyMessageCell.swift in Sources */,
@@ -987,6 +983,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = APITesterPro/APITesterPro.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 18;
 				DEVELOPMENT_TEAM = TPAP6QPH98;
@@ -1010,8 +1007,9 @@
 				MARKETING_VERSION = 2.2;
 				PRODUCT_BUNDLE_IDENTIFIER = net.jsloop.APITesterPro;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "APITesterPro/APITesterPro-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1025,6 +1023,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = APITesterPro/APITesterPro.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 18;
 				DEVELOPMENT_TEAM = TPAP6QPH98;
@@ -1048,8 +1047,9 @@
 				MARKETING_VERSION = 2.2;
 				PRODUCT_BUNDLE_IDENTIFIER = net.jsloop.APITesterPro;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "APITesterPro/APITesterPro-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

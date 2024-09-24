@@ -22,7 +22,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         self.window = appDelegate.window
         appDelegate.window?.windowScene = windowScene  // This order matters. First we set the window scene and make it key and visible. Else copy paste menu won't appear.
         appDelegate.window?.makeKeyAndVisible()
-        self.app.didFinishLaunching(scene: scene, window: self.window!)
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
