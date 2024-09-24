@@ -112,6 +112,7 @@
 		9ED969A82AF5A38B0029E83E /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9ED969A72AF5A38B0029E83E /* CloudKit.framework */; };
 		9EDBC0162BCACB52008783EA /* userscript.js in Resources */ = {isa = PBXBuildFile; fileRef = 9EDBC0142BCACB52008783EA /* userscript.js */; };
 		9EDBC0172BCACB52008783EA /* editor.js in Resources */ = {isa = PBXBuildFile; fileRef = 9EDBC0152BCACB52008783EA /* editor.js */; };
+		9EDD98882CA3542A00278CF7 /* genesis.html in Resources */ = {isa = PBXBuildFile; fileRef = 9EDD98872CA3542A00278CF7 /* genesis.html */; };
 		9EDDE3B72B1BC0A20074141A /* EditRequestTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EDDE3B62B1BC0A20074141A /* EditRequestTracker.swift */; };
 		9EDDE3B92B1C4C8B0074141A /* EALogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EDDE3B82B1C4C8B0074141A /* EALogger.swift */; };
 		9EE60B0D2B6F82A0006A5D77 /* EmptyMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EE60B0C2B6F82A0006A5D77 /* EmptyMessageCell.swift */; };
@@ -249,6 +250,7 @@
 		9ED969A72AF5A38B0029E83E /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		9EDBC0142BCACB52008783EA /* userscript.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = userscript.js; sourceTree = "<group>"; };
 		9EDBC0152BCACB52008783EA /* editor.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = editor.js; sourceTree = "<group>"; };
+		9EDD98872CA3542A00278CF7 /* genesis.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = genesis.html; sourceTree = "<group>"; };
 		9EDDE3B62B1BC0A20074141A /* EditRequestTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditRequestTracker.swift; sourceTree = "<group>"; };
 		9EDDE3B82B1C4C8B0074141A /* EALogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EALogger.swift; sourceTree = "<group>"; };
 		9EE60B0C2B6F82A0006A5D77 /* EmptyMessageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyMessageCell.swift; sourceTree = "<group>"; };
@@ -418,6 +420,7 @@
 				9E81D1392AF4529D004095CF /* prism.js */,
 				9E81D13B2AF4529D004095CF /* rawview.html */,
 				9E81D1382AF4529D004095CF /* styles.css */,
+				9EDD98872CA3542A00278CF7 /* genesis.html */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -677,6 +680,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9EDBC0162BCACB52008783EA /* userscript.js in Resources */,
+				9EDD98882CA3542A00278CF7 /* genesis.html in Resources */,
 				9EA431C32BC2A429001E1508 /* editor.html in Resources */,
 				9E81D1362AF45253004095CF /* Main.storyboard in Resources */,
 				9E81D13D2AF4529D004095CF /* preview.html in Resources */,
