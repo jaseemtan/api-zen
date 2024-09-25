@@ -19,7 +19,6 @@
 		9E4875E82AF5856A00D624DA /* AppDelegateMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E81D0812AF44CBF004095CF /* AppDelegateMock.swift */; };
 		9E4935AD2C96FAC000A50721 /* WebCodeEditorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E4935AC2C96FAC000A50721 /* WebCodeEditorViewController.swift */; };
 		9E571CE62B24B7F60090F1CF /* EAExtensionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E571CE52B24B7F60090F1CF /* EAExtensionsTests.swift */; };
-		9E755BC62CA31ABF001099EC /* GenesisViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E755BC52CA31ABF001099EC /* GenesisViewController.swift */; };
 		9E81D0522AF44BE9004095CF /* APITesterProUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E81D0512AF44BE9004095CF /* APITesterProUITestsLaunchTests.swift */; };
 		9E81D0822AF44CC0004095CF /* APITesterProTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E81D07D2AF44CBD004095CF /* APITesterProTests.swift */; };
 		9E81D0842AF44CC0004095CF /* IMG_6109.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 9E81D07F2AF44CBE004095CF /* IMG_6109.jpeg */; };
@@ -112,7 +111,8 @@
 		9ED969A82AF5A38B0029E83E /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9ED969A72AF5A38B0029E83E /* CloudKit.framework */; };
 		9EDBC0162BCACB52008783EA /* userscript.js in Resources */ = {isa = PBXBuildFile; fileRef = 9EDBC0142BCACB52008783EA /* userscript.js */; };
 		9EDBC0172BCACB52008783EA /* editor.js in Resources */ = {isa = PBXBuildFile; fileRef = 9EDBC0152BCACB52008783EA /* editor.js */; };
-		9EDD98882CA3542A00278CF7 /* genesis.html in Resources */ = {isa = PBXBuildFile; fileRef = 9EDD98872CA3542A00278CF7 /* genesis.html */; };
+		9EDD988B2CA461B000278CF7 /* MainViewPhone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EDD988A2CA461B000278CF7 /* MainViewPhone.swift */; };
+		9EDD988D2CA463B600278CF7 /* MainViewTablet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EDD988C2CA463B600278CF7 /* MainViewTablet.swift */; };
 		9EDDE3B72B1BC0A20074141A /* EditRequestTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EDDE3B62B1BC0A20074141A /* EditRequestTracker.swift */; };
 		9EDDE3B92B1C4C8B0074141A /* EALogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EDDE3B82B1C4C8B0074141A /* EALogger.swift */; };
 		9EE60B0D2B6F82A0006A5D77 /* EmptyMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EE60B0C2B6F82A0006A5D77 /* EmptyMessageCell.swift */; };
@@ -149,7 +149,6 @@
 		9E4875EB2AF590A300D624DA /* APITesterPro.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = APITesterPro.xctestplan; sourceTree = "<group>"; };
 		9E4935AC2C96FAC000A50721 /* WebCodeEditorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebCodeEditorViewController.swift; sourceTree = "<group>"; };
 		9E571CE52B24B7F60090F1CF /* EAExtensionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EAExtensionsTests.swift; sourceTree = "<group>"; };
-		9E755BC52CA31ABF001099EC /* GenesisViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenesisViewController.swift; sourceTree = "<group>"; };
 		9E81D0282AF44BE7004095CF /* APITesterPro.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = APITesterPro.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9E81D03C2AF44BE8004095CF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9E81D0412AF44BE9004095CF /* APITesterProTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = APITesterProTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -250,7 +249,8 @@
 		9ED969A72AF5A38B0029E83E /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		9EDBC0142BCACB52008783EA /* userscript.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = userscript.js; sourceTree = "<group>"; };
 		9EDBC0152BCACB52008783EA /* editor.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = editor.js; sourceTree = "<group>"; };
-		9EDD98872CA3542A00278CF7 /* genesis.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = genesis.html; sourceTree = "<group>"; };
+		9EDD988A2CA461B000278CF7 /* MainViewPhone.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewPhone.swift; sourceTree = "<group>"; };
+		9EDD988C2CA463B600278CF7 /* MainViewTablet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewTablet.swift; sourceTree = "<group>"; };
 		9EDDE3B62B1BC0A20074141A /* EditRequestTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditRequestTracker.swift; sourceTree = "<group>"; };
 		9EDDE3B82B1C4C8B0074141A /* EALogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EALogger.swift; sourceTree = "<group>"; };
 		9EE60B0C2B6F82A0006A5D77 /* EmptyMessageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyMessageCell.swift; sourceTree = "<group>"; };
@@ -420,7 +420,6 @@
 				9E81D1392AF4529D004095CF /* prism.js */,
 				9E81D13B2AF4529D004095CF /* rawview.html */,
 				9E81D1382AF4529D004095CF /* styles.css */,
-				9EDD98872CA3542A00278CF7 /* genesis.html */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -434,7 +433,6 @@
 				9E81D0B22AF45145004095CF /* Response */,
 				9E81D0B32AF4514E004095CF /* Settings */,
 				9E81D0B42AF45156004095CF /* Workspace */,
-				9E755BC52CA31ABF001099EC /* GenesisViewController.swift */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
@@ -451,6 +449,7 @@
 		9E81D0AB2AF44FCE004095CF /* View */ = {
 			isa = PBXGroup;
 			children = (
+				9EDD98892CA4618F00278CF7 /* Genesis */,
 				9E81D1312AF45253004095CF /* LaunchScreen.storyboard */,
 				9E81D1332AF45253004095CF /* Main.storyboard */,
 				9EBE3C8B2B79363600EE8A0B /* EACopiableLabel.swift */,
@@ -568,6 +567,15 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		9EDD98892CA4618F00278CF7 /* Genesis */ = {
+			isa = PBXGroup;
+			children = (
+				9EDD988A2CA461B000278CF7 /* MainViewPhone.swift */,
+				9EDD988C2CA463B600278CF7 /* MainViewTablet.swift */,
+			);
+			path = Genesis;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -680,7 +688,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				9EDBC0162BCACB52008783EA /* userscript.js in Resources */,
-				9EDD98882CA3542A00278CF7 /* genesis.html in Resources */,
 				9EA431C32BC2A429001E1508 /* editor.html in Resources */,
 				9E81D1362AF45253004095CF /* Main.storyboard in Resources */,
 				9E81D13D2AF4529D004095CF /* preview.html in Resources */,
@@ -737,8 +744,8 @@
 				9E81D09D2AF44F4F004095CF /* App.swift in Sources */,
 				9E81D11C2AF4522C004095CF /* SettingsTableViewController.swift in Sources */,
 				9EDDE3B92B1C4C8B0074141A /* EALogger.swift in Sources */,
+				9EDD988D2CA463B600278CF7 /* MainViewTablet.swift in Sources */,
 				9E81D10B2AF45218004095CF /* EnvironmentPickerViewController.swift in Sources */,
-				9E755BC62CA31ABF001099EC /* GenesisViewController.swift in Sources */,
 				9E81D0D22AF451EA004095CF /* EAFileManager.swift in Sources */,
 				9E81D0A52AF44F4F004095CF /* AppState.swift in Sources */,
 				9EE60B0D2B6F82A0006A5D77 /* EmptyMessageCell.swift in Sources */,
@@ -791,6 +798,7 @@
 				9E81D0EE2AF451FF004095CF /* ERequestMethodData.swift in Sources */,
 				9E4935AD2C96FAC000A50721 /* WebCodeEditorViewController.swift in Sources */,
 				9E81D0F22AF451FF004095CF /* ERequest.swift in Sources */,
+				9EDD988B2CA461B000278CF7 /* MainViewPhone.swift in Sources */,
 				9E81D0F02AF451FF004095CF /* EEnvVar.swift in Sources */,
 				9E81D0FD2AF45208004095CF /* APITesterProTableViewController.swift in Sources */,
 				9E81D0FE2AF45208004095CF /* APITesterProViewController.swift in Sources */,

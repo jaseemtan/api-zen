@@ -9,6 +9,7 @@
 import UIKit
 import CloudKit
 import UserNotifications
+import SwiftUI
 
 class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
     var window: UIWindow?
@@ -20,7 +21,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         Log.debug("app delegate did finish launching with options")
         self.window = UIWindow(frame: UIScreen.main.bounds)
-        self.window?.rootViewController = GenesisViewController()
+        
+        if #available(iOS 17.0, *) {
+            let mainView: AnyView
+            if UI.getDeviceType() == .phone {
+                mainView = AnyView(MainViewPhone())
+            } else {
+                mainView = AnyView(MainViewTablet())
+            }
+            self.window?.rootViewController = UIHostingController(rootView: mainView)
+        } else {
+            self.window?.rootViewController = UIStoryboard.rootNav
+        }
+        
         if #available(iOS 13.0, *) {
             Log.debug("Window make visible is done from scene delegate")
         } else {
