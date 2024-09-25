@@ -34,6 +34,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             self.window?.rootViewController = UIStoryboard.rootNav
         }
         
+        // self.window?.rootViewController = UIStoryboard.rootNav
+        
         if #available(iOS 13.0, *) {
             Log.debug("Window make visible is done from scene delegate")
         } else {

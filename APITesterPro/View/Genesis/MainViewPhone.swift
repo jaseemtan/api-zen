@@ -46,7 +46,7 @@ struct MainViewPhone: View {
                         HStack {
                             Image(systemName: "iphone")
                             Text("Default workspace")
-                        }
+                        }.font(.subheadline)
                     }
                     Spacer()
                 }
