@@ -64,7 +64,7 @@ struct AttachmentInfo {
     }
 }
 
-public protocol Entity: NSManagedObject, Hashable {
+public protocol Entity: NSManagedObject, Hashable, Identifiable {
     var recordType: String { get }
     func getId() -> String
     func getWsId() -> String
@@ -107,4 +107,3 @@ extension Entity {
         return lhs.isEqual(rhs)
     }
 }
-

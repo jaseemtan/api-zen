@@ -7,14 +7,20 @@
 //
 
 import SwiftUI
+import CoreData
 
 @available(iOS 17.0, *)
 struct MainViewPhone: View {
+    @FetchRequest(
+        sortDescriptors: [NSSortDescriptor(keyPath: \EProject.name, ascending: true)],
+        animation: .default
+    ) private var projects: FetchedResults<EProject>
+
     var body: some View {
         NavigationStack {
             List {
-                ForEach(0..<50) { index in
-                    Text("List Item \(index)")
+                ForEach(projects) { project in
+                    Text(project.name ?? "")
                 }
             }
             .contentMargins(.top, 8)

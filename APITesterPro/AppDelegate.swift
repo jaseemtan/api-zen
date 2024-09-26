@@ -17,6 +17,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     private lazy var ck = { EACloudKit.shared }()
     // private lazy var db = { PersistenceService.shared }()
     private let nc = NotificationCenter.default
+    private lazy var db = { CoreDataService.shared }()
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         Log.debug("app delegate did finish launching with options")
@@ -25,7 +26,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         if #available(iOS 17.0, *) {
             let mainView: AnyView
             if UI.getDeviceType() == .phone {
-                mainView = AnyView(MainViewPhone())
+                mainView = AnyView(
+                    MainViewPhone().environment(\.managedObjectContext, db.localMainMOC)
+                )
             } else {
                 mainView = AnyView(MainViewTablet())
             }
@@ -34,7 +37,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             self.window?.rootViewController = UIStoryboard.rootNav
         }
         
-        // self.window?.rootViewController = UIStoryboard.rootNav
+//        self.window?.rootViewController = UIStoryboard.rootNav
         
         if #available(iOS 13.0, *) {
             Log.debug("Window make visible is done from scene delegate")
