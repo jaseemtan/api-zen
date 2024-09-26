@@ -11,13 +11,20 @@ import SwiftUI
 @available(iOS 17.0, *)
 struct WorkspacesListView: View {
     @Binding var showPopover: Bool
+    @State private var selectedWorkspace: String = "Local"
+    let section = ["Local", "iCloud"]
 
     var body: some View {
         NavigationView {
-            VStack {
-                Text("Select your workspace")
-                    .font(.body)
-                    .padding()
+            VStack(alignment: .leading) {
+                Picker("", selection: $selectedWorkspace) {
+                    ForEach(section, id: \.self) { elem in
+                        Text(" \(elem) ").tag(elem)
+                    }
+                }
+                .pickerStyle(.segmented)
+                .fixedSize()
+                .controlSize(.large)
                 Spacer()
             }
             .navigationTitle("Workspaces")
@@ -25,8 +32,6 @@ struct WorkspacesListView: View {
             .navigationBarItems(leading: Button("Cancel") {
                 showPopover = false // Dismiss the popover
             })
-            .frame(width: 300, height: 200)
-            .padding()
         }
     }
 }
