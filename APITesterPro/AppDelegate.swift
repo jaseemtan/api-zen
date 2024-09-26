@@ -24,15 +24,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         self.window = UIWindow(frame: UIScreen.main.bounds)
         
         if #available(iOS 17.0, *) {
-            let mainView: AnyView
-            if UI.getDeviceType() == .phone {
-                mainView = AnyView(
-                    MainViewPhone().environment(\.managedObjectContext, db.localMainMOC)
-                )
-            } else {
-                mainView = AnyView(MainViewTablet())
-            }
-            self.window?.rootViewController = UIHostingController(rootView: mainView)
+//            let mainView: AnyView
+//            if UI.getDeviceType() == .phone {
+//                mainView = AnyView(
+//                    MainViewPhone().environment(\.managedObjectContext, db.localMainMOC)
+//                )
+//            } else {
+//                mainView = AnyView(MainViewTablet())
+//            }
+//            self.window?.rootViewController = UIHostingController(rootView: mainView)
+            self.window?.rootViewController = GenesisViewController()
         } else {
             self.window?.rootViewController = UIStoryboard.rootNav
         }

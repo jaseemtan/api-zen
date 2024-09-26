@@ -469,6 +469,7 @@ enum TableCellId: String {
 }
 
 enum StoryboardId: String {
+    case genesisVC
     case base64VC
     case rootNav
     case editRequestVC
@@ -607,6 +608,7 @@ extension CKRecord {
 
 extension UIStoryboard {
     static var main: UIStoryboard { UIStoryboard(name: "Main", bundle: nil) }
+    static var genesisVC: UIViewController? { self.main.instantiateViewController(withIdentifier: StoryboardId.genesisVC.rawValue) }
     static var rootNav: APITesterProNavigationController? { self.main.instantiateViewController(withIdentifier: StoryboardId.rootNav.rawValue) as? APITesterProNavigationController }
     static var workspaceListVC: WorkspaceListViewController? { self.main.instantiateViewController(withIdentifier: StoryboardId.workspaceListVC.rawValue) as? WorkspaceListViewController }
     static var projectListVC: ProjectListViewController? { self.main.instantiateViewController(withIdentifier: StoryboardId.projectListVC.rawValue) as? ProjectListViewController }

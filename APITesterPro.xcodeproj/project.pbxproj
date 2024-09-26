@@ -16,6 +16,9 @@
 		9E23EABB2B640039008B6374 /* APITesterPro2MappingModel.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 9E23EABA2B640039008B6374 /* APITesterPro2MappingModel.xcmappingmodel */; };
 		9E23EABD2B64F471008B6374 /* EACoreDataUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E23EABC2B64F471008B6374 /* EACoreDataUtils.swift */; };
 		9E399A282CA544BF00EC3E91 /* WorkspacesListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E399A272CA544BF00EC3E91 /* WorkspacesListView.swift */; };
+		9E399A2D2CA5E0CC00EC3E91 /* GenesisViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E399A2C2CA5E0CC00EC3E91 /* GenesisViewController.swift */; };
+		9E399A2F2CA5E13E00EC3E91 /* genesis.html in Resources */ = {isa = PBXBuildFile; fileRef = 9E399A2E2CA5E13E00EC3E91 /* genesis.html */; };
+		9E399A312CA5E15900EC3E91 /* style in Resources */ = {isa = PBXBuildFile; fileRef = 9E399A302CA5E15900EC3E91 /* style */; };
 		9E4875E72AF56DD000D624DA /* APITesterPro.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 9E4875E52AF56DD000D624DA /* APITesterPro.xcdatamodeld */; };
 		9E4875E82AF5856A00D624DA /* AppDelegateMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E81D0812AF44CBF004095CF /* AppDelegateMock.swift */; };
 		9E4935AD2C96FAC000A50721 /* WebCodeEditorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E4935AC2C96FAC000A50721 /* WebCodeEditorViewController.swift */; };
@@ -147,6 +150,9 @@
 		9E23EABA2B640039008B6374 /* APITesterPro2MappingModel.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = APITesterPro2MappingModel.xcmappingmodel; sourceTree = "<group>"; };
 		9E23EABC2B64F471008B6374 /* EACoreDataUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EACoreDataUtils.swift; sourceTree = "<group>"; };
 		9E399A272CA544BF00EC3E91 /* WorkspacesListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspacesListView.swift; sourceTree = "<group>"; };
+		9E399A2C2CA5E0CC00EC3E91 /* GenesisViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenesisViewController.swift; sourceTree = "<group>"; };
+		9E399A2E2CA5E13E00EC3E91 /* genesis.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = genesis.html; sourceTree = "<group>"; };
+		9E399A302CA5E15900EC3E91 /* style */ = {isa = PBXFileReference; lastKnownFileType = folder; path = style; sourceTree = "<group>"; };
 		9E4875E62AF56DD000D624DA /* APITesterPro.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = APITesterPro.xcdatamodel; sourceTree = "<group>"; };
 		9E4875EB2AF590A300D624DA /* APITesterPro.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = APITesterPro.xctestplan; sourceTree = "<group>"; };
 		9E4935AC2C96FAC000A50721 /* WebCodeEditorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebCodeEditorViewController.swift; sourceTree = "<group>"; };
@@ -416,6 +422,8 @@
 			isa = PBXGroup;
 			children = (
 				9EC705742BA6E8C600CF4DE3 /* editor */,
+				9E399A302CA5E15900EC3E91 /* style */,
+				9E399A2E2CA5E13E00EC3E91 /* genesis.html */,
 				9E81D1372AF4529D004095CF /* preview.html */,
 				9E81D13C2AF4529D004095CF /* prism-dark.css */,
 				9E81D13A2AF4529D004095CF /* prism-light.css */,
@@ -429,6 +437,7 @@
 		9E81D0A92AF44FBE004095CF /* Screens */ = {
 			isa = PBXGroup;
 			children = (
+				9E399A2C2CA5E0CC00EC3E91 /* GenesisViewController.swift */,
 				9E81D0AF2AF4512A004095CF /* Base Classes */,
 				9E81D0B02AF45136004095CF /* Project */,
 				9E81D0B12AF4513D004095CF /* Request */,
@@ -691,6 +700,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9EDBC0162BCACB52008783EA /* userscript.js in Resources */,
+				9E399A2F2CA5E13E00EC3E91 /* genesis.html in Resources */,
 				9EA431C32BC2A429001E1508 /* editor.html in Resources */,
 				9E81D1362AF45253004095CF /* Main.storyboard in Resources */,
 				9E81D13D2AF4529D004095CF /* preview.html in Resources */,
@@ -701,6 +711,7 @@
 				9E81D13E2AF4529D004095CF /* styles.css in Resources */,
 				9E81D13F2AF4529D004095CF /* prism.js in Resources */,
 				9EA431C52BC2AC7C001E1508 /* 5.65.16 in Resources */,
+				9E399A312CA5E15900EC3E91 /* style in Resources */,
 				9E81D1352AF45253004095CF /* LaunchScreen.storyboard in Resources */,
 				9E81D1422AF4529D004095CF /* prism-dark.css in Resources */,
 			);
@@ -769,6 +780,7 @@
 				9E81D11F2AF4522C004095CF /* ImportExportViewController.swift in Sources */,
 				9E81D10F2AF45218004095CF /* RequestTableViewController.swift in Sources */,
 				9E81D0D82AF451F7004095CF /* CoreDataService.swift in Sources */,
+				9E399A2D2CA5E0CC00EC3E91 /* GenesisViewController.swift in Sources */,
 				9E81D0A32AF44F4F004095CF /* AppDelegate.swift in Sources */,
 				9E81D0F62AF451FF004095CF /* ResponseData.swift in Sources */,
 				9E4875E72AF56DD000D624DA /* APITesterPro.xcdatamodeld in Sources */,
