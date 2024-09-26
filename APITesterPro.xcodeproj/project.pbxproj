@@ -325,6 +325,7 @@
 				9E81D0AA2AF44FC8004095CF /* Service */,
 				9E81D0A72AF44F98004095CF /* Model */,
 				9E81D0A92AF44FBE004095CF /* Screens */,
+				9E399A2C2CA5E0CC00EC3E91 /* GenesisViewController.swift */,
 				9E81D0AB2AF44FCE004095CF /* View */,
 				9E81D08F2AF44F4E004095CF /* App.swift */,
 				9E81D0952AF44F4E004095CF /* AppDelegate.swift */,
@@ -431,7 +432,6 @@
 		9E81D0A92AF44FBE004095CF /* Screens */ = {
 			isa = PBXGroup;
 			children = (
-				9E399A2C2CA5E0CC00EC3E91 /* GenesisViewController.swift */,
 				9E81D0AF2AF4512A004095CF /* Base Classes */,
 				9E81D0B02AF45136004095CF /* Project */,
 				9E81D0B12AF4513D004095CF /* Request */,
