@@ -15,6 +15,8 @@ struct MainViewPhone: View {
         sortDescriptors: [NSSortDescriptor(keyPath: \EProject.name, ascending: true)],
         animation: .default
     ) private var projects: FetchedResults<EProject>
+    
+    @State private var showWorkspaceSelection = false // State to control workspace popover visibility
 
     var body: some View {
         NavigationStack {
@@ -24,8 +26,9 @@ struct MainViewPhone: View {
                 }
             }
             .contentMargins(.top, 8)
-            .listStyle(.automatic)
-            .navigationTitle("Projects").navigationBarTitleDisplayMode(.inline)
+            .listStyle(.grouped)
+            .navigationTitle("Projects")
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 // Settings button
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -47,15 +50,20 @@ struct MainViewPhone: View {
                 ToolbarItemGroup(placement: .bottomBar) {
                     Spacer()
                     Button(action: {
-                        print("Bottom toolbar tapped")
+                        showWorkspaceSelection.toggle() // Show the popover
                     }) {
                         HStack {
                             Image(systemName: "iphone")
                             Text("Default workspace")
-                        }.font(.subheadline)
+                        }
+                        .font(.subheadline)
                     }
                     Spacer()
                 }
+            }
+            // Popover for workspace selection
+            .popover(isPresented: $showWorkspaceSelection) {
+                WorkspacesListView(showPopover: $showWorkspaceSelection) // Pass binding to dismiss
             }
         }
     }
