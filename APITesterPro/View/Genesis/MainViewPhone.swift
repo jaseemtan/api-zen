@@ -12,7 +12,7 @@ import CoreData
 @available(iOS 17.0, *)
 struct MainViewPhone: View {
     @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \EProject.name, ascending: true)],
+        sortDescriptors: [NSSortDescriptor(keyPath: \EProject.created, ascending: true)],
         animation: .default
     ) private var projects: FetchedResults<EProject>
     
@@ -26,7 +26,7 @@ struct MainViewPhone: View {
                 }
             }
             .contentMargins(.top, 8)
-            .listStyle(.grouped)
+            .listStyle(.insetGrouped)
             .navigationTitle("Projects")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
