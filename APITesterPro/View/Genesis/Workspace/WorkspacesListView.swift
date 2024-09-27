@@ -15,7 +15,7 @@ struct WorkspacesListView: View {
     let section = ["Local", "iCloud"]
     @Environment(\.managedObjectContext) private var ctx
     let db = CoreDataService.shared
-    @Binding var isLocalStore: Bool
+    @Environment(\.isLocalStore) var isLocalStore
 
     var body: some View {
         NavigationView {
@@ -31,10 +31,10 @@ struct WorkspacesListView: View {
                 .onChange(of: selectedWorkspace) { oldValue, newValue in
                     if (newValue == "iCloud") {
                         Log.debug("icloud")
-                        isLocalStore = false
+                        isLocalStore?.wrappedValue = false
                     } else {
                         Log.debug("Local")
-                        isLocalStore = true
+                        isLocalStore?.wrappedValue = true
                     }
                 }
                 Spacer()

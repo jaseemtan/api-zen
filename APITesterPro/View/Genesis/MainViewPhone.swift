@@ -9,24 +9,25 @@
 import SwiftUI
 import CoreData
 
-//struct CoreDataStore: EnvironmentKey {
-//    static let defaultValue: Binding<Bool>? = nil
-//}
-//
-//extension EnvironmentValues {
-//    var isLocalStore: Binding<Bool>? {
-//        get { self[CoreDataStore.self] }
-//        set { self[CoreDataStore.self] = newValue }
-//    }
-//}
+struct CoreDataStore: EnvironmentKey {
+    static let defaultValue: Binding<Bool>? = nil
+}
+
+extension EnvironmentValues {
+    var isLocalStore: Binding<Bool>? {
+        get { self[CoreDataStore.self] }
+        set { self[CoreDataStore.self] = newValue }
+    }
+}
 
 @available(iOS 17.0, *)
 struct MainViewPhone: View {
     @State private var isLocalStore = true
     
     var body: some View {
-        ProjectListView(isLocalStore: $isLocalStore)
+        ProjectListView()
             .environment(\.managedObjectContext, CoreDataService.shared.localMainMOC)
+            .environment(\.isLocalStore, $isLocalStore)
     }
 }
 
@@ -38,11 +39,11 @@ struct ProjectListView: View {
     ) private var projects: FetchedResults<EProject>
     
     @State private var showWorkspaceSelection = false // State to control workspace popover visibility
-    @Binding var isLocalStore: Bool
+    @Environment(\.isLocalStore) var isLocalStore
 
     var body: some View {
         NavigationStack {
-            Text(isLocalStore == true ? "Local" : "iCloud")
+            Text(isLocalStore?.wrappedValue == true ? "Local" : "iCloud")
             List {
                 ForEach(projects) { project in
                     Text(project.name ?? "")
@@ -86,7 +87,7 @@ struct ProjectListView: View {
             }
             // Popover for workspace selection
             .popover(isPresented: $showWorkspaceSelection) {
-                WorkspacesListView(showPopover: $showWorkspaceSelection, isLocalStore: $isLocalStore)
+                WorkspacesListView(showPopover: $showWorkspaceSelection)
             }
         }
     }
