@@ -16,13 +16,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     private let app = App.shared
     private lazy var ck = { EACloudKit.shared }()
     private let nc = NotificationCenter.default
-
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         Log.debug("app delegate did finish launching with options")
         self.window = UIWindow(frame: UIScreen.main.bounds)
         
         if #available(iOS 17.0, *) {
-            self.window?.rootViewController = GenesisViewController()
+            let mainView: AnyView
+            @State var isLocalStore = true
+            if UI.getDeviceType() == .phone {
+                mainView = AnyView(MainViewPhone())
+            } else {
+                mainView = AnyView(MainViewTablet())
+            }
+            self.window?.rootViewController = UIHostingController(rootView: mainView)
+            // self.window?.rootViewController = GenesisViewController()
         } else {
             self.window?.rootViewController = UIStoryboard.rootNav
         }
