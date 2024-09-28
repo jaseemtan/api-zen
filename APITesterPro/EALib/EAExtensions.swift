@@ -10,6 +10,7 @@ import Foundation
 import UIKit
 import CoreData
 import CryptoKit
+import SwiftUI
 
 public extension Calendar.Component {
     static let allCases: [Calendar.Component] = [.year, .month, .day, .hour, .minute, .second, .weekday, .weekdayOrdinal, .weekOfYear]
@@ -886,4 +887,32 @@ extension UINavigationController: UINavigationBarDelegate {
 extension UIViewController {
     var isNavigatedBack: Bool { !self.isBeingPresented && !self.isMovingToParent }
     var className: String { NSStringFromClass(self.classForCoder).components(separatedBy: ".").last! }
+}
+
+@available(iOS 17.0, *)
+extension Color {
+    func toHex() -> String {
+        let uiColor = UIColor(self) // Convert SwiftUI Color to UIColor
+        guard let components = uiColor.cgColor.components else {
+            return "#007AFF" // Default to blue if conversion fails
+        }
+        let r = Int(components[0] * 255)
+        let g = Int(components[1] * 255)
+        let b = Int(components[2] * 255)
+        return String(format: "#%02X%02X%02X", r, g, b)
+    }
+
+    // Create Color from Hex string
+    init?(hex: String) {
+        var hexSanitized = hex.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
+        if hexSanitized.hasPrefix("#") {
+            hexSanitized.remove(at: hexSanitized.startIndex)
+        }
+        var rgb: UInt64 = 0
+        Scanner(string: hexSanitized).scanHexInt64(&rgb)
+        let r = Double((rgb >> 16) & 0xFF) / 255.0
+        let g = Double((rgb >> 8) & 0xFF) / 255.0
+        let b = Double(rgb & 0xFF) / 255.0
+        self.init(red: r, green: g, blue: b)
+    }
 }

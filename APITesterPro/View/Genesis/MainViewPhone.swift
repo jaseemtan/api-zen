@@ -24,11 +24,14 @@ extension EnvironmentValues {
 struct MainViewPhone: View {
     @State private var isLocalStore = true
     private let db = CoreDataService.shared
+    private let uiViewState = UIViewState.shared
     
     var body: some View {
         ProjectListView()
             .environment(\.managedObjectContext, isLocalStore ? db.localMainMOC : db.ckMainMOC)
             .environment(\.isLocalStore, $isLocalStore)
+            .accentColor(uiViewState.accentColor)
+            .tint(uiViewState.tintColor)
     }
 }
 

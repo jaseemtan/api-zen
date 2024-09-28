@@ -20,6 +20,7 @@ struct AddFormView: View {
     @State private var name: String = ""
     @State private var desc: String = ""
     @State private var iCloudSyncEnabled: Bool = true
+    private let uiViewState = UIViewState.shared
     
     var body: some View {
         VStack {
@@ -28,7 +29,6 @@ struct AddFormView: View {
                     self.showAddFormView = false
                 }) {
                     Text("Cancel")
-                        .foregroundColor(.blue)
                 }
                 Spacer()
                 Text(self.formType == .workspace ? "New Workspace" : "New Project")
@@ -41,7 +41,7 @@ struct AddFormView: View {
                     }
                 }) {
                     Text("Save")
-                        .foregroundColor(self.isSaveEnabled() ? .blue : .gray)
+                        .foregroundColor(self.isSaveEnabled() ? uiViewState.getActiveColor() : uiViewState.getDisabledColor())
                 }
                 .disabled(!isSaveEnabled())
             }
