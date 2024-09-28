@@ -49,7 +49,7 @@ struct ProjectListView: View {
                 }
             }
             .contentMargins(.top, 8)
-            .listStyle(.insetGrouped)
+            .listStyle(.plain)
             .navigationTitle("Projects")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
