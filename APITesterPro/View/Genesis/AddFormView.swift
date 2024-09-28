@@ -21,6 +21,7 @@ struct AddFormView: View {
     @State private var desc: String = ""
     @State private var iCloudSyncEnabled: Bool = true
     private let uiViewState = UIViewState.shared
+    private let dbSvc = PersistenceService.shared
     
     var body: some View {
         VStack {
@@ -82,6 +83,7 @@ struct AddFormView: View {
     }
     
     func addNewWorkspace() {
-        
+        self.dbSvc.createWorkspace(name: name, desc: desc, isSyncEnabled: iCloudSyncEnabled)
+        showAddFormView = false
     }
 }

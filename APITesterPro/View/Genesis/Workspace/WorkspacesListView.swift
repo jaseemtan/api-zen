@@ -72,6 +72,12 @@ struct WorkspacesListView: View {
             .onChange(of: isLocalStore?.wrappedValue) { oldValue, newValue in
                 self.loadWorkspaces()
             }
+            .onChange(of: showAddFormView, { oldValue, newValue in
+                Log.debug("show add form view changed")
+                if newValue == false && oldValue != newValue {
+                    self.loadWorkspaces()
+                }
+            })
             .sheet(isPresented: $showAddFormView) {
                 AddFormView(showAddFormView: $showAddFormView, formType: .workspace)
             }
