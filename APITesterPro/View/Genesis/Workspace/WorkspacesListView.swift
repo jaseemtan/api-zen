@@ -39,13 +39,20 @@ struct WorkspacesListView: View {
                         isLocalStore?.wrappedValue = true
                     }
                 }
-                List {
-                    ForEach(workspaces) { ws in
-                        Text(ws.name ?? "")
+                if (workspaces.isEmpty) {
+                    Text("No \((isLocalStore?.wrappedValue ?? true) ? "local" : "iCloud") workspaces found")
+                        .foregroundStyle(.gray)
+                        .padding(EdgeInsets(top: 20, leading: 10, bottom: 10, trailing: 10))
+                    Spacer()
+                } else {
+                    List {
+                        ForEach(workspaces) { ws in
+                            Text(ws.name ?? "")
+                        }
                     }
+                    .contentMargins(.top, 8)
+                    .listStyle(.plain)
                 }
-                .contentMargins(.top, 8)
-                .listStyle(.plain)
             }
             .navigationTitle("Workspaces")
             .navigationBarTitleDisplayMode(.inline)
