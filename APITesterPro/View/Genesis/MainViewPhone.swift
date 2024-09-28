@@ -23,23 +23,22 @@ extension EnvironmentValues {
 @available(iOS 17.0, *)
 struct MainViewPhone: View {
     @State private var isLocalStore = true
+    private let db = CoreDataService.shared
     
     var body: some View {
         ProjectListView()
-            .environment(\.managedObjectContext, CoreDataService.shared.localMainMOC)
+            .environment(\.managedObjectContext, isLocalStore ? db.localMainMOC : db.ckMainMOC)
             .environment(\.isLocalStore, $isLocalStore)
     }
 }
 
 @available(iOS 17.0, *)
 struct ProjectListView: View {
-    @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \EProject.created, ascending: true)],
-        animation: .default
-    ) private var projects: FetchedResults<EProject>
-    
     @State private var showWorkspaceSelection = false // State to control workspace popover visibility
     @Environment(\.isLocalStore) var isLocalStore
+    @Environment(\.managedObjectContext) private var context
+    @State private var projects: [EProject] = []
+    let db = CoreDataService.shared
 
     var body: some View {
         NavigationStack {
@@ -89,6 +88,24 @@ struct ProjectListView: View {
             .popover(isPresented: $showWorkspaceSelection) {
                 WorkspacesListView(showPopover: $showWorkspaceSelection)
             }
+            .onAppear {
+                loadProjects()
+            }
+            .onChange(of: isLocalStore?.wrappedValue) { oldValue, newValue in
+                loadProjects()
+            }
+        }
+    }
+    
+    private func loadProjects() {
+        Log.debug("Load projects")
+        let fetchRequest: NSFetchRequest<EProject> = EProject.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \EProject.created, ascending: true)]
+        let moc = isLocalStore?.wrappedValue == true ? db.localMainMOC : db.ckMainMOC
+        do {
+            projects = try moc.fetch(fetchRequest)
+        } catch {
+            Log.error("Error fetching projects: \(error)")
         }
     }
 }
