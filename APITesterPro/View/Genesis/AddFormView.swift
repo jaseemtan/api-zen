@@ -52,15 +52,13 @@ struct AddFormView: View {
             VStack(alignment: .leading, spacing: 16) {
                 HStack {
                     Text("Name")
-                        .frame(width: 100, alignment: .leading)  // Label on the left
-                    TextField("required", text: $name)  // TextField for input
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .frame(width: 100, alignment: .leading)
+                    VTextField(placeholder: "required", text: $name)
                 }
                 HStack {
                     Text("Description")
-                        .frame(width: 100, alignment: .leading)  // Label on the left
-                    TextField("optional", text: $desc)  // TextField for input
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .frame(width: 100, alignment: .leading)
+                    VTextField(placeholder: "optional", text: $desc)
                 }
                 if (self.formType == .workspace) {
                     HStack {
@@ -87,4 +85,3 @@ struct AddFormView: View {
         
     }
 }
-

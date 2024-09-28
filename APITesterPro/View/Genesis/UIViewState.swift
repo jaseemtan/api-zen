@@ -18,6 +18,11 @@ class UIViewState {
     private let accentColorKey = "accentColor"
     private let tintColorKey = "tintColor"
     
+    struct Theme {
+        static let darkGrey = UIColor(red: 39/255, green: 40/255, blue: 42/255, alpha: 1.0)
+        static let lightGrey = UIColor(red: 235/255, green: 235/255, blue: 235/255, alpha: 1.0)
+    }
+    
     init() {
         // self.saveUIColorToUserDefaults(.green)
         self.getUIColorFromUserDefaults()
@@ -48,5 +53,18 @@ class UIViewState {
     func getDisabledColor() -> Color {
         return Color.gray
     }
+    
+    func getTextFieldBg() -> Color {
+        let color = UIColor { (UITraitCollection: UITraitCollection) -> UIColor in
+            if UITraitCollection.userInterfaceStyle == .dark {
+                return Theme.darkGrey
+            } else {
+                return Theme.lightGrey
+            }
+        }
+        return Color(color)
+    }
+    
+    
 }
 
