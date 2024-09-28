@@ -18,10 +18,12 @@ struct WorkspacesListView: View {
     let db = CoreDataService.shared
     @Environment(\.isLocalStore) var isLocalStore
     @State private var workspaces: [EWorkspace] = []
+    @State private var showAddFormView = false
 
     var body: some View {
         NavigationView {
             VStack(alignment: .center) {
+                Divider()
                 Picker("", selection: $selectedWorkspace) {
                     ForEach(section, id: \.self) { elem in
                         Text(" \(elem) ").tag(elem)
@@ -39,10 +41,11 @@ struct WorkspacesListView: View {
                         isLocalStore?.wrappedValue = true
                     }
                 }
+                .padding(EdgeInsets(top: 12, leading: 16, bottom: 8, trailing: 16))
                 if (workspaces.isEmpty) {
                     Text("No \((isLocalStore?.wrappedValue ?? true) ? "local" : "iCloud") workspaces found")
                         .foregroundStyle(.gray)
-                        .padding(EdgeInsets(top: 20, leading: 10, bottom: 10, trailing: 10))
+                        .padding(EdgeInsets(top: 20, leading: 16, bottom: 8, trailing: 16))
                     Spacer()
                 } else {
                     List {
@@ -60,6 +63,7 @@ struct WorkspacesListView: View {
                 showPopover = false // Dismiss the popover
             }, trailing: Button("Add") {
                 Log.debug("Add workspace button tapped")
+                showAddFormView.toggle()
             })
             .onAppear {
                 self.selectedWorkspace = (self.isLocalStore?.wrappedValue ?? true) ? "Local" : "iCloud"
@@ -67,6 +71,9 @@ struct WorkspacesListView: View {
             }
             .onChange(of: isLocalStore?.wrappedValue) { oldValue, newValue in
                 self.loadWorkspaces()
+            }
+            .sheet(isPresented: $showAddFormView) {
+                AddFormView(showAddFormView: $showAddFormView, formType: .workspace)
             }
         }
     }
