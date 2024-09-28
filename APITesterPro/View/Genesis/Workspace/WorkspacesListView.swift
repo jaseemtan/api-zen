@@ -51,6 +51,8 @@ struct WorkspacesListView: View {
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarItems(leading: Button("Cancel") {
                 showPopover = false // Dismiss the popover
+            }, trailing: Button("Add") {
+                Log.debug("Add workspace button tapped")
             })
             .onAppear {
                 self.selectedWorkspace = (self.isLocalStore?.wrappedValue ?? true) ? "Local" : "iCloud"
