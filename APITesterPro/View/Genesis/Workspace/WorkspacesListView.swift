@@ -44,6 +44,9 @@ struct WorkspacesListView: View {
             .navigationBarItems(leading: Button("Cancel") {
                 showPopover = false // Dismiss the popover
             })
+            .onAppear {
+                self.selectedWorkspace = (self.isLocalStore?.wrappedValue ?? true) ? "Local" : "iCloud"
+            }
         }
     }
 }
