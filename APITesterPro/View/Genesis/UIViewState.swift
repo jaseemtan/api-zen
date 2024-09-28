@@ -19,7 +19,7 @@ class UIViewState {
     private let tintColorKey = "tintColor"
     
     init() {
-        // self.saveUIColorToUserDefaults(.purple)
+        // self.saveUIColorToUserDefaults(.green)
         self.getUIColorFromUserDefaults()
     }
     

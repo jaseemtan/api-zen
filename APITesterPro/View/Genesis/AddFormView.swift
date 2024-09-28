@@ -24,6 +24,7 @@ struct AddFormView: View {
     
     var body: some View {
         VStack {
+            // Navbar
             HStack {
                 Button(action: {
                     self.showAddFormView = false
@@ -47,6 +48,7 @@ struct AddFormView: View {
             }
             .padding(EdgeInsets(top: 16, leading: 16, bottom: 4, trailing: 16))
             Divider()
+                .padding(EdgeInsets(top: 0, leading: 0, bottom: 24, trailing: 0))
             VStack(alignment: .leading, spacing: 16) {
                 HStack {
                     Text("Name")
@@ -67,9 +69,13 @@ struct AddFormView: View {
                         }
                     }
                 }
-                Spacer()
             }
-           .padding()
+            .padding(EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16))
+            .overlay(
+                RoundedRectangle(cornerRadius: 0, style: .continuous)
+                    .stroke(Color.gray.opacity(0.25), lineWidth: 0.5)
+            )
+            Spacer()
         }
     }
     
