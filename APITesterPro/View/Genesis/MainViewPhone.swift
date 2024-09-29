@@ -96,7 +96,10 @@ struct ProjectListView: View {
                     }) {
                         HStack {
                             Image(systemName: "iphone")
-                            Text("Default workspace")
+                            Text(workspaceState.selectedWorkspace.getName())
+                                .lineLimit(1)
+                                .truncationMode(.tail)
+                                .frame(width: UIScreen.main.bounds.width - (UIScreen.main.bounds.width * 0.25), alignment: .center)
                         }
                         .font(.subheadline)
                     }
