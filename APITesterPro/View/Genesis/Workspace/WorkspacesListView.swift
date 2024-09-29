@@ -54,6 +54,9 @@ struct WorkspacesListView: View {
                     List {
                         ForEach(workspaces) { ws in
                             HStack {
+                                Image("workspace")
+                                    .renderingMode(.template)
+                                    .foregroundStyle(self.uiViewState.getActiveColor())
                                 Text(ws.name ?? "")
                                 Spacer()
                                 if self.workspaceState.selectedWorkspace.getId() == ws.getId() {
