@@ -20,7 +20,8 @@ class UIViewState {
     
     struct Theme {
         static let darkGrey = UIColor(red: 39/255, green: 40/255, blue: 42/255, alpha: 1.0)
-        static let lightGrey = UIColor(red: 235/255, green: 235/255, blue: 235/255, alpha: 1.0)
+        static let lightGrey = UIColor(red: 245/255, green: 245/255, blue: 245/255, alpha: 1.0)
+        static let lightGrey1 = UIColor(red: 235/255, green: 235/255, blue: 235/255, alpha: 1.0)
     }
     
     init() {
@@ -59,12 +60,13 @@ class UIViewState {
             if UITraitCollection.userInterfaceStyle == .dark {
                 return Theme.darkGrey
             } else {
-                return Theme.lightGrey
+                return Theme.lightGrey1
             }
         }
         return Color(color)
     }
     
-    
+    func getBottomToolbarBg() -> Color {
+        return Color(Theme.lightGrey)
+    }
 }
-

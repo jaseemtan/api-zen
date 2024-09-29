@@ -46,6 +46,8 @@ struct MainViewPhone: View {
             .environment(workspaceState)
             .accentColor(uiViewState.accentColor)
             .tint(uiViewState.tintColor)
+            .ignoresSafeArea()
+            .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, maxHeight: .infinity)
     }
 }
 
@@ -58,10 +60,11 @@ struct ProjectListView: View {
     @State private var projects: [EProject] = []
     let db = CoreDataService.shared
     let app = App.shared
+    let uiViewState = UIViewState.shared
     
     var body: some View {
         NavigationStack {
-            Text(isLocalStore?.wrappedValue == true ? "Local" : "iCloud")
+            // Text(isLocalStore?.wrappedValue == true ? "Local" : "iCloud")
             List {
                 ForEach(projects) { project in
                     Text(project.name ?? "")
@@ -70,6 +73,8 @@ struct ProjectListView: View {
             .contentMargins(.top, 8)
             .listStyle(.plain)
             .navigationTitle("Projects")
+            .toolbarBackground(Color.green, for: .navigationBar)
+            .toolbarBackground(.visible, for: .navigationBar)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 // Settings button
@@ -88,24 +93,25 @@ struct ProjectListView: View {
                         Image(systemName: "plus")
                     }
                 }
-                // Bottom toolbar with workspace switcher
-                ToolbarItemGroup(placement: .bottomBar) {
-                    Spacer()
-                    Button(action: {
-                        showWorkspaceSelection.toggle() // Show the popover
-                    }) {
-                        HStack {
-                            Image(systemName: "iphone")
-                            Text(workspaceState.selectedWorkspace.getName())
-                                .lineLimit(1)
-                                .truncationMode(.tail)
-                                .frame(width: UIScreen.main.bounds.width - (UIScreen.main.bounds.width * 0.25), alignment: .center)
-                        }
-                        .font(.subheadline)
-                    }
-                    Spacer()
+            }
+            // Bottom toolbar with workspace switcher
+            Grid(horizontalSpacing: 0, verticalSpacing: 0) {
+                GridRow {
+                    Image(systemName: "iphone")
+                        .padding(EdgeInsets(top: 0, leading: 8, bottom: 0, trailing: 4))
+                        .foregroundStyle(self.uiViewState.getActiveColor())
+                    Text(workspaceState.selectedWorkspace.getName())
+                        .lineLimit(1)
+                        .truncationMode(.tail)
+                        .padding(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 8))
+                        .foregroundStyle(self.uiViewState.getActiveColor())
+                }
+                .onTapGesture {
+                    showWorkspaceSelection.toggle()
                 }
             }
+            .frame(width: UIScreen.main.bounds.width, height: 40)
+            .background(self.uiViewState.getBottomToolbarBg())
             // Popover for workspace selection
             .popover(isPresented: $showWorkspaceSelection) {
                 WorkspacesListView(showPopover: $showWorkspaceSelection)
@@ -119,7 +125,9 @@ struct ProjectListView: View {
             .onChange(of: workspaceState.selectedWorkspace) { oldValue, newValue in
                 self.loadProjects()
             }
+            // .border(.green)
         }
+        .border(.red)
     }
     
     private func loadProjects() {
