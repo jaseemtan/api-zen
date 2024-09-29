@@ -11,12 +11,15 @@ import CoreData
 
 @available(iOS 17.0, *)
 struct WorkspacesListView: View {
+    let db = CoreDataService.shared
+    let app = App.shared
+    let uiViewState = UIViewState.shared
     @Binding var showPopover: Bool
-    @State private var selectedWorkspace: String = "Local"
+    @State private var selectedStore: String = "Local"
     let section = ["Local", "iCloud"]
     @Environment(\.managedObjectContext) private var ctx
-    let db = CoreDataService.shared
     @Environment(\.isLocalStore) var isLocalStore
+    @Environment(WorkspaceState.self) var workspaceState
     @State private var workspaces: [EWorkspace] = []
     @State private var showAddFormView = false
 
@@ -24,7 +27,7 @@ struct WorkspacesListView: View {
         NavigationView {
             VStack(alignment: .center) {
                 Divider()
-                Picker("", selection: $selectedWorkspace) {
+                Picker("", selection: $selectedStore) {
                     ForEach(section, id: \.self) { elem in
                         Text(" \(elem) ").tag(elem)
                     }
@@ -32,7 +35,7 @@ struct WorkspacesListView: View {
                 .pickerStyle(.segmented)
                 .fixedSize()
                 .controlSize(.large)
-                .onChange(of: selectedWorkspace) { oldValue, newValue in
+                .onChange(of: selectedStore) { oldValue, newValue in
                     if (newValue == "iCloud") {
                         Log.debug("icloud")
                         isLocalStore?.wrappedValue = false
@@ -50,7 +53,20 @@ struct WorkspacesListView: View {
                 } else {
                     List {
                         ForEach(workspaces) { ws in
-                            Text(ws.name ?? "")
+                            HStack {
+                                Text(ws.name ?? "")
+                                Spacer()
+                                if self.workspaceState.selectedWorkspace.getId() == ws.getId() {
+                                    Image(systemName: "checkmark")
+                                        .foregroundStyle(self.uiViewState.getActiveColor())
+                                }
+                            }
+                            .contentShape(Rectangle())
+                            .onTapGesture {
+                                Log.debug("workspace row tapped")
+                                self.setSelectedWorkspace(ws)
+                                self.showPopover = false
+                            }
                         }
                     }
                     .contentMargins(.top, 8)
@@ -66,7 +82,7 @@ struct WorkspacesListView: View {
                 showAddFormView.toggle()
             })
             .onAppear {
-                self.selectedWorkspace = (self.isLocalStore?.wrappedValue ?? true) ? "Local" : "iCloud"
+                self.selectedStore = (self.isLocalStore?.wrappedValue ?? true) ? "Local" : "iCloud"
                 self.loadWorkspaces()
             }
             .onChange(of: isLocalStore?.wrappedValue) { oldValue, newValue in
@@ -94,5 +110,10 @@ struct WorkspacesListView: View {
         } catch {
             Log.error("Error fetching workspaces: \(error)")
         }
+    }
+    
+    func setSelectedWorkspace(_ ws: EWorkspace) {
+        self.app.setSelectedWorkspace(ws)
+        self.workspaceState.selectedWorkspace = ws
     }
 }

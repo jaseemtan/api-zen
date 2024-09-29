@@ -20,16 +20,30 @@ extension EnvironmentValues {
     }
 }
 
+@Observable
+@available(iOS 17, *)
+class WorkspaceState {
+    private let app = App.shared
+    var selectedWorkspace: EWorkspace
+    
+    init() {
+        self.selectedWorkspace = self.app.getSelectedWorkspace()
+    }
+}
+
 @available(iOS 17.0, *)
 struct MainViewPhone: View {
-    @State private var isLocalStore = true
     private let db = CoreDataService.shared
     private let uiViewState = UIViewState.shared
+    private let app = App.shared
+    @State private var isLocalStore = true
+    var workspaceState = WorkspaceState()
     
     var body: some View {
         ProjectListView()
             .environment(\.managedObjectContext, isLocalStore ? db.localMainMOC : db.ckMainMOC)
             .environment(\.isLocalStore, $isLocalStore)
+            .environment(workspaceState)
             .accentColor(uiViewState.accentColor)
             .tint(uiViewState.tintColor)
     }
@@ -40,9 +54,11 @@ struct ProjectListView: View {
     @State private var showWorkspaceSelection = false // State to control workspace popover visibility
     @Environment(\.isLocalStore) var isLocalStore
     @Environment(\.managedObjectContext) private var context
+    @Environment(WorkspaceState.self) var workspaceState
     @State private var projects: [EProject] = []
     let db = CoreDataService.shared
-
+    let app = App.shared
+    
     var body: some View {
         NavigationStack {
             Text(isLocalStore?.wrappedValue == true ? "Local" : "iCloud")
@@ -92,18 +108,24 @@ struct ProjectListView: View {
                 WorkspacesListView(showPopover: $showWorkspaceSelection)
             }
             .onAppear {
-                loadProjects()
+                self.loadProjects()
             }
             .onChange(of: isLocalStore?.wrappedValue) { oldValue, newValue in
-                loadProjects()
+                self.loadProjects()
+            }
+            .onChange(of: workspaceState.selectedWorkspace) { oldValue, newValue in
+                self.loadProjects()
             }
         }
     }
     
     private func loadProjects() {
         Log.debug("Load projects")
+        Log.debug("wsId: \(self.workspaceState.selectedWorkspace.getId())")
+        let wsId = self.workspaceState.selectedWorkspace.getId()
         let fetchRequest: NSFetchRequest<EProject> = EProject.fetchRequest()
         fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \EProject.created, ascending: true)]
+        fetchRequest.predicate = NSPredicate(format: "workspace.id == %@ AND name != %@ AND markForDelete == %hdd", wsId, "", false)
         let moc = isLocalStore?.wrappedValue == true ? db.localMainMOC : db.ckMainMOC
         do {
             projects = try moc.fetch(fetchRequest)
