@@ -9,7 +9,6 @@
 import UIKit
 import CloudKit
 import UserNotifications
-import SwiftUI
 
 class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
     var window: UIWindow?
