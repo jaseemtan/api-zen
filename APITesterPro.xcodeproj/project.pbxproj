@@ -107,12 +107,6 @@
 		9EA431C32BC2A429001E1508 /* editor.html in Resources */ = {isa = PBXBuildFile; fileRef = 9EC705752BA6E8E500CF4DE3 /* editor.html */; };
 		9EA431C52BC2AC7C001E1508 /* 5.65.16 in Resources */ = {isa = PBXBuildFile; fileRef = 9EA431C42BC2AC7C001E1508 /* 5.65.16 */; };
 		9EBE3C8C2B79363600EE8A0B /* EACopiableLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EBE3C8B2B79363600EE8A0B /* EACopiableLabel.swift */; };
-		9EBE48E52CA67CB000790727 /* MainViewTablet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EBE48E32CA67CB000790727 /* MainViewTablet.swift */; };
-		9EBE48E62CA67CB000790727 /* MainViewPhone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EBE48E42CA67CB000790727 /* MainViewPhone.swift */; };
-		9EBE48E92CA67CCE00790727 /* WorkspacesListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EBE48E82CA67CCE00790727 /* WorkspacesListView.swift */; };
-		9EBE48EB2CA87C8700790727 /* AddFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EBE48EA2CA87C8700790727 /* AddFormView.swift */; };
-		9EBE48ED2CA88A3000790727 /* UIViewState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EBE48EC2CA88A3000790727 /* UIViewState.swift */; };
-		9EBE48EF2CA8A77100790727 /* VTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9EBE48EE2CA8A77100790727 /* VTextField.swift */; };
 		9ECA32FF2B417D4000B4B937 /* EAPopQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9ECA32FE2B417D4000B4B937 /* EAPopQueue.swift */; };
 		9ECA33012B41825100B4B937 /* EAPopQueueTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9ECA33002B41825100B4B937 /* EAPopQueueTests.swift */; };
 		9ED969A42AF5A35F0029E83E /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9ED969A32AF5A35F0029E83E /* WebKit.framework */; };
@@ -248,12 +242,6 @@
 		9EA431C42BC2AC7C001E1508 /* 5.65.16 */ = {isa = PBXFileReference; lastKnownFileType = folder; path = 5.65.16; sourceTree = "<group>"; };
 		9EBAD0992B60D76F00E172A1 /* APITesterPro 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "APITesterPro 2.xcdatamodel"; sourceTree = "<group>"; };
 		9EBE3C8B2B79363600EE8A0B /* EACopiableLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EACopiableLabel.swift; sourceTree = "<group>"; };
-		9EBE48E32CA67CB000790727 /* MainViewTablet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainViewTablet.swift; sourceTree = "<group>"; };
-		9EBE48E42CA67CB000790727 /* MainViewPhone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainViewPhone.swift; sourceTree = "<group>"; };
-		9EBE48E82CA67CCE00790727 /* WorkspacesListView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WorkspacesListView.swift; sourceTree = "<group>"; };
-		9EBE48EA2CA87C8700790727 /* AddFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFormView.swift; sourceTree = "<group>"; };
-		9EBE48EC2CA88A3000790727 /* UIViewState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewState.swift; sourceTree = "<group>"; };
-		9EBE48EE2CA8A77100790727 /* VTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VTextField.swift; sourceTree = "<group>"; };
 		9EC705752BA6E8E500CF4DE3 /* editor.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = editor.html; sourceTree = "<group>"; };
 		9ECA32FE2B417D4000B4B937 /* EAPopQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EAPopQueue.swift; sourceTree = "<group>"; };
 		9ECA33002B41825100B4B937 /* EAPopQueueTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EAPopQueueTests.swift; sourceTree = "<group>"; };
@@ -461,7 +449,6 @@
 		9E81D0AB2AF44FCE004095CF /* View */ = {
 			isa = PBXGroup;
 			children = (
-				9EBE48E22CA67C8F00790727 /* Genesis */,
 				9E81D1312AF45253004095CF /* LaunchScreen.storyboard */,
 				9E81D1332AF45253004095CF /* Main.storyboard */,
 				9EBE3C8B2B79363600EE8A0B /* EACopiableLabel.swift */,
@@ -556,27 +543,6 @@
 				9E81D1482AF452DE004095CF /* EAUtilsTests.swift */,
 			);
 			path = EALibTests;
-			sourceTree = "<group>";
-		};
-		9EBE48E22CA67C8F00790727 /* Genesis */ = {
-			isa = PBXGroup;
-			children = (
-				9EBE48E72CA67CBA00790727 /* Workspace */,
-				9EBE48E42CA67CB000790727 /* MainViewPhone.swift */,
-				9EBE48E32CA67CB000790727 /* MainViewTablet.swift */,
-				9EBE48EA2CA87C8700790727 /* AddFormView.swift */,
-				9EBE48EC2CA88A3000790727 /* UIViewState.swift */,
-				9EBE48EE2CA8A77100790727 /* VTextField.swift */,
-			);
-			path = Genesis;
-			sourceTree = "<group>";
-		};
-		9EBE48E72CA67CBA00790727 /* Workspace */ = {
-			isa = PBXGroup;
-			children = (
-				9EBE48E82CA67CCE00790727 /* WorkspacesListView.swift */,
-			);
-			path = Workspace;
 			sourceTree = "<group>";
 		};
 		9EC705742BA6E8C600CF4DE3 /* editor */ = {
@@ -777,8 +743,6 @@
 				9E81D09B2AF44F4F004095CF /* SceneDelegate.swift in Sources */,
 				9E04F4F62B122577007A0773 /* EACloudKit.swift in Sources */,
 				9E81D12C2AF45241004095CF /* EADynamicSizeTableView.swift in Sources */,
-				9EBE48E62CA67CB000790727 /* MainViewPhone.swift in Sources */,
-				9EBE48E92CA67CCE00790727 /* WorkspacesListView.swift in Sources */,
 				9E81D10C2AF45218004095CF /* EditRequestTableViewController.swift in Sources */,
 				9E81D11B2AF4522C004095CF /* Base64ViewController.swift in Sources */,
 				9E81D10E2AF45218004095CF /* RequestStateMachine.swift in Sources */,
@@ -788,16 +752,13 @@
 				9E81D0E92AF451FF004095CF /* EWorkspace.swift in Sources */,
 				9E81D0EB2AF451FF004095CF /* Zone.swift in Sources */,
 				9E81D0D32AF451EA004095CF /* EARescheduler.swift in Sources */,
-				9EBE48ED2CA88A3000790727 /* UIViewState.swift in Sources */,
 				9E81D11F2AF4522C004095CF /* ImportExportViewController.swift in Sources */,
 				9E81D10F2AF45218004095CF /* RequestTableViewController.swift in Sources */,
 				9E81D0D82AF451F7004095CF /* CoreDataService.swift in Sources */,
-				9EBE48EB2CA87C8700790727 /* AddFormView.swift in Sources */,
 				9E399A2D2CA5E0CC00EC3E91 /* GenesisViewController.swift in Sources */,
 				9E81D0A32AF44F4F004095CF /* AppDelegate.swift in Sources */,
 				9E81D0F62AF451FF004095CF /* ResponseData.swift in Sources */,
 				9E4875E72AF56DD000D624DA /* APITesterPro.xcdatamodeld in Sources */,
-				9EBE48E52CA67CB000790727 /* MainViewTablet.swift in Sources */,
 				9E23EABD2B64F471008B6374 /* EACoreDataUtils.swift in Sources */,
 				9E23EAB92B63F885008B6374 /* APITesterProModel2Migration.swift in Sources */,
 				9E81D0CF2AF451EA004095CF /* EAUtils.swift in Sources */,
@@ -813,7 +774,6 @@
 				9EBE3C8C2B79363600EE8A0B /* EACopiableLabel.swift in Sources */,
 				9EEA0E2A2B152E0200DFB42B /* EABackgroundWorker.swift in Sources */,
 				9E81D1092AF45218004095CF /* RequestStates.swift in Sources */,
-				9EBE48EF2CA8A77100790727 /* VTextField.swift in Sources */,
 				9E81D1222AF45235004095CF /* WorkspaceListViewController.swift in Sources */,
 				9E81D1132AF45221004095CF /* ResponseTableViewController.swift in Sources */,
 				9ECA32FF2B417D4000B4B937 /* EAPopQueue.swift in Sources */,
@@ -1027,7 +987,7 @@
 				CODE_SIGN_ENTITLEMENTS = APITesterPro/APITesterPro.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 18;
+				CURRENT_PROJECT_VERSION = 19;
 				DEVELOPMENT_TEAM = TPAP6QPH98;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -1046,7 +1006,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.2;
+				MARKETING_VERSION = 2.3;
 				PRODUCT_BUNDLE_IDENTIFIER = net.jsloop.APITesterPro;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1067,7 +1027,7 @@
 				CODE_SIGN_ENTITLEMENTS = APITesterPro/APITesterPro.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 18;
+				CURRENT_PROJECT_VERSION = 19;
 				DEVELOPMENT_TEAM = TPAP6QPH98;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -1086,7 +1046,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.2;
+				MARKETING_VERSION = 2.3;
 				PRODUCT_BUNDLE_IDENTIFIER = net.jsloop.APITesterPro;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";

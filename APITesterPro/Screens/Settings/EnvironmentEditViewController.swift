@@ -170,16 +170,17 @@ class EnvironmentEditViewController: UITableViewController, UITextFieldDelegate 
 
     @objc func doneDidTap(_ sender: Any) {
         Log.debug("done btn did tap")
+        guard let ctx = self.app.getSelectedWorkspace().managedObjectContext else { return }
         let wsId = self.app.getSelectedWorkspace().getId()
         switch self.mode {
         case .addEnv:
-            self.env = self.localDB.createEnv(name: self.name, wsId: wsId)
+            self.env = self.localDB.createEnv(name: self.name, wsId: wsId, ctx: ctx)
             self.saveEnv()
         case .editEnv:
             self.env?.name = self.name
             self.saveEnv()
         case .addEnvVar:
-            self.envVar = self.localDB.createEnvVar(name: self.name, value: self.value)
+            self.envVar = self.localDB.createEnvVar(name: self.name, value: self.value, ctx: ctx)
             self.envVar?.env = self.env
             self.saveEnvVar()
         case .editEnvVar:

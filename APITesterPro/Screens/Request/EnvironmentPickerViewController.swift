@@ -72,7 +72,8 @@ class EnvironmentPickerViewController: UIViewController, UITableViewDelegate, UI
 
     func initData() {
         self.ws = self.app.getSelectedWorkspace()
-        if let frc = self.localDB.getFetchResultsController(obj: EEnv.self, predicate: NSPredicate(format: "wsId == %@", self.ws!.getId())) as? NSFetchedResultsController<EEnv> {
+        guard let ctx = self.ws?.managedObjectContext else { return }
+        if let frc = self.localDB.getFetchResultsController(obj: EEnv.self, predicate: NSPredicate(format: "wsId == %@", self.ws!.getId()), ctx: ctx) as? NSFetchedResultsController<EEnv> {
             self.frc = frc
             self.frc.delegate = self
             try? self.frc.performFetch()
