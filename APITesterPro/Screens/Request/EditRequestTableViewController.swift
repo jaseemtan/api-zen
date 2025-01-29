@@ -71,6 +71,7 @@ class EditRequestTableViewController: APITesterProTableViewController, UITextFie
     var isOptionFromNotif = false
     private let docPicker = EADocumentPicker.shared
     private let utils = EAUtils.shared
+    private let tvUtils = KVTableViewUtils.shared
     private lazy var localdb = { CoreDataService.shared }()
     private lazy var localdbSvc = { PersistenceService.shared }()
     var cdContainer: CoreDataContainer!  // This will be updated in bootstrap
@@ -601,6 +602,12 @@ class EditRequestTableViewController: APITesterProTableViewController, UITextFie
                 if completion != nil { completion!() }
             }
         }
+        if let tv = self.headerKVTableViewManager.kvTableView {
+            self.tvUtils.hideDeleteViewForVisibleCells(tv)
+        }
+        if let tv = self.paramsKVTableViewManager.kvTableView {
+            self.tvUtils.hideDeleteViewForVisibleCells(tv)
+        }
         self.headerKVTableViewManager.clearEditing { _ in
             status["header"] = true
             cb()
@@ -884,6 +891,7 @@ class KVEditContentCell: UITableViewCell, KVEditContentCellType, UITextFieldDele
     @objc func deleteBtnDidTap() {
         Log.debug("delete row did tap - tag: \(self.tag)")
         guard let editTVDelegate = self.editTVDelegate else { return }
+        
         editTVDelegate.getVC().clearEditing({
             let idxPath = IndexPath(row: self.tag, section: 0)
             self.editingIndexPath = idxPath
@@ -2149,6 +2157,31 @@ class KVEditTableViewManager: NSObject, UITableViewDelegate, UITableViewDataSour
         return 1
     }
     
+    @objc func deleteBtnDidTap(_ sender: UITapGestureRecognizer) {
+        Log.debug("######")
+        guard let deleteButton = sender.view else { return }
+        // Traverse up the view hierarchy to find the cell
+        var superview = deleteButton.superview
+        while let view = superview, !(view is UITableViewCell) {
+            superview = view.superview
+        }
+        if let cell = superview as? KVEditContentCell,
+           let tableView = cell.superview as? UITableView {
+            // Hide all delete views in visible cells
+            KVTableViewUtils.shared.hideDeleteViewForVisibleCells(tableView)
+            // Display delete view for the tapped cell
+            if let indexPath = tableView.indexPath(for: cell) {
+                print("Delete button tapped in cell at index: \(indexPath.row)")
+                UIView.animate(withDuration: 0.3, animations: {
+                    cell.deleteView.isHidden = false
+                    if cell.getContainerView().transform == .identity {
+                        cell.getContainerView().transform = CGAffineTransform(translationX: -64, y: 0)
+                    }
+                }, completion: nil)
+            }
+        }
+    }
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.section == 0 {
             if self.tableViewType == .body {
@@ -2195,6 +2228,11 @@ class KVEditTableViewManager: NSObject, UITableViewDelegate, UITableViewDataSour
                 cell.tag = row
                 cell.delegate = self
                 self.hideDeleteRowView(cell: cell)
+                // -- test
+                let deleteBtnTap = UITapGestureRecognizer(target: self, action: #selector(self.deleteBtnDidTap(_:)))
+                deleteBtnTap.cancelsTouchesInView = false
+                cell.deleteBtn.addGestureRecognizer(deleteBtnTap)  // TODO:
+                // -- end test
                 cell.keyTextField.text = ""
                 cell.valueTextField.text = ""
                 cell.reqDataId = ""
@@ -2280,6 +2318,7 @@ class KVEditTableViewManager: NSObject, UITableViewDelegate, UITableViewDataSour
     }
     
     func previewActions(forCellAt indexPath: IndexPath) {
+        Log.debug("preview actions")
         guard let tv = self.kvTableView else { return }
         tv.reloadData()
         guard let cell: KVEditContentCellType = tv.cellForRow(at: indexPath) as? KVEditContentCellType else { return }
@@ -2392,3 +2431,19 @@ extension KVEditTableViewManager: KVEditContentCellDelegate {
     }
 }
 
+private class KVTableViewUtils {
+    static var shared = KVTableViewUtils()
+    
+    /// Hides any visible delete view form a KV content cell and resets the view transformation to identity.
+    /// This is to remove all delete view in case user has tapped on the delete icon which shows the delete view on the right
+    func hideDeleteViewForVisibleCells(_ tableView: UITableView) {
+        for visibleCell in tableView.visibleCells {
+            if let cell = visibleCell as? KVEditContentCell {
+                cell.deleteView.isHidden = true
+                if cell.getContainerView().transform != .identity {
+                    cell.getContainerView().transform = .identity
+                }
+            }
+        }
+    }
+}
