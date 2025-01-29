@@ -2252,7 +2252,6 @@ class KVEditTableViewManager: NSObject, UITableViewDelegate, UITableViewDataSour
             vc.clearEditing()
             if vc.isEndEditing {
                 UI.endEditing()
-                return
             }
         }
         if indexPath.section == 1 {  // header
