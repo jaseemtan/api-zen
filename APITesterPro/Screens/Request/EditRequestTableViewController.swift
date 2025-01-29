@@ -879,27 +879,10 @@ class KVEditContentCell: UITableViewCell, KVEditContentCellType, UITextFieldDele
     }
     
     func initEvents() {
-        let deleteBtnTap = UITapGestureRecognizer(target: self, action: #selector(self.deleteBtnDidTap))
-        deleteBtnTap.cancelsTouchesInView = false
-        self.deleteBtn.addGestureRecognizer(deleteBtnTap)
         let deleteViewTap = UITapGestureRecognizer(target: self, action: #selector(self.deleteViewDidTap))
         self.deleteView.addGestureRecognizer(deleteViewTap)
         self.keyTextField.addTarget(self, action: #selector(self.updateState(_:)), for: .editingChanged)
         self.valueTextField.addTarget(self, action: #selector(self.updateState(_:)), for: .editingChanged)
-    }
-    
-    @objc func deleteBtnDidTap() {
-        Log.debug("delete row did tap - tag: \(self.tag)")
-        guard let editTVDelegate = self.editTVDelegate else { return }
-        
-        editTVDelegate.getVC().clearEditing({
-            let idxPath = IndexPath(row: self.tag, section: 0)
-            self.editingIndexPath = idxPath
-            self.delegate?.enableEditing(indexPath: idxPath)
-            UIView.transition(with: self, duration: 0.5, options: .curveEaseIn, animations: {
-                self.deleteView.isHidden = false
-            }, completion: nil)
-        })
     }
     
     @objc func deleteViewDidTap() {
@@ -2158,7 +2141,6 @@ class KVEditTableViewManager: NSObject, UITableViewDelegate, UITableViewDataSour
     }
     
     @objc func deleteBtnDidTap(_ sender: UITapGestureRecognizer) {
-        Log.debug("######")
         guard let deleteButton = sender.view else { return }
         // Traverse up the view hierarchy to find the cell
         var superview = deleteButton.superview
@@ -2228,11 +2210,11 @@ class KVEditTableViewManager: NSObject, UITableViewDelegate, UITableViewDataSour
                 cell.tag = row
                 cell.delegate = self
                 self.hideDeleteRowView(cell: cell)
-                // -- test
+                // Delete button tap to display delete view on the right
                 let deleteBtnTap = UITapGestureRecognizer(target: self, action: #selector(self.deleteBtnDidTap(_:)))
                 deleteBtnTap.cancelsTouchesInView = false
-                cell.deleteBtn.addGestureRecognizer(deleteBtnTap)  // TODO:
-                // -- end test
+                cell.deleteBtn.addGestureRecognizer(deleteBtnTap)
+                // -- end delete button tap gesture
                 cell.keyTextField.text = ""
                 cell.valueTextField.text = ""
                 cell.reqDataId = ""
