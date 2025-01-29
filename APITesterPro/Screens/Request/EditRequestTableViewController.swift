@@ -882,7 +882,7 @@ class KVEditContentCell: UITableViewCell, KVEditContentCellType, UITextFieldDele
     }
     
     @objc func deleteBtnDidTap() {
-        Log.debug("delete row did tap")
+        Log.debug("delete row did tap - tag: \(self.tag)")
         guard let editTVDelegate = self.editTVDelegate else { return }
         editTVDelegate.getVC().clearEditing({
             let idxPath = IndexPath(row: self.tag, section: 0)
@@ -2112,9 +2112,9 @@ class KVEditTableViewManager: NSObject, UITableViewDelegate, UITableViewDataSour
     func getContentCellId() -> String {
         switch self.tableViewType {
         case .header:
-            fallthrough
+            return "kvEditContentCellHeader"
         case .params:
-            return "kvEditContentCell"
+            return "kvEditContentCellParams"
         case .body:
             return "editBodyContentCell"
         }
@@ -2189,7 +2189,7 @@ class KVEditTableViewManager: NSObject, UITableViewDelegate, UITableViewDataSour
                 }
                 return cell
             } else {
-                let cell = tableView.dequeueReusableCell(withIdentifier: "kvEditContentCell", for: indexPath) as! KVEditContentCell
+                let cell = tableView.dequeueReusableCell(withIdentifier: self.getContentCellId(), for: indexPath) as! KVEditContentCell
                 if cell.editTVDelegate == nil { cell.editTVDelegate = self.delegate }
                 let row = indexPath.row
                 cell.tag = row
