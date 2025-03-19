@@ -10,7 +10,7 @@ import UIKit
 
 @available(iOS 13.0, *)
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
-    unowned var window: UIWindow?
+    var window: UIWindow?
     private let app = App.shared
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
@@ -18,10 +18,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         guard let windowScene = (scene as? UIWindowScene) else { return }
+        let window = UIWindow(windowScene: windowScene)  // This is required so that the safe areas as respected in landscape mode with devices with bezel
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
         self.window = appDelegate.window
-        appDelegate.window?.windowScene = windowScene  // This order matters. First we set the window scene and make it key and visible. Else copy paste menu won't appear.
-        appDelegate.window?.makeKeyAndVisible()
+        window.rootViewController = UIStoryboard.rootNav
+        window.makeKeyAndVisible()
+        self.window = window
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
