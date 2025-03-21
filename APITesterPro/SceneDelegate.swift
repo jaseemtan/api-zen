@@ -21,9 +21,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let window = UIWindow(windowScene: windowScene)  // This is required so that the safe areas as respected in landscape mode with devices with bezel
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
         self.window = appDelegate.window
+        self.window = window
         window.rootViewController = UIStoryboard.rootNav
         window.makeKeyAndVisible()
-        self.window = window
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
