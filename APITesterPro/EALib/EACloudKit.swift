@@ -1000,7 +1000,7 @@ class EACloudKit {
                     Log.error("CK: Error saving record. Record already exists.")
                     if count! >= 2 { completion(.failure(err)); return }  // Tried three time.
                     // Merge in the changes, save the new record
-                    let (local, server) = err.getMergeRecords()
+                    let (_local, _server) = err.getMergeRecords()
                     // TODO: ck: off load this to the caller using a callback function for merging records
 //                    if let merged = PersistenceService.shared.mergeRecords(local: local, server: server, recordType: local?.recordType ?? "") {
 //                        var xs: [CKRecord] = records.filter { record -> Bool in record.recordID != merged.recordID }

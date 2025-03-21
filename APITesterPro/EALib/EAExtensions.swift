@@ -459,8 +459,8 @@ public extension String {
 }
 
 /// This allows us to throw a string for exceptions
-extension String: Error {}
-extension String: LocalizedError {
+extension String: @retroactive Error {}
+extension String: @retroactive LocalizedError {
     public var errorDescription: String? { return self }
 }
 
@@ -860,7 +860,8 @@ extension UIViewController: UINavigationBarBackButtonHandler {
     @objc public func shouldPopOnBackButton() -> Bool { return true }
 }
 
-extension UINavigationController: UINavigationBarDelegate {
+extension UINavigationController: @retroactive UIBarPositioningDelegate {}
+extension UINavigationController: @retroactive UINavigationBarDelegate {
     /// Check if current view controller should be popped on tapping the navigation bar back button.
     @objc public func navigationBar(_ navigationBar: UINavigationBar, shouldPop item: UINavigationItem) -> Bool {
         guard let items = navigationBar.items else { return false }

@@ -22,8 +22,8 @@ struct AppState {
     /// If any request is begin currently edited, in which case, we delay saving context, until done.
     static var isRequestEdit = false
     // static var editRequestSaveTs: Int64 = 0
-    static private (set) var previousScreen: App.Screen = .projectList
-    static private (set) var currentScreen: App.Screen = .projectList
+    static private(set) var previousScreen: App.Screen = .projectList
+    static private(set) var currentScreen: App.Screen = .projectList
     /// The state will own the manager so that even if the vc gets deallocated, the processing happens.
     static var requestState: [String: RequestManager] = [:]
     /// The response data cache for a given request. The key here is `requestId`.

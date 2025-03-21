@@ -64,7 +64,7 @@ public final class EAReachability {
     }
     public var allowCellularConnection = true
     public var nc = NotificationCenter.default
-    private (set) var flags: SCNetworkReachabilityFlags? {
+    private(set) var flags: SCNetworkReachabilityFlags? {
         didSet {
             guard flags != oldValue else { return }
             self.notifyReachabilityChanged()
@@ -72,7 +72,7 @@ public final class EAReachability {
     }
     fileprivate let reachabilityRef: SCNetworkReachability
     fileprivate let serialQueue: DispatchQueue
-    fileprivate (set) var isNotifierRunning = false
+    fileprivate(set) var isNotifierRunning = false
     fileprivate var isRunningOnDevice: Bool = {
         #if targetEnvironment(simulator)
             return false

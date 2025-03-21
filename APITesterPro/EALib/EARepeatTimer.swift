@@ -24,7 +24,7 @@ public final class EARepeatTimer {
     /// The maximum number of times the timer should repeat.
     var limit: Int = 8
     /// The repeat counter.
-    private (set) var counter: Int = 0
+    private(set) var counter: Int = 0
         
     private var state: EATimerState = .suspended
     
