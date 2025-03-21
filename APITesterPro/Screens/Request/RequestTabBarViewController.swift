@@ -26,7 +26,7 @@ class RequestTabBarController: UITabBarController, UITabBarControllerDelegate {
     private lazy var utils = { EAUtils.shared }()
     private lazy var localdb = { CoreDataService.shared }()
     private let nc = NotificationCenter.default
-    private var selectedTab: Tab = .request
+    private var tabBarViewSelectedTab: Tab = .request  // Renamed from selectedTab as iOS 18 adds this property to the SDK.
     private var barBtn: UIButton!
     var isHideHistory = false
     
@@ -86,7 +86,7 @@ class RequestTabBarController: UITabBarController, UITabBarControllerDelegate {
             guard let info = notif.userInfo as? [String: Any], let data = info["data"] as? ResponseData else { return }
             self.responseData = data
             self.selectedIndex = 1
-            self.selectedTab = .response
+            self.tabBarViewSelectedTab = .response
             if let vc = self.viewControllers?.last as? ResponseTableViewController { vc.data = data }
             self.viewNavbarSegment()
             self.updateBarButtonText()
@@ -107,7 +107,7 @@ class RequestTabBarController: UITabBarController, UITabBarControllerDelegate {
             self.navigationItem.rightBarButtonItem = nil
             return
         }
-        self.barBtn.setTitle(self.selectedTab == .request ? "Edit" : "History", for: .normal)
+        self.barBtn.setTitle(self.tabBarViewSelectedTab == .request ? "Edit" : "History", for: .normal)
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: self.barBtn)
     }
     
@@ -122,9 +122,9 @@ class RequestTabBarController: UITabBarController, UITabBarControllerDelegate {
     @objc func rightBarButtonDidTap(_ sender: Any) {
         Log.debug("req-resp right button did tap")
         guard let req = self.request else { return }
-        if self.selectedTab == .request {
+        if self.tabBarViewSelectedTab == .request {
             self.nc.post(name: .editRequestDidTap, object: self, userInfo: ["request": req])
-        } else if self.selectedTab == .response {
+        } else if self.tabBarViewSelectedTab == .response {
             if let vc = self.storyboard?.instantiateViewController(withIdentifier: StoryboardId.historyVC.rawValue) as? HistoryViewController {
                 vc.request = req
                 self.navigationController?.pushViewController(vc, animated: true)
@@ -143,7 +143,7 @@ class RequestTabBarController: UITabBarController, UITabBarControllerDelegate {
     
     func viewNavbarSegment() {
         self.segView.selectedSegmentIndex = self.utils.getValue(Const.responseSegmentIndexKey) as? Int ?? ResponseMode.info.rawValue
-        if self.selectedTab == .response {
+        if self.tabBarViewSelectedTab == .response {
             self.navigationItem.titleView = self.segView
         }
     }
@@ -159,15 +159,15 @@ class RequestTabBarController: UITabBarController, UITabBarControllerDelegate {
     
     /// Display the view change with an animation effect.
     func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
-        if (self.selectedTab == .request && self.viewControllers?.first == viewController) ||
-            (self.selectedTab == .response && self.viewControllers?.last == viewController) { return false }
+        if (self.tabBarViewSelectedTab == .request && self.viewControllers?.first == viewController) ||
+            (self.tabBarViewSelectedTab == .response && self.viewControllers?.last == viewController) { return false }
         guard let fromView = self.selectedViewController?.view, let toView = viewController.view else { return false }
         UIView.transition(from: fromView, to: toView, duration: 0.3, options: [.transitionCrossDissolve], completion: nil)
         return true
     }
     
     func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
-        self.selectedTab = Tab(rawValue: tabBarController.selectedIndex) ?? .request
+        self.tabBarViewSelectedTab = Tab(rawValue: tabBarController.selectedIndex) ?? .request
         self.viewNavbarSegment()
         self.updateBarButtonText()
     }
