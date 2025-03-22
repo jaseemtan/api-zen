@@ -1619,8 +1619,8 @@
                                             <rect key="frame" x="0.0" y="121.5" width="414" height="44"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="An environment can be used to group variables together." textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5J8-gR-eUk">
-                                                    <rect key="frame" x="26" y="0.0" width="362" height="44"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="An environment can be used to group variables together." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="5J8-gR-eUk">
+                                                    <rect key="frame" x="26" y="0.0" width="343.5" height="44"/>
                                                     <color key="backgroundColor" name="table-view-bg"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" priority="750" constant="49" id="V8N-xa-5v6"/>
@@ -1635,7 +1635,7 @@
                                                 <constraint firstItem="5J8-gR-eUk" firstAttribute="top" secondItem="ur8-1n-C69" secondAttribute="top" id="9lg-DI-l4q"/>
                                                 <constraint firstAttribute="bottom" secondItem="5J8-gR-eUk" secondAttribute="bottom" id="Ddr-wG-hCB"/>
                                                 <constraint firstItem="5J8-gR-eUk" firstAttribute="leading" secondItem="ur8-1n-C69" secondAttribute="leading" constant="26" id="VeP-s9-YCb"/>
-                                                <constraint firstAttribute="trailing" secondItem="5J8-gR-eUk" secondAttribute="trailing" constant="26" id="wiz-GL-yK1"/>
+                                                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="5J8-gR-eUk" secondAttribute="trailing" constant="26" id="wiz-GL-yK1"/>
                                             </constraints>
                                         </view>
                                         <prototypes>
