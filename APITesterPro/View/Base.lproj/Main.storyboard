@@ -336,7 +336,7 @@
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="EaL-5M-RFJ" userLabel="Separator View">
-                                <rect key="frame" x="0.0" y="44" width="896" height="0.5"/>
+                                <rect key="frame" x="48" y="44" width="800" height="0.5"/>
                                 <color key="backgroundColor" systemColor="separatorColor"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="0.5" id="gxT-MJ-9kh"/>
@@ -369,13 +369,13 @@
                                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalCentering" alignment="top" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="GUz-XK-wQu">
                                                     <rect key="frame" x="45" y="21" width="739" height="40.5"/>
                                                     <subviews>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KT7-Fb-VVg" userLabel="Name Label">
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KT7-Fb-VVg" userLabel="Name Label">
                                                             <rect key="frame" x="0.0" y="0.0" width="739" height="20.5"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                             <nil key="textColor"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tJ6-Co-sCJ" userLabel="Description Label">
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" ambiguous="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tJ6-Co-sCJ" userLabel="Description Label">
                                                             <rect key="frame" x="0.0" y="22.5" width="739" height="18"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                                             <color key="textColor" systemColor="secondaryLabelColor"/>
@@ -437,7 +437,7 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="t1Z-9X-0xA" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="2bX-UY-0ow"/>
-                            <constraint firstItem="EaL-5M-RFJ" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="9yb-mT-Y37"/>
+                            <constraint firstItem="EaL-5M-RFJ" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="9yb-mT-Y37"/>
                             <constraint firstItem="8df-jC-Ima" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="BHx-Eg-ynr"/>
                             <constraint firstItem="8df-jC-Ima" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="Fk0-7Z-VUg"/>
                             <constraint firstItem="t1Z-9X-0xA" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="HhU-5f-zFr"/>
@@ -448,7 +448,7 @@
                             <constraint firstItem="Nna-Jj-lzM" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="lQL-6w-2hM"/>
                             <constraint firstItem="EaL-5M-RFJ" firstAttribute="top" secondItem="8df-jC-Ima" secondAttribute="bottom" id="n4n-Fm-n6t"/>
                             <constraint firstItem="Nna-Jj-lzM" firstAttribute="top" secondItem="EaL-5M-RFJ" secondAttribute="bottom" id="sOg-sd-x0v"/>
-                            <constraint firstAttribute="trailing" secondItem="EaL-5M-RFJ" secondAttribute="trailing" id="wXM-A0-Za8"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="EaL-5M-RFJ" secondAttribute="trailing" id="wXM-A0-Za8"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="5tH-c5-FkJ"/>
