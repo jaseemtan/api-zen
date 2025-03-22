@@ -19,7 +19,8 @@ class EnvVarCell: UITableViewCell {
     }
 }
 
-class EnvironmentVariableTableViewController: UITableViewController {
+class EnvironmentVariableViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+    @IBOutlet weak var tableView: UITableView!
     private let app = App.shared
     private lazy var localdb = { CoreDataService.shared }()
     private lazy var localdbSvc = { PersistenceService.shared }()
@@ -76,12 +77,12 @@ class EnvironmentVariableTableViewController: UITableViewController {
         }
     }
     
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if self.frc == nil { return 0 }
         return self.frc.numberOfRows(in: 0)
     }
     
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "envVarCell", for: indexPath) as! EnvVarCell
         let envVar = self.frc.object(at: indexPath)
         cell.nameLabel.text = envVar.name
@@ -89,7 +90,7 @@ class EnvironmentVariableTableViewController: UITableViewController {
         return cell
     }
     
-    override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let edit = UIContextualAction(style: .normal, title: "Edit") { action, view, completion in
             Log.debug("edit row: \(indexPath)")
             let envVar = self.frc.object(at: indexPath)
@@ -117,7 +118,7 @@ class EnvironmentVariableTableViewController: UITableViewController {
     }
 }
 
-extension EnvironmentVariableTableViewController: NSFetchedResultsControllerDelegate {
+extension EnvironmentVariableViewController: NSFetchedResultsControllerDelegate {
     public func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
         Log.debug("env var list frc did change")
         DispatchQueue.main.async {

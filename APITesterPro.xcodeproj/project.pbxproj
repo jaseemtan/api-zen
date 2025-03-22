@@ -80,7 +80,7 @@
 		9E81D11B2AF4522C004095CF /* Base64ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E81D1152AF4522B004095CF /* Base64ViewController.swift */; };
 		9E81D11C2AF4522C004095CF /* SettingsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E81D1162AF4522B004095CF /* SettingsTableViewController.swift */; };
 		9E81D11D2AF4522C004095CF /* EnvironmentGroupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E81D1172AF4522C004095CF /* EnvironmentGroupViewController.swift */; };
-		9E81D11E2AF4522C004095CF /* EnvironmentVariableTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E81D1182AF4522C004095CF /* EnvironmentVariableTableViewController.swift */; };
+		9E81D11E2AF4522C004095CF /* EnvironmentVariableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E81D1182AF4522C004095CF /* EnvironmentVariableViewController.swift */; };
 		9E81D11F2AF4522C004095CF /* ImportExportViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E81D1192AF4522C004095CF /* ImportExportViewController.swift */; };
 		9E81D1202AF4522C004095CF /* EnvironmentEditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E81D11A2AF4522C004095CF /* EnvironmentEditViewController.swift */; };
 		9E81D1222AF45235004095CF /* WorkspaceListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E81D1212AF45235004095CF /* WorkspaceListViewController.swift */; };
@@ -214,7 +214,7 @@
 		9E81D1152AF4522B004095CF /* Base64ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Base64ViewController.swift; sourceTree = "<group>"; };
 		9E81D1162AF4522B004095CF /* SettingsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsTableViewController.swift; sourceTree = "<group>"; };
 		9E81D1172AF4522C004095CF /* EnvironmentGroupViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnvironmentGroupViewController.swift; sourceTree = "<group>"; };
-		9E81D1182AF4522C004095CF /* EnvironmentVariableTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnvironmentVariableTableViewController.swift; sourceTree = "<group>"; };
+		9E81D1182AF4522C004095CF /* EnvironmentVariableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnvironmentVariableViewController.swift; sourceTree = "<group>"; };
 		9E81D1192AF4522C004095CF /* ImportExportViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImportExportViewController.swift; sourceTree = "<group>"; };
 		9E81D11A2AF4522C004095CF /* EnvironmentEditViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnvironmentEditViewController.swift; sourceTree = "<group>"; };
 		9E81D1212AF45235004095CF /* WorkspaceListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WorkspaceListViewController.swift; sourceTree = "<group>"; };
@@ -514,7 +514,7 @@
 				9E81D1152AF4522B004095CF /* Base64ViewController.swift */,
 				9E81D11A2AF4522C004095CF /* EnvironmentEditViewController.swift */,
 				9E81D1172AF4522C004095CF /* EnvironmentGroupViewController.swift */,
-				9E81D1182AF4522C004095CF /* EnvironmentVariableTableViewController.swift */,
+				9E81D1182AF4522C004095CF /* EnvironmentVariableViewController.swift */,
 				9E81D1192AF4522C004095CF /* ImportExportViewController.swift */,
 				9E81D1162AF4522B004095CF /* SettingsTableViewController.swift */,
 			);
@@ -725,7 +725,7 @@
 				9E81D1202AF4522C004095CF /* EnvironmentEditViewController.swift in Sources */,
 				9E81D0FC2AF45208004095CF /* APITesterProNavigationController.swift in Sources */,
 				9E81D1302AF45242004095CF /* EATextView.swift in Sources */,
-				9E81D11E2AF4522C004095CF /* EnvironmentVariableTableViewController.swift in Sources */,
+				9E81D11E2AF4522C004095CF /* EnvironmentVariableViewController.swift in Sources */,
 				9E81D12A2AF45241004095CF /* PopupViewController.swift in Sources */,
 				9E81D0992AF44F4F004095CF /* main.swift in Sources */,
 				9E81D0C72AF451E9004095CF /* EAHTTPCookie.swift in Sources */,
