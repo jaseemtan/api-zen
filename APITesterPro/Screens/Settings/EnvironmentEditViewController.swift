@@ -116,6 +116,7 @@ class EnvironmentEditViewController: UITableViewController, UITextFieldDelegate 
         if #available(iOS 13.0, *) {
             self.isModalInPresentation = true
         }
+        UI.disableDynamicFont(self.view)
         self.app.updateNavigationControllerBackground(self.navigationController)
         self.app.updateViewBackground(self.view)
         self.view.backgroundColor = App.Color.tableViewBg

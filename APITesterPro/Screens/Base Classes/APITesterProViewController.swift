@@ -25,7 +25,6 @@ class APITesterProViewController: UIViewController {
     }
     
     func bootstrap() {
-        
     }
     
     /// Override this method to determine if the view controller should be popped when user taps the navigation bar back button or provide some call to action.
@@ -42,5 +41,9 @@ class APITesterProViewController: UIViewController {
         super.viewWillAppear(animated)
         Log.debug("is navigated back - \(self.className) - \(self.isNavigatedBack)")
         if self.isNavigatedBack { self.nc.post(name: NSNotification.Name("did-navigate-back-to-\(self.className)"), object: self) }
+    }
+    
+    func initUI() {
+        UI.disableDynamicFont(self.view)
     }
 }

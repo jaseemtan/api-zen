@@ -20,6 +20,7 @@ class GenesisViewController: UIViewController {
     }
     
     func initUI() {
+        UI.disableDynamicFont(self.view)
         self.webView = WKWebView(frame: .zero, configuration: self.getWebviewConfig())
         if let webView = self.webView {
             webView.translatesAutoresizingMaskIntoConstraints = false

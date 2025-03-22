@@ -15,8 +15,13 @@ class APITesterProNavigationController: UINavigationController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.initUI()
     }
-
+    
+    func initUI() {
+        UI.disableDynamicFont(self.view)
+    }
+    
     /// This method is invoked when a view controller is going to be removed from the navigation stack. Since this is a sub class we can decide if we want to call the pop method of the navigation controller or not based on our criteria.
     /// Here we check if the `navDelegate` is set. If so we call its `shouldPopOnBackButton` and invoked pop accordingly.
     override func popViewController(animated: Bool) -> UIViewController? {

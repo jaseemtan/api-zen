@@ -600,7 +600,8 @@ class ResponseTableViewController: APITesterProTableViewController {
         self.previewCell.updateUI()
     }
     
-    func initUI() {
+    override func initUI() {
+        super.initUI()
         if self.viewType == .requestResponse {
             self.mode = ResponseMode(rawValue: self.tabbarController?.segView.selectedSegmentIndex ?? 0) ?? .info
             self.tabbarController?.viewNavbarSegment()

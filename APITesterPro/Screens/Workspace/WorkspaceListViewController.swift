@@ -60,7 +60,8 @@ class WorkspaceListViewController: APITesterProViewController {
         self.initEvents()
     }
 
-    func initUI() {
+    override func initUI() {
+        super.initUI()
         self.tableView.register(EmptyMessageCell.self, forCellReuseIdentifier: TableCellId.emptyMessageCell.rawValue)
         self.app.updateViewBackground(self.view)
         self.app.updateNavigationControllerBackground(self.navigationController)
@@ -289,6 +290,13 @@ extension WorkspaceListViewController: UITableViewDelegate, UITableViewDataSourc
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return section == 0 ? "iCloud Workspaces" : "Local Workspaces"
+    }
+    
+    func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+        if let header = view as? UITableViewHeaderFooterView {
+            header.textLabel?.font = UIFont.systemFont(ofSize: 16, weight: .bold)
+            // header.textLabel?.textColor = .black
+        }
     }
     
     func getWorkspace(indexPath: IndexPath) -> EWorkspace {

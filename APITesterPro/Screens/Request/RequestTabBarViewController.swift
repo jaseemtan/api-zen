@@ -63,6 +63,7 @@ class RequestTabBarController: UITabBarController, UITabBarControllerDelegate {
             appearance.configureWithOpaqueBackground()
             self.tabBar.standardAppearance = appearance
             self.tabBar.scrollEdgeAppearance = appearance
+            UI.disableDynamicFont(self.view)
         }
         #endif
     }

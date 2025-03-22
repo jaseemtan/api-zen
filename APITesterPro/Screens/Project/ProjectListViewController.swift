@@ -68,8 +68,9 @@ class ProjectListViewController: APITesterProViewController {
         }
     }
     
-    func initUI() {
+    override func initUI() {
         Log.debug("init UI")
+        super.initUI()
         self.tableView.estimatedRowHeight = 44
         self.tableView.rowHeight = UITableView.automaticDimension
         self.app.updateNavigationControllerBackground(self.navigationController)

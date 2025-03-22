@@ -124,7 +124,8 @@ class RequestTableViewController: APITesterProTableViewController {
         }
     }
     
-    func initUI() {
+    override func initUI() {
+        super.initUI()
         self.tabbarController.hideNavbarSegment()
         self.app.updateViewBackground(self.view)
         self.app.updateNavigationControllerBackground(self.navigationController)

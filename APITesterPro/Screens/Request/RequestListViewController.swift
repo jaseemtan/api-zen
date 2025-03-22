@@ -58,7 +58,8 @@ class RequestListViewController: APITesterProViewController {
         self.initEvents()
     }
     
-    func initUI() {
+    override func initUI() {
+        super.initUI()
         self.app.updateViewBackground(self.view)
         self.app.updateNavigationControllerBackground(self.navigationController)
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(self.addBtnDidTap(_:)))

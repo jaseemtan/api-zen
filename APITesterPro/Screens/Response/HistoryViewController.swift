@@ -129,6 +129,7 @@ class HistoryViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     func initUI() {
+        UI.disableDynamicFont(self.view)
         self.app.updateViewBackground(self.view)
         self.app.updateNavigationControllerBackground(self.navigationController)
         self.tableView.delegate = self

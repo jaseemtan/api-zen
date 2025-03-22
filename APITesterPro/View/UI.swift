@@ -403,6 +403,17 @@ class UI {
     static func getInterfaceOrientation() -> UIInterfaceOrientation {
         return UIApplication.shared.windows.first?.windowScene?.interfaceOrientation ?? UIInterfaceOrientation.portrait
     }
+    
+    /// Disables dynamic font for the given UI. This needs to be called with the view for each view controller.
+    /// Another way would be to use a base class with these properties set.
+    static func disableDynamicFont(_ view: UIView) {
+        if #available(iOS 15.0, *) {
+            view.minimumContentSizeCategory = .medium
+            view.maximumContentSizeCategory = .medium
+        } else {
+           // ignore
+        }
+    }
 }
 
 extension UIView {

@@ -35,6 +35,7 @@ class EnvironmentGroupViewController: UIViewController {
     }
     
     func initUI() {
+        UI.disableDynamicFont(self.view)
         self.app.updateViewBackground(self.view)
         self.app.updateNavigationControllerBackground(self.navigationController)
         self.view.backgroundColor = App.Color.tableViewBg

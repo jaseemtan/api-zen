@@ -78,6 +78,7 @@ class OptionsPickerViewController: UIViewController, UITableViewDelegate, UITabl
     }
     
     func initUI() {
+        UI.disableDynamicFont(self.view)
         self.app.updateViewBackground(self.view)
         self.titleLabel.text = self.name
         if self.pickerType == .requestMethod {

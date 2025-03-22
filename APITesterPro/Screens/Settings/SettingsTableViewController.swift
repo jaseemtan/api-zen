@@ -54,7 +54,8 @@ class SettingsTableViewController: APITesterProTableViewController {
         self.initEvents()
     }
     
-    func initUI() {
+    override func initUI() {
+        super.initUI()
         self.app.updateViewBackground(self.view)
         self.app.updateNavigationControllerBackground(self.navigationController)
         self.tableView.backgroundColor = App.Color.tableViewBg

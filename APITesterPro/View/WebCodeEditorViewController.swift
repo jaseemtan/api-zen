@@ -37,6 +37,7 @@ class WebCodeEditorViewController: UIViewController, WKNavigationDelegate, WKScr
     }
     
     func initUI() {
+        UI.disableDynamicFont(self.view)
         self.initWebView()
     }
     

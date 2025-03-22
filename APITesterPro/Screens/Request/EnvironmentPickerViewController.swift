@@ -54,6 +54,7 @@ class EnvironmentPickerViewController: UIViewController, UITableViewDelegate, UI
     }
     
     func initUI() {
+        UI.disableDynamicFont(self.view)
         self.app.updateViewBackground(self.view)
         self.app.updateNavigationControllerBackground(self.navigationController)
         if #available(iOS 13.0, *) {

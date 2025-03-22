@@ -42,6 +42,7 @@ class Base64ViewController: UIViewController, UITextViewDelegate {
     }
     
     func initUI() {
+        UI.disableDynamicFont(self.view)
         self.navigationItem.title = "Base64"
         self.inputTextLabel.textColor = App.Color.labelTitleFg
         self.outputTextLabel.textColor = App.Color.labelTitleFg

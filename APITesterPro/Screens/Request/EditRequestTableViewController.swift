@@ -254,7 +254,8 @@ class EditRequestTableViewController: APITesterProTableViewController, UITextFie
         self.reloadAllTableViews()
     }
         
-    func initUI() {
+    override func initUI() {
+        super.initUI()
         if let nc = self.navigationController as? APITesterProNavigationController {
             nc.navDelegate = self
         }

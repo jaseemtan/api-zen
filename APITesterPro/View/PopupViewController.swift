@@ -92,6 +92,7 @@ class PopupViewController: UIViewController, UITableViewDataSource, UITableViewD
     }
     
     func initUI() {
+        UI.disableDynamicFont(self.view)
         self.tableView.delegate = self
         self.tableView.dataSource = self
         self.tableView.estimatedRowHeight = 44
