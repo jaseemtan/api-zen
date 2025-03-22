@@ -564,7 +564,7 @@
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6Cm-WN-D4k" userLabel="Separator View">
-                                <rect key="frame" x="0.0" y="44" width="896" height="0.5"/>
+                                <rect key="frame" x="48" y="44" width="800" height="0.5"/>
                                 <color key="backgroundColor" systemColor="separatorColor"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="0.5" id="aV8-Lz-d7h"/>
@@ -574,13 +574,13 @@
                         <viewLayoutGuide key="safeArea" id="3w7-4B-Lp9"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="6Cm-WN-D4k" firstAttribute="leading" secondItem="izx-Ux-dsx" secondAttribute="leading" id="6Cc-WT-dVT"/>
+                            <constraint firstItem="6Cm-WN-D4k" firstAttribute="leading" secondItem="izx-Ux-dsx" secondAttribute="leading" constant="48" id="6Cc-WT-dVT"/>
                             <constraint firstItem="jNU-3x-6qr" firstAttribute="trailing" secondItem="3w7-4B-Lp9" secondAttribute="trailing" id="933-fW-QNb"/>
                             <constraint firstItem="6Cm-WN-D4k" firstAttribute="top" secondItem="jNU-3x-6qr" secondAttribute="bottom" id="Cju-fv-1z0"/>
                             <constraint firstItem="3WB-7K-ozA" firstAttribute="bottom" secondItem="3w7-4B-Lp9" secondAttribute="bottom" id="RZ8-RX-T93"/>
                             <constraint firstItem="jNU-3x-6qr" firstAttribute="top" secondItem="3w7-4B-Lp9" secondAttribute="top" id="W1y-EX-nE3"/>
                             <constraint firstItem="jNU-3x-6qr" firstAttribute="leading" secondItem="3w7-4B-Lp9" secondAttribute="leading" id="g33-SW-JIq"/>
-                            <constraint firstAttribute="trailing" secondItem="6Cm-WN-D4k" secondAttribute="trailing" id="jix-cl-xLl"/>
+                            <constraint firstAttribute="trailing" secondItem="6Cm-WN-D4k" secondAttribute="trailing" constant="48" id="jix-cl-xLl"/>
                             <constraint firstItem="3WB-7K-ozA" firstAttribute="leading" secondItem="3w7-4B-Lp9" secondAttribute="leading" id="tRv-ne-aPp"/>
                             <constraint firstItem="3WB-7K-ozA" firstAttribute="trailing" secondItem="3w7-4B-Lp9" secondAttribute="trailing" id="u3r-7f-nvM"/>
                             <constraint firstItem="3WB-7K-ozA" firstAttribute="top" secondItem="6Cm-WN-D4k" secondAttribute="bottom" id="wkJ-09-PeK"/>
