@@ -104,12 +104,11 @@ class RequestTabBarController: UITabBarController, UITabBarControllerDelegate {
     }
     
     func updateBarButtonText() {
-        if self.isHideHistory {
-            self.navigationItem.rightBarButtonItem = nil
-            return
-        }
         self.barBtn.setTitle(self.tabBarViewSelectedTab == .request ? "Edit" : "History", for: .normal)
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: self.barBtn)
+        if self.tabBarViewSelectedTab == .response && self.isHideHistory {
+            self.navigationItem.rightBarButtonItem = nil
+        }
     }
     
     func hideHistoryButton() {
