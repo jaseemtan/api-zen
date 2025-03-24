@@ -63,6 +63,15 @@ class RequestTabBarController: UITabBarController, UITabBarControllerDelegate {
             appearance.configureWithOpaqueBackground()
             self.tabBar.standardAppearance = appearance
             self.tabBar.scrollEdgeAppearance = appearance
+            
+            // Fixes the issue where tabbar goes transparent after receving a response. Visible on scroll.
+            let navBarAppearance = UINavigationBarAppearance()
+            navBarAppearance.backgroundColor = .systemBackground
+            navBarAppearance.configureWithDefaultBackground()
+            self.navigationController?.navigationBar.standardAppearance = navBarAppearance
+            self.navigationController?.navigationBar.scrollEdgeAppearance = navBarAppearance
+            self.navigationController?.navigationBar.isTranslucent = true
+
             UI.disableDynamicFont(self.view)
         }
         #endif
