@@ -43,7 +43,11 @@ class RequestTabBarController: UITabBarController, UITabBarControllerDelegate {
         super.awakeFromNib()
         _ = self.segmentControl()
     }
-       
+    
+    override func viewWillAppear(_ animated: Bool) {
+        self.initUI()
+    }
+    
     override func viewDidLoad() {
         Log.debug("request tab bar controller")
         self.initUI()
@@ -58,12 +62,25 @@ class RequestTabBarController: UITabBarController, UITabBarControllerDelegate {
         // This fixes the issue where in iOS 15 and above the tab bar is transparent by default. This adds back the opaque background so that icons don't overlap with the background content
         #if swift(>=5.5)
         if #available(iOS 15.0, *) {
-            let appearance = UITabBarAppearance()
-            appearance.backgroundColor = .systemBackground
-            appearance.configureWithOpaqueBackground()
-            self.tabBar.standardAppearance = appearance
-            self.tabBar.scrollEdgeAppearance = appearance
             UI.disableDynamicFont(self.view)
+            
+            let tabBarAppearance = UITabBarAppearance()
+            tabBarAppearance.backgroundColor = .systemBackground
+            tabBarAppearance.configureWithOpaqueBackground()
+            self.tabBar.standardAppearance = tabBarAppearance
+            self.tabBar.scrollEdgeAppearance = tabBarAppearance
+            
+            // Fix for navbar going transparent on scroll after sending a request and switching to info section of the response view.
+            let navBarAppearance = UINavigationBarAppearance()
+            navBarAppearance.backgroundColor = .systemBackground
+            navBarAppearance.configureWithDefaultBackground()
+            self.navigationController?.navigationBar.standardAppearance = navBarAppearance
+            self.navigationController?.navigationBar.scrollEdgeAppearance = navBarAppearance
+            self.navigationController?.navigationBar.isTranslucent = true
+            
+            // After the above change, tabbar view starts without the navbar offset. This makes the view to start after the navbar.
+            self.edgesForExtendedLayout = []
+            self.extendedLayoutIncludesOpaqueBars = false
         }
         #endif
     }
