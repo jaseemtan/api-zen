@@ -78,6 +78,11 @@ class RequestTabBarController: UITabBarController, UITabBarControllerDelegate {
         #endif
     }
     
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        setOverrideTraitCollection(UITraitCollection(horizontalSizeClass: .compact), forChild: self)  // Resets the tabbar to bottom on iPadOS 18. By default it shows up at top and without the icon.
+    }
+    
     func initEvents() {
         self.nc.addObserver(self, selector: #selector(self.responseDidReceive(_:)), name: .responseDidReceive, object: nil)
     }
