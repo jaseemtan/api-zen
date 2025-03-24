@@ -378,6 +378,7 @@ class ProjectCell: UITableViewCell {
     @IBOutlet weak var nameLbl: UILabel!
     @IBOutlet weak var descLbl: UILabel!
     @IBOutlet weak var borderView: UIView!
+    @IBOutlet weak var countLbl: UILabel!
     
     func hideBottomBorder() {
         self.borderView.isHidden = true
@@ -411,6 +412,11 @@ extension ProjectListViewController: UITableViewDelegate, UITableViewDataSource 
             cell.descLbl.isHidden = true
         } else {
             cell.descLbl.isHidden = false
+        }
+        if let count = proj.requests?.count, count > 0 {
+            cell.countLbl.text = "\(count)"
+        } else {
+            cell.countLbl.text = ""
         }
         cell.displayBottomBorder()
         return cell
