@@ -126,6 +126,8 @@ class RequestTableViewController: APITesterProTableViewController {
     
     override func initUI() {
         super.initUI()
+        self.edgesForExtendedLayout = []
+        self.extendedLayoutIncludesOpaqueBars = false  // Set extended layout props so that the request view has enough padding at bottom and doesn't go inside the tabbar. This is required here because navbar props related to this is set in tabbar controller.
         self.tabbarController.hideNavbarSegment()
         self.app.updateViewBackground(self.view)
         self.app.updateNavigationControllerBackground(self.navigationController)
