@@ -1,6 +1,10 @@
 :root {
     color-scheme: light dark;
 }
+html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+}
 html, body {
     font-family: "Andale Mono", "Menlo", "SF Mono", "Monaco", "Consolas", "Courier", monospace;
     font-size: 1em;
