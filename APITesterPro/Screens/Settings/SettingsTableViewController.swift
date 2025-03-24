@@ -135,7 +135,7 @@ class SettingsTableViewController: APITesterProTableViewController {
     }
     
     func writeJSONToTempFile(json: String, ws: EWorkspace) {
-        self.exportFileURL = EAFileManager.getTemporaryURL(ws.getName() + ".json")
+        self.exportFileURL = EAFileManager.getTemporaryURL(ws.getName().take(n: 32).trim() + ".json")
         if self.exportFileURL != nil {
             EAFileManager.createFileIfNotExists(self.exportFileURL!)
             let fm = EAFileManager(url: self.exportFileURL!)
