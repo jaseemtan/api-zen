@@ -65,9 +65,6 @@ class WorkspaceListViewController: APITesterProViewController {
         self.tableView.register(EmptyMessageCell.self, forCellReuseIdentifier: TableCellId.emptyMessageCell.rawValue)
         self.app.updateViewBackground(self.view)
         self.app.updateNavigationControllerBackground(self.navigationController)
-        if #available(iOS 13.0, *) {
-            self.isModalInPresentation = true
-        }
         self.navBarView.backgroundColor = App.Color.navBarBg
         self.navBarTitleLabel.backgroundColor = App.Color.navBarBg
         self.tableView.estimatedRowHeight = 44
@@ -295,7 +292,6 @@ extension WorkspaceListViewController: UITableViewDelegate, UITableViewDataSourc
     func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
         if let header = view as? UITableViewHeaderFooterView {
             header.textLabel?.font = UIFont.systemFont(ofSize: 16, weight: .bold)
-            // header.textLabel?.textColor = .black
         }
     }
     
@@ -334,7 +330,6 @@ extension WorkspaceListViewController: UITableViewDelegate, UITableViewDataSourc
             } else {
                 cell.descLbl.isHidden = true
             }
-            // cell.displayBottomBorder()
             return cell
         }
         let emptyMsgCell = self.tableView.dequeueReusableCell(withIdentifier: TableCellId.emptyMessageCell.rawValue, for: indexPath) as! EmptyMessageCell
