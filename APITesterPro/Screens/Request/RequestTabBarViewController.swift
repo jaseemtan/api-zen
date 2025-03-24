@@ -43,11 +43,7 @@ class RequestTabBarController: UITabBarController, UITabBarControllerDelegate {
         super.awakeFromNib()
         _ = self.segmentControl()
     }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        self.initUI()
-    }
-    
+       
     override func viewDidLoad() {
         Log.debug("request tab bar controller")
         self.initUI()
