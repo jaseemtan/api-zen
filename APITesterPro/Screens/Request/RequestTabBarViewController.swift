@@ -70,6 +70,7 @@ class RequestTabBarController: UITabBarController, UITabBarControllerDelegate {
             navBarAppearance.configureWithDefaultBackground()
             self.navigationController?.navigationBar.standardAppearance = navBarAppearance
             self.navigationController?.navigationBar.scrollEdgeAppearance = navBarAppearance
+            self.navigationController?.navigationBar.compactAppearance = navBarAppearance
             self.navigationController?.navigationBar.isTranslucent = true
 
             UI.disableDynamicFont(self.view)
