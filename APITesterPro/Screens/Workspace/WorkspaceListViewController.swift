@@ -15,6 +15,11 @@ extension Notification.Name {
     static let workspaceWillClose = Notification.Name("workspace-will-close")
 }
 
+enum WorkspaceListStoreType {
+    case iCloud
+    case local
+}
+
 class WorkspaceListViewController: APITesterProViewController {
     static weak var shared: WorkspaceListViewController?
     @IBOutlet weak var toolbar: UIToolbar!
@@ -22,6 +27,7 @@ class WorkspaceListViewController: APITesterProViewController {
     @IBOutlet weak var addBtn: UIBarButtonItem!
     @IBOutlet weak var navBarView: UIView!
     @IBOutlet weak var navBarTitleLabel: UILabel!
+    @IBOutlet weak var wsListTypeControl: UISegmentedControl!
     private var popupBottomContraints: NSLayoutConstraint?
     private var isKeyboardActive = false
     private var keyboardHeight: CGFloat = 0.0
@@ -34,6 +40,7 @@ class WorkspaceListViewController: APITesterProViewController {
     private var ckFrc: NSFetchedResultsController<EWorkspace>!
     private var localFrc: NSFetchedResultsController<EWorkspace>!
     private var wsSelected: EWorkspace!
+    private var wsListStoreType: WorkspaceListStoreType = .iCloud
     
     deinit {
         self.nc.post(name: .workspaceWillClose, object: self)
@@ -69,6 +76,14 @@ class WorkspaceListViewController: APITesterProViewController {
         self.navBarTitleLabel.backgroundColor = App.Color.navBarBg
         self.tableView.estimatedRowHeight = 44
         self.tableView.rowHeight = UITableView.automaticDimension
+        self.wsListTypeControl.addTarget(self, action: #selector(self.wsListTypeDidChange(_:)), for: .valueChanged)
+        if self.wsSelected.managedObjectContext == self.db.ckMainMOC {
+            self.wsListTypeControl.selectedSegmentIndex = 0  // iCloud
+            self.wsListStoreType = .iCloud
+        } else {
+            self.wsListTypeControl.selectedSegmentIndex = 1  // Local
+            self.wsListStoreType = .local
+        }
         self.tableView.reloadData()
     }
     
@@ -108,6 +123,15 @@ class WorkspaceListViewController: APITesterProViewController {
         try? self.localFrc.performFetch()
         self.localFrc.delegate = self
         self.tableView.reloadData()
+    }
+    
+    @objc func wsListTypeDidChange(_ sender: Any) {
+        if self.wsListTypeControl.selectedSegmentIndex == 0 {
+            self.wsListStoreType = .iCloud
+        } else {
+            self.wsListStoreType = .local
+        }
+        self.updateData()
     }
     
     func postWorkspaceWillCloseEvent() {
@@ -276,46 +300,33 @@ class WorkspaceCell: UITableViewCell {
 }
 
 extension WorkspaceListViewController: UITableViewDelegate, UITableViewDataSource {
-    // One for iCloud and another for local workspaces listing
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 2
+        return 1
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return section == 0 ? max(1, self.ckFrc.numberOfRows(in: 0)) : max(1, self.localFrc.numberOfRows(in: 0))
-    }
-    
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return section == 0 ? "iCloud Workspaces" : "Local Workspaces"
-    }
-    
-    func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
-        if let header = view as? UITableViewHeaderFooterView {
-            header.textLabel?.font = UIFont.systemFont(ofSize: 16, weight: .bold)
+        if self.wsListStoreType == .iCloud {
+            return max(1, self.ckFrc.numberOfRows(in: 0))
         }
+        return max(1, self.localFrc.numberOfRows(in: 0))  // local
     }
     
     func getWorkspace(indexPath: IndexPath) -> EWorkspace {
-        if indexPath.section == 0 {
+        if self.wsListStoreType == .iCloud {
             return self.ckFrc.object(at: indexPath)
         }
-        let idxPath = IndexPath(row: indexPath.row, section: 0)
-        return self.localFrc.object(at: idxPath)
+        return self.localFrc.object(at: indexPath)
     }
     
-    func getWorkspaceCount(indexPath: IndexPath) -> Int {
-        if indexPath.section == 0 {
+    func getWorkspaceCount() -> Int {
+        if self.wsListStoreType == .iCloud {
             return self.ckFrc.numberOfRows(in: 0)
         }
         return self.localFrc.numberOfRows(in: 0)
     }
     
-    func sectionType(indexPath: IndexPath) -> String {
-        return indexPath.section == 0 ? "iCloud" : "Local"
-    }
-    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let wsCount = self.getWorkspaceCount(indexPath: indexPath)
+        let wsCount = self.getWorkspaceCount()
         if wsCount > 0 {
             let cell = self.tableView.dequeueReusableCell(withIdentifier: TableCellId.workspaceCell.rawValue, for: indexPath) as! WorkspaceCell
             let ws = self.getWorkspace(indexPath: indexPath)
@@ -333,7 +344,7 @@ extension WorkspaceListViewController: UITableViewDelegate, UITableViewDataSourc
             return cell
         }
         let emptyMsgCell = self.tableView.dequeueReusableCell(withIdentifier: TableCellId.emptyMessageCell.rawValue, for: indexPath) as! EmptyMessageCell
-        emptyMsgCell.updateMessage(self.sectionType(indexPath: indexPath) == "iCloud" ? "No iCloud workspaces found" : "No Local workspaces found")
+        emptyMsgCell.updateMessage(self.wsListStoreType == .iCloud ? "No iCloud workspaces found" : "No Local workspaces found")
         emptyMsgCell.isUserInteractionEnabled = false
         return emptyMsgCell
         
@@ -341,7 +352,7 @@ extension WorkspaceListViewController: UITableViewDelegate, UITableViewDataSourc
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         Log.debug("workspace cell did select \(indexPath.row)")
-        if self.getWorkspaceCount(indexPath: indexPath) > 0 {
+        if self.getWorkspaceCount() > 0 {
             let ws = self.getWorkspace(indexPath: indexPath)
             self.app.setSelectedWorkspace(ws)
             self.nc.post(name: .workspaceDidChange, object: self, userInfo: ["workspace": ws])
@@ -351,7 +362,7 @@ extension WorkspaceListViewController: UITableViewDelegate, UITableViewDataSourc
     
     
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        if self.getWorkspaceCount(indexPath: indexPath) > 0 {
+        if self.getWorkspaceCount() > 0 {
             let ws = self.getWorkspace(indexPath: indexPath)
             let edit = UIContextualAction(style: .normal, title: "Edit") { action, view, completion in
                 Log.debug("edit row: \(indexPath)")
@@ -378,7 +389,7 @@ extension WorkspaceListViewController: UITableViewDelegate, UITableViewDataSourc
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        if self.getWorkspaceCount(indexPath: indexPath) > 0 {
+        if self.getWorkspaceCount() > 0 {
             let ws = self.getWorkspace(indexPath: indexPath)
             let name = ws.name ?? ""
             let desc = self.getDesc(ws: ws)

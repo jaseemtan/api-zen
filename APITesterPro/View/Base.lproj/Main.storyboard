@@ -338,8 +338,15 @@
                                     <constraint firstAttribute="height" constant="0.5" id="gxT-MJ-9kh"/>
                                 </constraints>
                             </view>
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="Veo-rw-uey">
+                                <rect key="frame" x="148.5" y="108.5" width="117" height="32"/>
+                                <segments>
+                                    <segment title="iCloud"/>
+                                    <segment title="Local"/>
+                                </segments>
+                            </segmentedControl>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="Nna-Jj-lzM">
-                                <rect key="frame" x="0.0" y="92.5" width="414" height="720.5"/>
+                                <rect key="frame" x="0.0" y="155.5" width="414" height="657.5"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <inset key="separatorInset" minX="15" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 <view key="tableFooterView" contentMode="scaleToFill" id="fLD-M4-XHQ">
@@ -365,13 +372,13 @@
                                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalCentering" alignment="top" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="GUz-XK-wQu">
                                                     <rect key="frame" x="45" y="21" width="353" height="40.5"/>
                                                     <subviews>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KT7-Fb-VVg" userLabel="Name Label">
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KT7-Fb-VVg" userLabel="Name Label">
                                                             <rect key="frame" x="0.0" y="0.0" width="353" height="20.5"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                             <nil key="textColor"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" ambiguous="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tJ6-Co-sCJ" userLabel="Description Label">
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tJ6-Co-sCJ" userLabel="Description Label">
                                                             <rect key="frame" x="0.0" y="22.5" width="353" height="18"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                                             <color key="textColor" systemColor="secondaryLabelColor"/>
@@ -438,12 +445,14 @@
                             <constraint firstItem="8df-jC-Ima" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="Fk0-7Z-VUg"/>
                             <constraint firstItem="t1Z-9X-0xA" firstAttribute="trailing" secondItem="8bC-Xf-vdC" secondAttribute="trailing" id="HhU-5f-zFr"/>
                             <constraint firstItem="t1Z-9X-0xA" firstAttribute="top" secondItem="Nna-Jj-lzM" secondAttribute="bottom" id="J1u-Fd-QV3"/>
+                            <constraint firstItem="Veo-rw-uey" firstAttribute="top" secondItem="EaL-5M-RFJ" secondAttribute="bottom" constant="16" id="LAa-B2-xOx"/>
                             <constraint firstItem="8df-jC-Ima" firstAttribute="trailing" secondItem="8bC-Xf-vdC" secondAttribute="trailing" id="dz1-Bq-tM9"/>
                             <constraint firstItem="t1Z-9X-0xA" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="eKb-1N-TmN"/>
                             <constraint firstItem="Nna-Jj-lzM" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="gKF-2N-Fl0"/>
+                            <constraint firstItem="Veo-rw-uey" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="jFt-Ys-c9Z"/>
                             <constraint firstItem="Nna-Jj-lzM" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="lQL-6w-2hM"/>
+                            <constraint firstItem="Nna-Jj-lzM" firstAttribute="top" secondItem="Veo-rw-uey" secondAttribute="bottom" constant="16" id="mGI-2r-rL5"/>
                             <constraint firstItem="EaL-5M-RFJ" firstAttribute="top" secondItem="8df-jC-Ima" secondAttribute="bottom" id="n4n-Fm-n6t"/>
-                            <constraint firstItem="Nna-Jj-lzM" firstAttribute="top" secondItem="EaL-5M-RFJ" secondAttribute="bottom" id="sOg-sd-x0v"/>
                             <constraint firstAttribute="trailing" secondItem="EaL-5M-RFJ" secondAttribute="trailing" id="wXM-A0-Za8"/>
                         </constraints>
                     </view>
@@ -454,6 +463,7 @@
                         <outlet property="navBarView" destination="8df-jC-Ima" id="Tra-u4-jGa"/>
                         <outlet property="tableView" destination="Nna-Jj-lzM" id="cIo-La-cJ4"/>
                         <outlet property="toolbar" destination="t1Z-9X-0xA" id="C1l-Yz-mDd"/>
+                        <outlet property="wsListTypeControl" destination="Veo-rw-uey" id="CAm-yX-kIF"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -2019,7 +2029,7 @@
                                 </constraints>
                                 <items>
                                     <barButtonItem style="plain" id="LUC-jo-ub8">
-                                        <button key="customView" opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="tailTruncation" id="Dd9-wm-Fq0">
+                                        <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="tailTruncation" id="Dd9-wm-Fq0">
                                             <rect key="frame" x="20" y="2.5" width="374" height="39"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="16"/>
@@ -2060,13 +2070,13 @@
                                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalCentering" alignment="top" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="9Pt-YB-ylu">
                                                     <rect key="frame" x="45" y="23" width="41.5" height="40.5"/>
                                                     <subviews>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iKn-N9-Zi6" userLabel="Name Label">
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iKn-N9-Zi6" userLabel="Name Label">
                                                             <rect key="frame" x="0.0" y="0.0" width="41.5" height="20.5"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                             <nil key="textColor"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" ambiguous="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Qmv-sW-SSW" userLabel="Description Label">
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Qmv-sW-SSW" userLabel="Description Label">
                                                             <rect key="frame" x="0.0" y="22.5" width="41.5" height="18"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                                             <color key="textColor" systemColor="secondaryLabelColor"/>
@@ -4129,20 +4139,20 @@
                                                             <inset key="separatorInset" minX="15" minY="0.0" maxX="0.0" maxY="0.0"/>
                                                             <prototypes>
                                                                 <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="kvHeaderContentCell" id="V1v-mx-Rd5" userLabel="HeaderContentCell" customClass="KVContentCell" customModule="APITesterPro" customModuleProvider="target">
-                                                                    <rect key="frame" x="0.0" y="50" width="414" height="289.5"/>
+                                                                    <rect key="frame" x="0.0" y="50" width="414" height="291"/>
                                                                     <autoresizingMask key="autoresizingMask"/>
                                                                     <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="V1v-mx-Rd5" id="UIg-mJ-3o0">
-                                                                        <rect key="frame" x="0.0" y="0.0" width="414" height="289.5"/>
+                                                                        <rect key="frame" x="0.0" y="0.0" width="414" height="291"/>
                                                                         <autoresizingMask key="autoresizingMask"/>
                                                                         <subviews>
                                                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Y1v-Lj-Xtd" userLabel="Container View">
-                                                                                <rect key="frame" x="16" y="4" width="382" height="281.5"/>
+                                                                                <rect key="frame" x="16" y="4" width="382" height="283"/>
                                                                                 <subviews>
                                                                                     <stackView opaque="NO" contentMode="scaleToFill" distribution="fillProportionally" translatesAutoresizingMaskIntoConstraints="NO" id="mj9-hf-ZQ7">
-                                                                                        <rect key="frame" x="0.0" y="0.0" width="382" height="281.5"/>
+                                                                                        <rect key="frame" x="0.0" y="0.0" width="382" height="283"/>
                                                                                         <subviews>
                                                                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fm7-J6-DtW" userLabel="KV Container View">
-                                                                                                <rect key="frame" x="0.0" y="0.0" width="382" height="281.5"/>
+                                                                                                <rect key="frame" x="0.0" y="0.0" width="382" height="283"/>
                                                                                                 <subviews>
                                                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" text="name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3tR-VT-7Ry" userLabel="name title label">
                                                                                                         <rect key="frame" x="0.0" y="8" width="382" height="14.5"/>
@@ -4163,7 +4173,7 @@
                                                                                                         <nil key="highlightedColor"/>
                                                                                                     </label>
                                                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="application/json" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zea-0V-nJp" userLabel="value label">
-                                                                                                        <rect key="frame" x="0.0" y="74" width="382" height="191.5"/>
+                                                                                                        <rect key="frame" x="0.0" y="74" width="382" height="193"/>
                                                                                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                                                                         <nil key="textColor"/>
                                                                                                         <nil key="highlightedColor"/>
@@ -4302,20 +4312,20 @@
                                                             <inset key="separatorInset" minX="15" minY="0.0" maxX="0.0" maxY="0.0"/>
                                                             <prototypes>
                                                                 <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="kvParamsContentCell" id="Qrg-DJ-8iE" userLabel="ParamsContentCell" customClass="KVContentCell" customModule="APITesterPro" customModuleProvider="target">
-                                                                    <rect key="frame" x="0.0" y="50" width="414" height="274.5"/>
+                                                                    <rect key="frame" x="0.0" y="50" width="414" height="276"/>
                                                                     <autoresizingMask key="autoresizingMask"/>
                                                                     <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Qrg-DJ-8iE" id="zAX-uT-oeN">
-                                                                        <rect key="frame" x="0.0" y="0.0" width="414" height="274.5"/>
+                                                                        <rect key="frame" x="0.0" y="0.0" width="414" height="276"/>
                                                                         <autoresizingMask key="autoresizingMask"/>
                                                                         <subviews>
                                                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ihI-SC-uVD" userLabel="Container View">
-                                                                                <rect key="frame" x="16" y="4" width="382" height="266.5"/>
+                                                                                <rect key="frame" x="16" y="4" width="382" height="268"/>
                                                                                 <subviews>
                                                                                     <stackView opaque="NO" contentMode="scaleToFill" distribution="fillProportionally" translatesAutoresizingMaskIntoConstraints="NO" id="yId-rE-qx2">
-                                                                                        <rect key="frame" x="0.0" y="0.0" width="382" height="266.5"/>
+                                                                                        <rect key="frame" x="0.0" y="0.0" width="382" height="268"/>
                                                                                         <subviews>
                                                                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="e5L-TP-rUU" userLabel="KV Container View">
-                                                                                                <rect key="frame" x="0.0" y="0.0" width="382" height="266.5"/>
+                                                                                                <rect key="frame" x="0.0" y="0.0" width="382" height="268"/>
                                                                                                 <subviews>
                                                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" text="name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="W4V-yM-ioC" userLabel="name title label">
                                                                                                         <rect key="frame" x="0.0" y="8" width="382" height="14.5"/>
@@ -4336,7 +4346,7 @@
                                                                                                         <nil key="highlightedColor"/>
                                                                                                     </label>
                                                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="app:api-tester-pro and platform:ios" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="abY-0z-Q1a" userLabel="value label">
-                                                                                                        <rect key="frame" x="0.0" y="74" width="382" height="176.5"/>
+                                                                                                        <rect key="frame" x="0.0" y="74" width="382" height="178"/>
                                                                                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                                                                         <nil key="textColor"/>
                                                                                                         <nil key="highlightedColor"/>
@@ -5266,20 +5276,20 @@
                                                             <color key="backgroundColor" name="table-view-cell-bg"/>
                                                             <prototypes>
                                                                 <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="kvCellHeaders" id="P4P-2h-njX" userLabel="Headers kvCell" customClass="KVCell" customModule="APITesterPro" customModuleProvider="target">
-                                                                    <rect key="frame" x="0.0" y="50" width="414" height="174"/>
+                                                                    <rect key="frame" x="0.0" y="50" width="414" height="175.5"/>
                                                                     <autoresizingMask key="autoresizingMask"/>
                                                                     <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="P4P-2h-njX" id="U5i-VS-gmv">
-                                                                        <rect key="frame" x="0.0" y="0.0" width="414" height="174"/>
+                                                                        <rect key="frame" x="0.0" y="0.0" width="414" height="175.5"/>
                                                                         <autoresizingMask key="autoresizingMask"/>
                                                                         <subviews>
                                                                             <stackView opaque="NO" contentMode="scaleToFill" distribution="equalCentering" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="U0U-KW-3LB">
-                                                                                <rect key="frame" x="0.0" y="0.0" width="414" height="173"/>
+                                                                                <rect key="frame" x="0.0" y="0.0" width="414" height="174.5"/>
                                                                                 <subviews>
                                                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zcK-UZ-Yz5" userLabel="Key View">
-                                                                                        <rect key="frame" x="0.0" y="0.0" width="202.5" height="173"/>
+                                                                                        <rect key="frame" x="0.0" y="0.0" width="202.5" height="174.5"/>
                                                                                         <subviews>
                                                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Key" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.75" translatesAutoresizingMaskIntoConstraints="NO" id="DJq-mR-vfb" customClass="EACopiableLabel" customModule="APITesterPro" customModuleProvider="target">
-                                                                                                <rect key="frame" x="16" y="78" width="170.5" height="17"/>
+                                                                                                <rect key="frame" x="16" y="79" width="170.5" height="17"/>
                                                                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                                                                 <nil key="textColor"/>
                                                                                                 <nil key="highlightedColor"/>
@@ -5293,17 +5303,17 @@
                                                                                         </constraints>
                                                                                     </view>
                                                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Vkh-vU-5ok" userLabel="Center view">
-                                                                                        <rect key="frame" x="206.5" y="0.0" width="1" height="173"/>
+                                                                                        <rect key="frame" x="206.5" y="0.0" width="1" height="174.5"/>
                                                                                         <color key="backgroundColor" name="table-view-cell-bg"/>
                                                                                         <constraints>
                                                                                             <constraint firstAttribute="width" constant="1" id="fYd-HQ-0eC"/>
                                                                                         </constraints>
                                                                                     </view>
                                                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="M9o-EA-liZ" userLabel="Value View">
-                                                                                        <rect key="frame" x="211.5" y="0.0" width="202.5" height="173"/>
+                                                                                        <rect key="frame" x="211.5" y="0.0" width="202.5" height="174.5"/>
                                                                                         <subviews>
                                                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Value" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.75" translatesAutoresizingMaskIntoConstraints="NO" id="ENK-B7-m4O" customClass="EACopiableLabel" customModule="APITesterPro" customModuleProvider="target">
-                                                                                                <rect key="frame" x="16" y="78" width="170.5" height="17"/>
+                                                                                                <rect key="frame" x="16" y="79" width="170.5" height="17"/>
                                                                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                                                                 <nil key="textColor"/>
                                                                                                 <nil key="highlightedColor"/>
@@ -5332,7 +5342,7 @@
                                                                                 </constraints>
                                                                             </stackView>
                                                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="PLQ-8b-dLG" userLabel="Bottom Border View">
-                                                                                <rect key="frame" x="15" y="173.5" width="399" height="0.5"/>
+                                                                                <rect key="frame" x="15" y="175" width="399" height="0.5"/>
                                                                                 <color key="backgroundColor" name="cell-separator-bg"/>
                                                                                 <constraints>
                                                                                     <constraint firstAttribute="height" constant="0.5" id="hGu-61-3nS"/>
@@ -5443,20 +5453,20 @@
                                                             <color key="backgroundColor" name="table-view-cell-bg"/>
                                                             <prototypes>
                                                                 <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="kvCellCookies" id="1ic-7L-cAl" userLabel="Cookies kvCell" customClass="KVCell" customModule="APITesterPro" customModuleProvider="target">
-                                                                    <rect key="frame" x="0.0" y="50" width="414" height="198"/>
+                                                                    <rect key="frame" x="0.0" y="50" width="414" height="199.5"/>
                                                                     <autoresizingMask key="autoresizingMask"/>
                                                                     <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="1ic-7L-cAl" id="0Nq-It-S6q">
-                                                                        <rect key="frame" x="0.0" y="0.0" width="414" height="198"/>
+                                                                        <rect key="frame" x="0.0" y="0.0" width="414" height="199.5"/>
                                                                         <autoresizingMask key="autoresizingMask"/>
                                                                         <subviews>
                                                                             <stackView opaque="NO" contentMode="scaleToFill" distribution="equalCentering" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="UQP-8I-LBx">
-                                                                                <rect key="frame" x="0.0" y="0.0" width="414" height="197"/>
+                                                                                <rect key="frame" x="0.0" y="0.0" width="414" height="198.5"/>
                                                                                 <subviews>
                                                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="A7e-gR-vMC" userLabel="Key View">
-                                                                                        <rect key="frame" x="0.0" y="0.0" width="202.5" height="197"/>
+                                                                                        <rect key="frame" x="0.0" y="0.0" width="202.5" height="198.5"/>
                                                                                         <subviews>
                                                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Key" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.75" translatesAutoresizingMaskIntoConstraints="NO" id="LD2-ru-8bS" customClass="EACopiableLabel" customModule="APITesterPro" customModuleProvider="target">
-                                                                                                <rect key="frame" x="16" y="90" width="170.5" height="17"/>
+                                                                                                <rect key="frame" x="16" y="91" width="170.5" height="17"/>
                                                                                                 <color key="backgroundColor" name="table-view-cell-bg"/>
                                                                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                                                                 <nil key="textColor"/>
@@ -5471,17 +5481,17 @@
                                                                                         </constraints>
                                                                                     </view>
                                                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="mrx-nV-9UI" userLabel="Center view">
-                                                                                        <rect key="frame" x="206.5" y="0.0" width="1" height="197"/>
+                                                                                        <rect key="frame" x="206.5" y="0.0" width="1" height="198.5"/>
                                                                                         <color key="backgroundColor" name="table-view-cell-bg"/>
                                                                                         <constraints>
                                                                                             <constraint firstAttribute="width" constant="1" id="T80-dR-BC4"/>
                                                                                         </constraints>
                                                                                     </view>
                                                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="d9J-MT-syb" userLabel="Value View">
-                                                                                        <rect key="frame" x="211.5" y="0.0" width="202.5" height="197"/>
+                                                                                        <rect key="frame" x="211.5" y="0.0" width="202.5" height="198.5"/>
                                                                                         <subviews>
                                                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Value" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.75" translatesAutoresizingMaskIntoConstraints="NO" id="fqf-8N-1zN" customClass="EACopiableLabel" customModule="APITesterPro" customModuleProvider="target">
-                                                                                                <rect key="frame" x="16" y="90" width="170.5" height="17"/>
+                                                                                                <rect key="frame" x="16" y="91" width="170.5" height="17"/>
                                                                                                 <color key="backgroundColor" name="table-view-cell-bg"/>
                                                                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                                                                 <nil key="textColor"/>
@@ -5511,7 +5521,7 @@
                                                                                 </constraints>
                                                                             </stackView>
                                                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="aoQ-eD-5K3" userLabel="Bottom Border View">
-                                                                                <rect key="frame" x="15" y="197.5" width="399" height="0.5"/>
+                                                                                <rect key="frame" x="15" y="199" width="399" height="0.5"/>
                                                                                 <color key="backgroundColor" name="cell-separator-bg"/>
                                                                                 <constraints>
                                                                                     <constraint firstAttribute="height" constant="0.5" id="kHH-Oo-bA0"/>
@@ -5622,20 +5632,20 @@
                                                             <color key="backgroundColor" name="table-view-cell-bg"/>
                                                             <prototypes>
                                                                 <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="kvCellMetrics" id="2a4-da-Nbb" userLabel="Metrics kvCell" customClass="KVCell" customModule="APITesterPro" customModuleProvider="target">
-                                                                    <rect key="frame" x="0.0" y="50" width="414" height="179"/>
+                                                                    <rect key="frame" x="0.0" y="50" width="414" height="180.5"/>
                                                                     <autoresizingMask key="autoresizingMask"/>
                                                                     <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="2a4-da-Nbb" id="efh-XU-EqF">
-                                                                        <rect key="frame" x="0.0" y="0.0" width="414" height="179"/>
+                                                                        <rect key="frame" x="0.0" y="0.0" width="414" height="180.5"/>
                                                                         <autoresizingMask key="autoresizingMask"/>
                                                                         <subviews>
                                                                             <stackView opaque="NO" contentMode="scaleToFill" distribution="equalCentering" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="fTs-t4-R3n">
-                                                                                <rect key="frame" x="0.0" y="0.0" width="414" height="178"/>
+                                                                                <rect key="frame" x="0.0" y="0.0" width="414" height="179.5"/>
                                                                                 <subviews>
                                                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="sDF-6H-fCV" userLabel="Key View">
-                                                                                        <rect key="frame" x="0.0" y="0.0" width="202.5" height="178"/>
+                                                                                        <rect key="frame" x="0.0" y="0.0" width="202.5" height="179.5"/>
                                                                                         <subviews>
                                                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Key" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.75" translatesAutoresizingMaskIntoConstraints="NO" id="GCn-zo-KbU" customClass="EACopiableLabel" customModule="APITesterPro" customModuleProvider="target">
-                                                                                                <rect key="frame" x="16" y="80.5" width="170.5" height="17"/>
+                                                                                                <rect key="frame" x="16" y="81.5" width="170.5" height="17"/>
                                                                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                                                                 <nil key="textColor"/>
                                                                                                 <nil key="highlightedColor"/>
@@ -5649,17 +5659,17 @@
                                                                                         </constraints>
                                                                                     </view>
                                                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zCd-9h-YpF" userLabel="Center view">
-                                                                                        <rect key="frame" x="206.5" y="0.0" width="1" height="178"/>
+                                                                                        <rect key="frame" x="206.5" y="0.0" width="1" height="179.5"/>
                                                                                         <color key="backgroundColor" name="table-view-cell-bg"/>
                                                                                         <constraints>
                                                                                             <constraint firstAttribute="width" constant="1" id="VbP-dh-Kax"/>
                                                                                         </constraints>
                                                                                     </view>
                                                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="muD-1J-7qt" userLabel="Value View">
-                                                                                        <rect key="frame" x="211.5" y="0.0" width="202.5" height="178"/>
+                                                                                        <rect key="frame" x="211.5" y="0.0" width="202.5" height="179.5"/>
                                                                                         <subviews>
                                                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Value" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.75" translatesAutoresizingMaskIntoConstraints="NO" id="PHy-Mf-ELk" customClass="EACopiableLabel" customModule="APITesterPro" customModuleProvider="target">
-                                                                                                <rect key="frame" x="16" y="80.5" width="170.5" height="17"/>
+                                                                                                <rect key="frame" x="16" y="81.5" width="170.5" height="17"/>
                                                                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                                                                 <nil key="textColor"/>
                                                                                                 <nil key="highlightedColor"/>
@@ -5688,7 +5698,7 @@
                                                                                 </constraints>
                                                                             </stackView>
                                                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ezd-ex-Wth" userLabel="Bottom Border View">
-                                                                                <rect key="frame" x="15" y="178.5" width="399" height="0.5"/>
+                                                                                <rect key="frame" x="15" y="180" width="399" height="0.5"/>
                                                                                 <color key="backgroundColor" name="cell-separator-bg"/>
                                                                                 <constraints>
                                                                                     <constraint firstAttribute="height" constant="0.5" id="aGi-cv-BFC"/>
@@ -5799,20 +5809,20 @@
                                                             <color key="backgroundColor" name="table-view-cell-bg"/>
                                                             <prototypes>
                                                                 <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="kvCellDetails" id="NQb-AP-7ak" userLabel="Details kvCell" customClass="KVCell" customModule="APITesterPro" customModuleProvider="target">
-                                                                    <rect key="frame" x="0.0" y="50" width="414" height="172.5"/>
+                                                                    <rect key="frame" x="0.0" y="50" width="414" height="174"/>
                                                                     <autoresizingMask key="autoresizingMask"/>
                                                                     <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="NQb-AP-7ak" id="OYh-dz-t2b">
-                                                                        <rect key="frame" x="0.0" y="0.0" width="414" height="172.5"/>
+                                                                        <rect key="frame" x="0.0" y="0.0" width="414" height="174"/>
                                                                         <autoresizingMask key="autoresizingMask"/>
                                                                         <subviews>
                                                                             <stackView opaque="NO" contentMode="scaleToFill" distribution="equalCentering" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="c2N-gM-p70">
-                                                                                <rect key="frame" x="0.0" y="0.0" width="414" height="171.5"/>
+                                                                                <rect key="frame" x="0.0" y="0.0" width="414" height="173"/>
                                                                                 <subviews>
                                                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="VGZ-et-S7w" userLabel="Key View">
-                                                                                        <rect key="frame" x="0.0" y="0.0" width="202.5" height="171.5"/>
+                                                                                        <rect key="frame" x="0.0" y="0.0" width="202.5" height="173"/>
                                                                                         <subviews>
                                                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Key" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.75" translatesAutoresizingMaskIntoConstraints="NO" id="Wx0-EH-bJT" customClass="EACopiableLabel" customModule="APITesterPro" customModuleProvider="target">
-                                                                                                <rect key="frame" x="16" y="77.5" width="170.5" height="17"/>
+                                                                                                <rect key="frame" x="16" y="78" width="170.5" height="17"/>
                                                                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                                                                 <nil key="textColor"/>
                                                                                                 <nil key="highlightedColor"/>
@@ -5826,17 +5836,17 @@
                                                                                         </constraints>
                                                                                     </view>
                                                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="sLJ-EY-fMu" userLabel="Center view">
-                                                                                        <rect key="frame" x="206.5" y="0.0" width="1" height="171.5"/>
+                                                                                        <rect key="frame" x="206.5" y="0.0" width="1" height="173"/>
                                                                                         <color key="backgroundColor" name="table-view-cell-bg"/>
                                                                                         <constraints>
                                                                                             <constraint firstAttribute="width" constant="1" id="9nJ-z9-73k"/>
                                                                                         </constraints>
                                                                                     </view>
                                                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5Df-8B-9kv" userLabel="Value View">
-                                                                                        <rect key="frame" x="211.5" y="0.0" width="202.5" height="171.5"/>
+                                                                                        <rect key="frame" x="211.5" y="0.0" width="202.5" height="173"/>
                                                                                         <subviews>
                                                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Value" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.75" translatesAutoresizingMaskIntoConstraints="NO" id="GMN-RM-s1B" customClass="EACopiableLabel" customModule="APITesterPro" customModuleProvider="target">
-                                                                                                <rect key="frame" x="16" y="77.5" width="170.5" height="17"/>
+                                                                                                <rect key="frame" x="16" y="78" width="170.5" height="17"/>
                                                                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                                                                 <nil key="textColor"/>
                                                                                                 <nil key="highlightedColor"/>
@@ -5865,7 +5875,7 @@
                                                                                 </constraints>
                                                                             </stackView>
                                                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lmL-zA-Cv9" userLabel="Bottom Border View">
-                                                                                <rect key="frame" x="15" y="172" width="399" height="0.5"/>
+                                                                                <rect key="frame" x="15" y="173.5" width="399" height="0.5"/>
                                                                                 <color key="backgroundColor" name="cell-separator-bg"/>
                                                                                 <constraints>
                                                                                     <constraint firstAttribute="height" constant="0.5" id="RBR-bV-1L4"/>
@@ -6381,7 +6391,7 @@
                                         <color key="backgroundColor" name="table-view-bg"/>
                                         <inset key="separatorInset" minX="15" minY="0.0" maxX="0.0" maxY="0.0"/>
                                         <view key="tableFooterView" contentMode="scaleToFill" id="fsF-bK-b57">
-                                            <rect key="frame" x="0.0" y="377" width="414" height="44"/>
+                                            <rect key="frame" x="0.0" y="378.5" width="414" height="44"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Variables used in the form {{variable-name}} will be substituted with its value when sending a request." textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6F5-ue-zs1">
@@ -6405,20 +6415,20 @@
                                         </view>
                                         <prototypes>
                                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="envVarCell" id="zbE-iB-2nh" customClass="EnvVarCell" customModule="APITesterPro" customModuleProvider="target">
-                                                <rect key="frame" x="0.0" y="50" width="414" height="299"/>
+                                                <rect key="frame" x="0.0" y="50" width="414" height="300.5"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="zbE-iB-2nh" id="AWo-qH-YAx">
-                                                    <rect key="frame" x="0.0" y="0.0" width="414" height="299"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="414" height="300.5"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <subviews>
                                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="uRL-t4-T3K" userLabel="Container View">
-                                                            <rect key="frame" x="16" y="0.0" width="382" height="299"/>
+                                                            <rect key="frame" x="16" y="0.0" width="382" height="300.5"/>
                                                             <subviews>
                                                                 <stackView opaque="NO" contentMode="scaleToFill" distribution="fillProportionally" translatesAutoresizingMaskIntoConstraints="NO" id="Nff-2G-tCF">
-                                                                    <rect key="frame" x="0.0" y="0.0" width="382" height="299"/>
+                                                                    <rect key="frame" x="0.0" y="0.0" width="382" height="300.5"/>
                                                                     <subviews>
                                                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ZQ2-2l-efY" userLabel="KV Container View">
-                                                                            <rect key="frame" x="0.0" y="0.0" width="382" height="299"/>
+                                                                            <rect key="frame" x="0.0" y="0.0" width="382" height="300.5"/>
                                                                             <subviews>
                                                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" text="name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="g2f-7f-uHo" userLabel="name title label">
                                                                                     <rect key="frame" x="0.0" y="8" width="382" height="14.5"/>
@@ -6439,7 +6449,7 @@
                                                                                     <nil key="highlightedColor"/>
                                                                                 </label>
                                                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="application/json" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sgA-5C-gYS" userLabel="value label">
-                                                                                    <rect key="frame" x="0.0" y="74" width="382" height="209"/>
+                                                                                    <rect key="frame" x="0.0" y="74" width="382" height="210.5"/>
                                                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                                                     <nil key="textColor"/>
                                                                                     <nil key="highlightedColor"/>
