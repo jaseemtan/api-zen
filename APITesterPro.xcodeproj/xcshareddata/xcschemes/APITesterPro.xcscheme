@@ -15,8 +15,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "9E81D0272AF44BE7004095CF"
-               BuildableName = "APITesterPro.app"
-               BlueprintName = "APITesterPro"
+               BuildableName = "APIZen.app"
+               BlueprintName = "APIZen"
                ReferencedContainer = "container:APITesterPro.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -40,8 +40,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "9E81D0402AF44BE9004095CF"
-               BuildableName = "APITesterProTests.xctest"
-               BlueprintName = "APITesterProTests"
+               BuildableName = "APIZenTests.xctest"
+               BlueprintName = "APIZenTests"
                ReferencedContainer = "container:APITesterPro.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -51,8 +51,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "9E81D04A2AF44BE9004095CF"
-               BuildableName = "APITesterProUITests.xctest"
-               BlueprintName = "APITesterProUITests"
+               BuildableName = "APIZenUITests.xctest"
+               BlueprintName = "APIZenUITests"
                ReferencedContainer = "container:APITesterPro.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -73,8 +73,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "9E81D0272AF44BE7004095CF"
-            BuildableName = "APITesterPro.app"
-            BlueprintName = "APITesterPro"
+            BuildableName = "APIZen.app"
+            BlueprintName = "APIZen"
             ReferencedContainer = "container:APITesterPro.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -112,8 +112,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "9E81D0272AF44BE7004095CF"
-            BuildableName = "APITesterPro.app"
-            BlueprintName = "APITesterPro"
+            BuildableName = "APIZen.app"
+            BlueprintName = "APIZen"
             ReferencedContainer = "container:APITesterPro.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
