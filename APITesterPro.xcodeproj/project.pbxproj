@@ -15,7 +15,6 @@
 		9E23EAB92B63F885008B6374 /* APITesterProModel2Migration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E23EAB82B63F885008B6374 /* APITesterProModel2Migration.swift */; };
 		9E23EABB2B640039008B6374 /* APITesterPro2MappingModel.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 9E23EABA2B640039008B6374 /* APITesterPro2MappingModel.xcmappingmodel */; };
 		9E23EABD2B64F471008B6374 /* EACoreDataUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E23EABC2B64F471008B6374 /* EACoreDataUtils.swift */; };
-		9E399A2D2CA5E0CC00EC3E91 /* GenesisViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E399A2C2CA5E0CC00EC3E91 /* GenesisViewController.swift */; };
 		9E4875E72AF56DD000D624DA /* APITesterPro.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 9E4875E52AF56DD000D624DA /* APITesterPro.xcdatamodeld */; };
 		9E4875E82AF5856A00D624DA /* AppDelegateMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E81D0812AF44CBF004095CF /* AppDelegateMock.swift */; };
 		9E4935AD2C96FAC000A50721 /* WebCodeEditorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E4935AC2C96FAC000A50721 /* WebCodeEditorViewController.swift */; };
@@ -143,7 +142,6 @@
 		9E23EAB82B63F885008B6374 /* APITesterProModel2Migration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APITesterProModel2Migration.swift; sourceTree = "<group>"; };
 		9E23EABA2B640039008B6374 /* APITesterPro2MappingModel.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = APITesterPro2MappingModel.xcmappingmodel; sourceTree = "<group>"; };
 		9E23EABC2B64F471008B6374 /* EACoreDataUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EACoreDataUtils.swift; sourceTree = "<group>"; };
-		9E399A2C2CA5E0CC00EC3E91 /* GenesisViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenesisViewController.swift; sourceTree = "<group>"; };
 		9E4875E62AF56DD000D624DA /* APITesterPro.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = APITesterPro.xcdatamodel; sourceTree = "<group>"; };
 		9E4875EB2AF590A300D624DA /* APITesterPro.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = APITesterPro.xctestplan; sourceTree = "<group>"; };
 		9E4935AC2C96FAC000A50721 /* WebCodeEditorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebCodeEditorViewController.swift; sourceTree = "<group>"; };
@@ -318,7 +316,6 @@
 				9E81D0AA2AF44FC8004095CF /* Service */,
 				9E81D0A72AF44F98004095CF /* Model */,
 				9E81D0A92AF44FBE004095CF /* Screens */,
-				9E399A2C2CA5E0CC00EC3E91 /* GenesisViewController.swift */,
 				9E81D0AB2AF44FCE004095CF /* View */,
 				9E81D08F2AF44F4E004095CF /* App.swift */,
 				9E81D0952AF44F4E004095CF /* AppDelegate.swift */,
@@ -747,7 +744,6 @@
 				9E81D11F2AF4522C004095CF /* ImportExportViewController.swift in Sources */,
 				9E81D10F2AF45218004095CF /* RequestTableViewController.swift in Sources */,
 				9E81D0D82AF451F7004095CF /* CoreDataService.swift in Sources */,
-				9E399A2D2CA5E0CC00EC3E91 /* GenesisViewController.swift in Sources */,
 				9E81D0A32AF44F4F004095CF /* AppDelegate.swift in Sources */,
 				9E81D0F62AF451FF004095CF /* ResponseData.swift in Sources */,
 				9E4875E72AF56DD000D624DA /* APITesterPro.xcdatamodeld in Sources */,
