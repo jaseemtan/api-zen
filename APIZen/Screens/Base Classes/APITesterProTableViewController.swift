@@ -21,7 +21,7 @@ class APITesterProTableViewController: UITableViewController {
     }
     
     deinit {
-        Log.debug("deinit api tester pro tableview controller")
+        Log.debug("deinit api zen tableview controller")
     }
     
     func bootstrap() {

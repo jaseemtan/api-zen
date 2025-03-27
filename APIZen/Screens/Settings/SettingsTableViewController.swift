@@ -90,7 +90,7 @@ class SettingsTableViewController: APITesterProTableViewController {
             let mail = MFMailComposeViewController()
             mail.mailComposeDelegate = self
             mail.setToRecipients([Const.feedbackEmail])
-            mail.setSubject("API Tester Pro Feedback")
+            mail.setSubject("API Zen Feedback")
             if let version = self.utils.appVersion() {
                 mail.setMessageBody("<br /><p>App version: v\(version)</p>", isHTML: true)
             }

@@ -42,10 +42,10 @@ struct Const {
     static let helpTextForAddNewRequestMethod = "The request method name will be available to all requests within the same project and should be unique."
     static let appId = "6471152115"
     static let feedbackEmail = "jaseemvv@icloud.com"
-    static let appURL = "https://apps.apple.com/us/app/api-tester-pro/id\(Const.appId)"
+    static let appURL = "https://apps.apple.com/app/id6471152115"
     static let cloudKitContainerID = "iCloud.net.jsloop.APITesterPro"
-    static let appName = "API Tester Pro"
-    static let shareText = "\(Const.appName) - Test HTTP API Endpoints" 
+    static let appName = "API Zen"
+    static let shareText = "\(Const.appName) - API Tester"
 }
 
 extension Notification.Name {

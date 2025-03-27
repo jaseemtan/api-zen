@@ -21,7 +21,7 @@ class APITesterProViewController: UIViewController {
     }
     
     deinit {
-        Log.debug("deinit api tester pro view controller")
+        Log.debug("deinit api zen view controller")
     }
     
     func bootstrap() {
