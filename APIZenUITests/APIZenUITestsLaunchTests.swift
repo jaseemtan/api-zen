@@ -1,6 +1,6 @@
 //
 //  APITesterProUITestsLaunchTests.swift
-//  APITesterProUITests
+//  APIZenUITests
 //
 //  Created by Jaseem V V on 03/11/23.
 //

@@ -1,6 +1,6 @@
 //
 //  EACryptoTest.swift
-//  APITesterProTests
+//  APIZenTests
 //
 //  Created by Jaseem V V on 25/11/23.
 //  Copyright © 2023 Jaseem V V. All rights reserved.

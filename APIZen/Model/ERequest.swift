@@ -1,6 +1,6 @@
 //
 //  ERequest.swift
-//  APITesterPro
+//  APIZen
 //
 //  Created by Jaseem V V on 22/03/20.
 //  Copyright © 2020 Jaseem V V. All rights reserved.

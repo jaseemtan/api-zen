@@ -1,6 +1,6 @@
 //
 //  EACopiableLabel.swift
-//  APITesterPro
+//  APIZen
 //
 //  Created by Jaseem V V on 11.02.2024.
 //  Copyright © 2024 Jaseem V V. All rights reserved.

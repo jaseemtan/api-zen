@@ -11,9 +11,9 @@
   "defaultOptions" : {
     "codeCoverage" : false,
     "targetForVariableExpansion" : {
-      "containerPath" : "container:APITesterPro.xcodeproj",
+      "containerPath" : "container:APIZen.xcodeproj",
       "identifier" : "9E81D0272AF44BE7004095CF",
-      "name" : "APITesterPro"
+      "name" : "APIZen"
     }
   },
   "testTargets" : [
@@ -22,18 +22,18 @@
         "CloudKitTests"
       ],
       "target" : {
-        "containerPath" : "container:APITesterPro.xcodeproj",
+        "containerPath" : "container:APIZen.xcodeproj",
         "identifier" : "9E81D0402AF44BE9004095CF",
-        "name" : "APITesterProTests"
+        "name" : "APIZenTests"
       }
     },
     {
       "enabled" : false,
       "parallelizable" : true,
       "target" : {
-        "containerPath" : "container:APITesterPro.xcodeproj",
+        "containerPath" : "container:APIZen.xcodeproj",
         "identifier" : "9E81D04A2AF44BE9004095CF",
-        "name" : "APITesterProUITests"
+        "name" : "APIZenUITests"
       }
     }
   ],

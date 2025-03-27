@@ -1,6 +1,6 @@
 //
 //  EALogger.swift
-//  APITesterPro
+//  APIZen
 //
 //  Created by Jaseem V V on 03/12/23.
 //  Copyright © 2023 Jaseem V V. All rights reserved.
