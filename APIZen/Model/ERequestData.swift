@@ -12,7 +12,6 @@ import CoreData
 
 public class ERequestData: NSManagedObject, Entity {
     static var db: CoreDataService = { CoreDataService.shared }()
-    static var ck: EACloudKit = { EACloudKit.shared }()
     public var recordType: String { return "RequestData" }
     
     public func getId() -> String {
@@ -67,53 +66,6 @@ public class ERequestData: NSManagedObject, Entity {
         //if self.modified < AppState.editRequestSaveTs { self.modified = AppState.editRequestSaveTs }
     }
     
-    static func getRecordType(_ record: CKRecord) -> RequestDataType? {
-        guard let x = record["type"] as? Int64, let type = RequestDataType(rawValue: x.toInt()) else { return nil }
-        return type
-    }
-    
-    static func getFormFieldFormatType(_ record: CKRecord) -> RequestBodyFormFieldFormatType {
-        guard let x = record["fieldFormat"] as? Int64, let type = RequestBodyFormFieldFormatType(rawValue: x.toInt()) else { return .text }
-        return type
-    }
-    
-    static func getRequestDataFromReference(_ ref: CKRecord.Reference, record: CKRecord, ctx: NSManagedObjectContext) -> ERequestData? {
-        let reqDataId = self.ck.entityID(recordID: ref.recordID)
-        let wsId = record.getWsId()
-        if let reqData = self.db.getRequestData(id: reqDataId, ctx: ctx) { return reqData }
-        let reqData = self.db.createRequestData(id: reqDataId, wsId: wsId, type: .form, fieldFormat: .file, checkExists: false, ctx: ctx)
-        return reqData
-    }
-    
-    /// Adds back reference to CoreData entity.
-    static func addBackReference(record: CKRecord, reqData: ERequestData, ctx: NSManagedObjectContext) {
-        if let ref = record["header"] as? CKRecord.Reference {
-            reqData.header = ERequest.getRequestFromReference(ref, record: record, ctx: ctx)
-            reqData.type = RequestDataType.header.rawValue.toInt64()
-            return
-        }
-        if let ref = record["param"] as? CKRecord.Reference {
-            reqData.param = ERequest.getRequestFromReference(ref, record: record, ctx: ctx)
-            reqData.type = RequestDataType.param.rawValue.toInt64()
-            return
-        }
-        if let ref = record["form"] as? CKRecord.Reference {
-            reqData.form = ERequestBodyData.getRequestBodyDataFromReference(ref, record: record, ctx: ctx)
-            reqData.type = RequestDataType.form.rawValue.toInt64()
-            return
-        }
-        if let ref = record["multipart"] as? CKRecord.Reference {
-            reqData.multipart = ERequestBodyData.getRequestBodyDataFromReference(ref, record: record, ctx: ctx)
-            reqData.type = RequestDataType.multipart.rawValue.toInt64()
-            return
-        }
-        if let ref = record["binary"] as? CKRecord.Reference {
-            reqData.binary = ERequestBodyData.getRequestBodyDataFromReference(ref, record: record, ctx: ctx)
-            reqData.type = RequestDataType.binary.rawValue.toInt64()
-            return
-        }
-    }
-    
     public static func fromDictionary(_ dict: [String: Any], ctx: NSManagedObjectContext) -> ERequestData? {
         guard let id = dict["id"] as? String, let wsId = dict["wsId"] as? String, let _type = dict["type"] as? Int64,
             let type = RequestDataType(rawValue: _type.toInt()), let _format = dict["fieldFormat"] as? Int64,
@@ -140,92 +92,6 @@ public class ERequestData: NSManagedObject, Entity {
         reqData.markForDelete = false
         db.saveMainContext()
         return reqData
-    }
-    
-    /// Get RequestData CKRecord of type header or param. This is backreferenced to Request record.
-    static func getCKRecord(id: String, reqId: String, projId: String, wsId: String, reqType: RequestDataType, ctx: NSManagedObjectContext) -> CKRecord? {
-        var reqData: ERequestData!
-        var ckReqData: CKRecord!
-        guard let ckReq = ERequest.getCKRecord(id: reqId, projId: projId, wsId: wsId, ctx: ctx) else { return ckReqData }
-        ctx.performAndWait {
-            reqData = db.getRequestData(id: id, ctx: ctx)
-            let zoneID = reqData.getZoneID()
-            let ckReqDataID = self.ck.recordID(entityId: id, zoneID: zoneID)
-            ckReqData = self.ck.createRecord(recordID: ckReqDataID, recordType: reqData.recordType)
-            reqData.updateCKRecord(ckReqData, request: ckReq, reqType: reqType)
-        }
-        return ckReq
-    }
-    
-    /// Get RequestData CKRecord of type form, multipart or binary. This is backreferenced to RequestBodyData record.
-    static func getCKRecord(id: String, reqBodyId: String, reqId: String, projId: String, wsId: String, reqType: RequestDataType, ctx: NSManagedObjectContext) -> CKRecord? {
-        var reqData: ERequestData!
-        var ckReqData: CKRecord!
-        guard let ckReqBodyData = ERequestBodyData.getCKRecord(id: reqBodyId, reqId: reqId, projId: projId, wsId: wsId, ctx: ctx) else { return ckReqData }
-        ctx.performAndWait {
-            reqData = db.getRequestData(id: id, ctx: ctx)
-            let zoneID = reqData.getZoneID()
-            let ckReqDataID = self.ck.recordID(entityId: id, zoneID: zoneID)
-            ckReqData = self.ck.createRecord(recordID: ckReqDataID, recordType: reqData.recordType)
-            reqData.updateCKRecord(ckReqData, reqBodyData: ckReqBodyData, reqType: reqType)
-        }
-        return ckReqData
-    }
-    
-    private func updateCKRecord(_ record: CKRecord) {
-        self.managedObjectContext?.performAndWait {
-            record["created"] = self.created! as CKRecordValue
-            record["modified"] = self.modified! as CKRecordValue
-            record["desc"] = (self.desc ?? "") as CKRecordValue
-            record["fieldFormat"] = self.fieldFormat as CKRecordValue
-            record["id"] = self.getId() as CKRecordValue
-            record["wsId"] = self.getWsId() as CKRecordValue
-            record["key"] = (self.key ?? "") as CKRecordValue
-            record["type"] = self.type as CKRecordValue
-            record["value"] = (self.value ?? "") as CKRecordValue
-            record["version"] = self.version as CKRecordValue
-        }
-    }
-    
-    /// RequestData can either belong to a Request (header, param) or RequestBodyData (form, multipart or binary)
-    func updateCKRecord(_ record: CKRecord, request: CKRecord, reqType: RequestDataType) {
-        self.updateCKRecord(record)
-        let ref = CKRecord.Reference(record: request, action: .deleteSelf)
-        if reqType == .header {
-            record["header"] = ref
-        } else if reqType == .param {
-            record["param"] = ref
-        }
-    }
-    
-    /// RequestData can either belong to a Request (header, param) or RequestBodyData (form, multipart or binary)
-    func updateCKRecord(_ record: CKRecord, reqBodyData: CKRecord, reqType: RequestDataType) {
-        self.updateCKRecord(record)
-        let ref = CKRecord.Reference(record: reqBodyData, action: .deleteSelf)
-        if reqType == .form {
-            record["form"] = ref
-        } else if reqType == .multipart {
-            record["multipart"] = ref
-        } else if reqType == .binary {
-            record["binary"] = ref
-        }
-    }
-    
-    func updateFromCKRecord(_ record: CKRecord, ctx: NSManagedObjectContext) {
-        if let moc = self.managedObjectContext {
-            moc.performAndWait {
-                if let x = record["created"] as? Date { self.created = x }
-                if let x = record["modified"] as? Date { self.modified = x }
-                if let x = record["desc"] as? String { self.desc = x }
-                if let x = record["fieldFormat"] as? Int64 { self.fieldFormat = x }
-                if let x = record["id"] as? String { self.id = x }
-                if let x = record["key"] as? String { self.key = x }
-                if let x = record["type"] as? Int64 { self.type = x }
-                if let x = record["value"] as? String { self.value = x }
-                if let x = record["version"] as? Int64 { self.version = x }
-                ERequestData.addBackReference(record: record, reqData: self, ctx: moc)
-            }
-        }
     }
     
     public func toDictionary() -> [String : Any] {

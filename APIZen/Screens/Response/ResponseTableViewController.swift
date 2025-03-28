@@ -463,7 +463,6 @@ extension Notification.Name {
 
 class ResponseTableViewController: APITesterProTableViewController {
     private let nc = NotificationCenter.default
-    private lazy var ck = { EACloudKit.shared }()
     private lazy var localdb = { CoreDataService.shared }()
     private lazy var utils = { EAUtils.shared }()
     private lazy var tabbarController: RequestTabBarController? = { self.tabBarController as? RequestTabBarController }()

@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		9E04F4F22B12138C007A0773 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9ED969A52AF5A36A0029E83E /* MessageUI.framework */; };
 		9E04F4F62B122577007A0773 /* EACloudKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E04F4F42B122577007A0773 /* EACloudKit.swift */; };
-		9E04F4F82B122585007A0773 /* CloudKitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E04F4F72B122585007A0773 /* CloudKitTests.swift */; };
 		9E04F4FA2B122CF0007A0773 /* EACryptoTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E04F4F92B122CF0007A0773 /* EACryptoTest.swift */; };
 		9E04F4FD2B138F38007A0773 /* PersistenceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E04F4FC2B138F38007A0773 /* PersistenceService.swift */; };
 		9E23EAB92B63F885008B6374 /* APITesterProModel2Migration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E23EAB82B63F885008B6374 /* APITesterProModel2Migration.swift */; };
@@ -48,7 +47,6 @@
 		9E81D0D82AF451F7004095CF /* CoreDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E81D0D62AF451F7004095CF /* CoreDataService.swift */; };
 		9E81D0E92AF451FF004095CF /* EWorkspace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E81D0D92AF451FE004095CF /* EWorkspace.swift */; };
 		9E81D0EA2AF451FF004095CF /* EHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E81D0DA2AF451FF004095CF /* EHistory.swift */; };
-		9E81D0EB2AF451FF004095CF /* Zone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E81D0DB2AF451FF004095CF /* Zone.swift */; };
 		9E81D0EC2AF451FF004095CF /* ERequestData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E81D0DC2AF451FF004095CF /* ERequestData.swift */; };
 		9E81D0ED2AF451FF004095CF /* EFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E81D0DD2AF451FF004095CF /* EFile.swift */; };
 		9E81D0EE2AF451FF004095CF /* ERequestMethodData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E81D0DE2AF451FF004095CF /* ERequestMethodData.swift */; };
@@ -135,7 +133,6 @@
 
 /* Begin PBXFileReference section */
 		9E04F4F42B122577007A0773 /* EACloudKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EACloudKit.swift; sourceTree = "<group>"; };
-		9E04F4F72B122585007A0773 /* CloudKitTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CloudKitTests.swift; sourceTree = "<group>"; };
 		9E04F4F92B122CF0007A0773 /* EACryptoTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EACryptoTest.swift; sourceTree = "<group>"; };
 		9E04F4FB2B131A3C007A0773 /* APIZen.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = APIZen.entitlements; sourceTree = "<group>"; };
 		9E04F4FC2B138F38007A0773 /* PersistenceService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceService.swift; sourceTree = "<group>"; };
@@ -179,7 +176,6 @@
 		9E81D0D62AF451F7004095CF /* CoreDataService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataService.swift; sourceTree = "<group>"; };
 		9E81D0D92AF451FE004095CF /* EWorkspace.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EWorkspace.swift; sourceTree = "<group>"; };
 		9E81D0DA2AF451FF004095CF /* EHistory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EHistory.swift; sourceTree = "<group>"; };
-		9E81D0DB2AF451FF004095CF /* Zone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Zone.swift; sourceTree = "<group>"; };
 		9E81D0DC2AF451FF004095CF /* ERequestData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ERequestData.swift; sourceTree = "<group>"; };
 		9E81D0DD2AF451FF004095CF /* EFile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EFile.swift; sourceTree = "<group>"; };
 		9E81D0DE2AF451FF004095CF /* ERequestMethodData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ERequestMethodData.swift; sourceTree = "<group>"; };
@@ -396,7 +392,6 @@
 				9E81D0D92AF451FE004095CF /* EWorkspace.swift */,
 				9E81D0E82AF451FF004095CF /* Models.swift */,
 				9E81D0E62AF451FF004095CF /* ResponseData.swift */,
-				9E81D0DB2AF451FF004095CF /* Zone.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -523,7 +518,6 @@
 		9E81D1432AF452B3004095CF /* EALibTests */ = {
 			isa = PBXGroup;
 			children = (
-				9E04F4F72B122585007A0773 /* CloudKitTests.swift */,
 				9E04F4F92B122CF0007A0773 /* EACryptoTest.swift */,
 				9E571CE52B24B7F60090F1CF /* EAExtensionsTests.swift */,
 				9E81D1442AF452DE004095CF /* EALFUCacheTests.swift */,
@@ -739,7 +733,6 @@
 				9E81D0EA2AF451FF004095CF /* EHistory.swift in Sources */,
 				9E81D0CE2AF451EA004095CF /* EALFUCache.swift in Sources */,
 				9E81D0E92AF451FF004095CF /* EWorkspace.swift in Sources */,
-				9E81D0EB2AF451FF004095CF /* Zone.swift in Sources */,
 				9E81D0D32AF451EA004095CF /* EARescheduler.swift in Sources */,
 				9E81D11F2AF4522C004095CF /* ImportExportViewController.swift in Sources */,
 				9E81D10F2AF45218004095CF /* RequestTableViewController.swift in Sources */,
@@ -790,7 +783,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9E04F4F82B122585007A0773 /* CloudKitTests.swift in Sources */,
 				9E571CE62B24B7F60090F1CF /* EAExtensionsTests.swift in Sources */,
 				9E81D14D2AF452DE004095CF /* EARepeatTimerTests.swift in Sources */,
 				9E81D14C2AF452DE004095CF /* EAReschedulerTests.swift in Sources */,

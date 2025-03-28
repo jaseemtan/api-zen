@@ -12,7 +12,6 @@ import CoreData
 
 public class EWorkspace: NSManagedObject, Entity {
     static var db: CoreDataService = { CoreDataService.shared }()
-    static var ck: EACloudKit = { EACloudKit.shared }()
     public var recordType: String { return "Workspace" }
     
     /// Checks if the default workspace does not have any change or is just after a reset (is new)
@@ -78,13 +77,6 @@ public class EWorkspace: NSManagedObject, Entity {
         self.markForDelete = status
     }
     
-    static func getWorkspace(_ record: CKRecord, ctx: NSManagedObjectContext) -> EWorkspace? {
-        if let ref = record["workspace"] as? CKRecord.Reference {
-            return self.db.getWorkspace(id: EACloudKit.shared.entityID(recordID: ref.recordID), ctx: ctx)
-        }
-        return nil
-    }
-    
     public static func fromDictionary(_ dict: [String: Any]) -> EWorkspace? {
         guard let id = dict["id"] as? String else { return nil }
         let isSyncEnabled = dict["isSyncEnabled"] as? Bool ?? true
@@ -118,52 +110,6 @@ public class EWorkspace: NSManagedObject, Entity {
         Log.debug("dict: \(dict)")
         isSyncEnabled ? self.db.refreshAllCKManagedObjects() : self.db.refreshAllLocalManagedObjects()
         return ws
-    }
-    
-    static func getCKRecord(id: String, ctx: NSManagedObjectContext) -> CKRecord? {
-        var ws: EWorkspace!
-        let zoneID = self.ck.zoneID(workspaceId: id)
-        let ckWsID = self.ck.recordID(entityId: id, zoneID: zoneID)
-        var ckWs: CKRecord!
-        ctx.performAndWait {
-            ws = self.db.getWorkspace(id: id, ctx: ctx)
-            ckWs = self.ck.createRecord(recordID: ckWsID, recordType: ws.recordType)
-            ws.updateCKRecord(ckWs)
-        }
-        return ckWs
-    }
-    
-    func updateCKRecord(_ record: CKRecord) {
-        // isZoneSynced is not added to cloud because it requires one additional write operation. Zone and workspace are saved together as a list.
-        self.managedObjectContext?.performAndWait {
-            record["created"] = self.created! as CKRecordValue
-            record["desc"] = (self.desc ?? "") as CKRecordValue
-            record["id"] = self.getId() as CKRecordValue
-            record["isActive"] = self.isActive as CKRecordValue  // Is set for default workspace when a project gets added which enables syncing. For custom workspaces, this is enabled.
-            record["isSyncEnabled"] = self.isSyncEnabled as CKRecordValue
-            record["modified"] = self.modified! as CKRecordValue
-            record["name"] = self.name! as CKRecordValue
-            record["order"] = self.order! as CKRecordValue
-            record["saveResponse"] = self.saveResponse as CKRecordValue
-            record["syncDisabled"] = (self.syncDisabled ?? Date.distantPast) as CKRecordValue
-            record["version"] = self.version as CKRecordValue
-        }
-    }
-    
-    func updateFromCKRecord(_ record: CKRecord) {
-        self.managedObjectContext?.performAndWait {
-            if let x = record["created"] as? Date { self.created = x }
-            if let x = record["desc"] as? String { self.desc = x }
-            if let x = record["id"] as? String { self.id = x }
-            if let x = record["isActive"] as? Bool { self.isActive = x }
-            if let x = record["isSyncEnabled"] as? Bool { self.isSyncEnabled = x }
-            if let x = record["modified"] as? Date { self.modified = x }
-            if let x = record["name"] as? String { self.name = x }
-            if let x = record["order"] as? NSDecimalNumber { self.order = x }
-            if let x = record["saveResponse"] as? Bool { self.saveResponse = x }
-            if let x = record["syncDisabled"] as? Date { self.syncDisabled = x }
-            if let x = record["version"] as? Int64 { self.version = x }
-        }
     }
     
     public func toDictionary() -> [String: Any] {

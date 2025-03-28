@@ -22,7 +22,6 @@ struct EditRequestInfo: Hashable {
 class App: NSObject {
     @objc static let shared: App = App()
     var popupBottomContraints: NSLayoutConstraint?
-    // private var dbSvc = PersistenceService.shared
     private lazy var localdb = { CoreDataService.shared }()
     private let utils = EAUtils.shared
     private let nc = NotificationCenter.default
@@ -112,7 +111,6 @@ class App: NSObject {
     
     /// Invoked before application termination to perform save state, clean up.
     func saveState() {
-        //self.localdb.saveBackgroundContext(isForce: true)
         self.localdb.saveMainContext()
     }
 

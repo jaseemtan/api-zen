@@ -80,8 +80,6 @@ public protocol Entity: NSManagedObject, Hashable, Identifiable {
     func setModified(_ date: Date)
     func setModifiedUTC(_ date: Date)
     func getVersion() -> Int64
-    func getZoneID() -> CKRecordZone.ID
-    func getRecordID() -> CKRecord.ID
     func setMarkedForDelete(_ status: Bool)
     func willSave()
 //    func fromDictionary(_ dict: [String: Any])
@@ -89,14 +87,6 @@ public protocol Entity: NSManagedObject, Hashable, Identifiable {
 }
 
 extension Entity {
-    public func getZoneID() -> CKRecordZone.ID {
-        return EACloudKit.shared.zoneID(workspaceId: self.getWsId())
-    }
-    
-    public func getRecordID() -> CKRecord.ID {
-        return EACloudKit.shared.recordID(entityId: self.getId(), zoneID: self.getZoneID())
-    }
-    
     // Hashable conformance
     public func hash(into hasher: inout Hasher) {
         hasher.combine(objectID)

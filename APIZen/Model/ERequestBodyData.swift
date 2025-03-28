@@ -12,7 +12,6 @@ import CoreData
 
 public class ERequestBodyData: NSManagedObject, Entity {
     static var db: CoreDataService = { CoreDataService.shared }()
-    static var ck: EACloudKit = { EACloudKit.shared }()
     public var recordType: String { return "RequestBodyData" }
     
     public func getId() -> String {
@@ -67,13 +66,6 @@ public class ERequestBodyData: NSManagedObject, Entity {
         //if self.modified < AppState.editRequestSaveTs { self.modified = AppState.editRequestSaveTs }
     }
     
-    static func getRequestBodyDataFromReference(_ ref: CKRecord.Reference, record: CKRecord, ctx: NSManagedObjectContext) -> ERequestBodyData? {
-        let reqBodyDataId = self.ck.entityID(recordID: ref.recordID)
-        if let bodyData = self.db.getRequestBodyData(id: reqBodyDataId, ctx: ctx) { return bodyData }
-        let bodyData = self.db.createRequestBodyData(id: reqBodyDataId, wsId: record.getWsId(), checkExists: false, ctx: ctx)
-        return bodyData
-    }
-    
     public static func fromDictionary(_ dict: [String: Any], ctx: NSManagedObjectContext) -> ERequestBodyData? {
         guard let id = dict["id"] as? String, let wsId = dict["wsId"] as? String else { return nil }
         guard let body = self.db.createRequestBodyData(id: id, wsId: wsId, ctx: ctx) else { return nil }
@@ -105,50 +97,6 @@ public class ERequestBodyData: NSManagedObject, Entity {
         body.markForDelete = false
         self.db.saveMainContext()
         return body
-    }
-    
-    static func getCKRecord(id: String, reqId: String, projId: String, wsId: String, ctx: NSManagedObjectContext) -> CKRecord? {
-        var reqBodyData: ERequestBodyData!
-        var ckReqBodyData: CKRecord!
-        guard let ckReq = ERequest.getCKRecord(id: reqId, projId: projId, wsId: wsId, ctx: ctx) else { return ckReqBodyData }
-        ctx.performAndWait {
-            reqBodyData = db.getRequestBodyData(id: id, ctx: ctx)
-            let zoneID = reqBodyData.getZoneID()
-            let ckReqBodyDataID = self.ck.recordID(entityId: id, zoneID: zoneID)
-            ckReqBodyData = self.ck.createRecord(recordID: ckReqBodyDataID, recordType: reqBodyData.recordType)
-            reqBodyData.updateCKRecord(ckReqBodyData, request: ckReq)
-        }
-        return ckReqBodyData
-    }
-    
-    func updateCKRecord(_ record: CKRecord, request: CKRecord) {
-        self.managedObjectContext?.performAndWait {
-            record["created"] = self.created! as CKRecordValue
-            record["modified"] = self.modified! as CKRecordValue
-            record["id"] = self.getId() as CKRecordValue
-            record["wsId"] = self.getWsId() as CKRecordValue
-            record["json"] = (self.json ?? "") as CKRecordValue
-            record["raw"] = (self.raw ?? "") as CKRecordValue
-            record["selected"] = self.selected as CKRecordValue
-            record["version"] = self.version as CKRecordValue
-            record["xml"] = (self.xml ?? "") as CKRecordValue
-            let ref = CKRecord.Reference(record: request, action: .deleteSelf)
-            record["request"] = ref as CKRecordValue
-        }
-    }
-    
-    func updateFromCKRecord(_ record: CKRecord, ctx: NSManagedObjectContext) {
-        if let moc = self.managedObjectContext {
-            if let x = record["created"] as? Date { self.created = x }
-            if let x = record["modified"] as? Date { self.modified = x }
-            if let x = record["id"] as? String { self.id = x }
-            if let x = record["json"] as? String { self.json = x }
-            if let x = record["raw"] as? String { self.raw = x }
-            if let x = record["selected"] as? Int64 { self.selected = x }
-            if let x = record["version"] as? Int64 { self.version = x }
-            if let x = record["xml"] as? String { self.xml = x }
-            if let ref = record["request"] as? CKRecord.Reference, let req = ERequest.getRequestFromReference(ref, record: record, ctx: moc) { self.request = req }
-        }
     }
     
     public func toDictionary() -> [String : Any] {

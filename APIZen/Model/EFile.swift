@@ -12,7 +12,6 @@ import CoreData
 
 public class EFile: NSManagedObject, Entity {
     static var db: CoreDataService = { CoreDataService.shared }()
-    static var ck: EACloudKit = { EACloudKit.shared }()
     public var recordType: String { return "File" }
     
     public func getId() -> String {
@@ -67,13 +66,6 @@ public class EFile: NSManagedObject, Entity {
         //if self.modified < AppState.editRequestSaveTs { self.modified = AppState.editRequestSaveTs }
     }
     
-    static func getRequestData(_ record: CKRecord, ctx: NSManagedObjectContext) -> ERequestData? {
-        if let ref = record["requestData"] as? CKRecord.Reference {
-            return self.db.getRequestData(id: self.ck.entityID(recordID: ref.recordID), ctx: ctx)
-        }
-        return nil
-    }
-    
     public static func fromDictionary(_ dict: [String: Any], ctx: NSManagedObjectContext) -> EFile? {
         guard let id = dict["id"] as? String, let wsId = dict["wsId"] as? String, let _data = dict["data"] as? String,
             let name = dict["name"] as? String, let _type = dict["type"] as? Int64, let type = RequestDataType(rawValue: _type.toInt()) else { return nil }
@@ -90,64 +82,6 @@ public class EFile: NSManagedObject, Entity {
         if let x = dict["version"] as? Int64 { file.version = x }
         file.markForDelete = false
         return file
-    }
-    
-    /// EFile belongs to ERequestData with belongs to ERequestBodyData
-    static func getCKRecord(id: String, reqBodyId: String, reqDataId: String, reqId: String, projId: String, wsId: String, reqType: RequestDataType, ctx: NSManagedObjectContext) -> CKRecord? {
-        var file: EFile!
-        var ckFile: CKRecord!
-        // We fetch ERequestData which belongs to body
-        guard let ckReqData = ERequestData.getCKRecord(id: reqDataId, reqBodyId: reqBodyId, reqId: reqId, projId: projId, wsId: wsId, reqType: reqType, ctx: ctx) else { return ckFile }
-        ctx.performAndWait {
-            file = db.getFileData(id: id, ctx: ctx)
-            let zoneID = file.getZoneID()
-            let ckFileID = self.ck.recordID(entityId: id, zoneID: zoneID)
-            ckFile = self.ck.createRecord(recordID: ckFileID, recordType: file.recordType)
-            file.updateCKRecord(ckFile, requestData: ckReqData)
-        }
-        return ckFile
-    }
-    
-    func updateCKRecord(_ record: CKRecord, requestData: CKRecord) {
-        self.managedObjectContext?.performAndWait {
-            record["created"] = self.created! as CKRecordValue
-            record["modified"] = self.modified! as CKRecordValue
-            if let name = self.name, let data = self.data {
-                let url = EAFileManager.getTemporaryURL(name)
-                do {
-                    try data.write(to: url)
-                    record["data"] = CKAsset(fileURL: url)
-                } catch let error {
-                    Log.error("Error: \(error)")
-                }
-            }
-            record["id"] = self.getId() as CKRecordValue
-            record["wsId"] = self.getWsId() as CKRecordValue
-            record["name"] = (self.name ?? "") as CKRecordValue
-            record["type"] = self.type as CKRecordValue
-            record["version"] = self.version as CKRecordValue
-            let ref = CKRecord.Reference(record: requestData, action: .deleteSelf)
-            record["requestData"] = ref
-        }
-    }
-    
-    func updateFromCKRecord(_ record: CKRecord, ctx: NSManagedObjectContext) {
-        if let moc = self.managedObjectContext {
-            moc.performAndWait {
-                if let x = record["created"] as? Date { self.created = x }
-                if let x = record["modified"] as? Date { self.modified = x }
-                if let x = record["data"] as? CKAsset, let url = x.fileURL {
-                    do { self.data = try Data(contentsOf: url) } catch let error { Log.error("Error getting data from file url: \(error)") }
-                }
-                if let x = record["id"] as? String { self.id = x }
-                if let x = record["name"] as? String { self.name = x }
-                if let x = record["type"] as? Int64 { self.type = x }
-                if let x = record["version"] as? Int64 { self.version = x }
-                if let ref = record["requestData"] as? CKRecord.Reference, let reqData = ERequestData.getRequestDataFromReference(ref, record: record, ctx: moc) {
-                    self.requestData = reqData
-                }
-            }
-        }
     }
     
     public func toDictionary() -> [String : Any] {

@@ -12,7 +12,6 @@ import CoreData
 
 public class EProject: NSManagedObject, Entity {
     static var db: CoreDataService = { CoreDataService.shared }()
-    static var ck: EACloudKit = { EACloudKit.shared }()
     public var recordType: String { return "Project" }
     
     public func getId() -> String {
@@ -67,22 +66,6 @@ public class EProject: NSManagedObject, Entity {
         //if self.modified < AppState.editRequestSaveTs { self.modified = AppState.editRequestSaveTs }
     }
     
-    /// Returns project from the given record reference. If the project does not exists, one will be created.
-    static func getProjectFromReference(_ ref: CKRecord.Reference, record: CKRecord, ctx: NSManagedObjectContext) -> EProject? {
-        let projId = self.ck.entityID(recordID: ref.recordID)
-        let wsId = record.getWsId()
-        if let proj = self.db.getProject(id: projId, ctx: ctx) { return proj }
-        let proj = self.db.createProject(id: projId, wsId: wsId, name: "", desc: "", checkExists: false, ctx: ctx)
-        return proj
-    }
-    
-    static func getRequestRecordIDs(_ record: CKRecord) -> [CKRecord.ID] {
-        if let xs = record["requests"] as? [CKRecord.Reference] {
-            return xs.map { ref -> CKRecord.ID in ref.recordID }
-        }
-        return []
-    }
-    
     public static func fromDictionary(_ dict: [String: Any], ctx: NSManagedObjectContext) -> EProject? {
         guard let id = dict["id"] as? String, let wsId = dict["wsId"] as? String else { return nil }
         guard let proj = self.db.createProject(id: id, wsId: wsId, name: "", desc: "", ctx: ctx) else { return nil }
@@ -109,51 +92,6 @@ public class EProject: NSManagedObject, Entity {
         proj.markForDelete = false
         self.db.saveMainContext()
         return proj
-    }
-    
-    static func getCKRecord(id: String, wsId: String, ctx: NSManagedObjectContext) -> CKRecord? {
-        var proj: EProject!
-        var ckProj: CKRecord!
-        guard let ckWs = EWorkspace.getCKRecord(id: wsId, ctx: ctx) else { return ckProj }
-        ctx.performAndWait {
-            proj = db.getProject(id: id, ctx: ctx)
-            let zoneID = proj.getZoneID()
-            let ckProjID = self.ck.recordID(entityId: id, zoneID: zoneID)
-            ckProj = self.ck.createRecord(recordID: ckProjID, recordType: proj.recordType)
-            proj.updateCKRecord(ckProj, workspace: ckWs)
-        }
-        return ckProj
-    }
-    
-    func updateCKRecord(_ record: CKRecord, workspace: CKRecord) {
-        self.managedObjectContext?.performAndWait {
-            record["created"] = self.created! as CKRecordValue
-            record["modified"] = self.modified! as CKRecordValue
-            record["desc"] = (self.desc ?? "") as CKRecordValue
-            record["id"] = self.getId() as CKRecordValue
-            record["wsId"] = self.getWsId() as CKRecordValue
-            record["name"] = (self.name ?? "") as CKRecordValue
-            record["order"] = self.order! as CKRecordValue
-            record["version"] = self.version as CKRecordValue
-            let ref = CKRecord.Reference(record: workspace, action: .deleteSelf)
-            record["workspace"] = ref
-        }
-    }
-    
-    func updateFromCKRecord(_ record: CKRecord, ctx: NSManagedObjectContext) {
-        if let moc = self.managedObjectContext {
-            moc.performAndWait {
-                if let x = record["created"] as? Date { self.created = x }
-                if let x = record["modified"] as? Date { self.modified = x }
-                if let x = record["desc"] as? String { self.desc = x }
-                if let x = record["id"] as? String { self.id = x }
-                if let x = record["wsId"] as? String { self.wsId = x }
-                if let x = record["name"] as? String { self.name = x }
-                if let x = record["order"] as? NSDecimalNumber { self.order = x }
-                if let x = record["version"] as? Int64 { self.version = x }
-                if let ws = EWorkspace.getWorkspace(record, ctx: moc) { self.workspace = ws }
-            }
-        }
     }
     
     public func toDictionary() -> [String: Any] {

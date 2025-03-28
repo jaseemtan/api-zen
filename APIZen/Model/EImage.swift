@@ -12,7 +12,6 @@ import CoreData
 
 public class EImage: NSManagedObject, Entity {
     static var db: CoreDataService = { CoreDataService.shared }()
-    static var ck: EACloudKit = { EACloudKit.shared }()
     public var recordType: String { return "Image" }
     
     public func getId() -> String {
@@ -67,18 +66,6 @@ public class EImage: NSManagedObject, Entity {
         //if self.modified < AppState.editRequestSaveTs { self.modified = AppState.editRequestSaveTs }
     }
     
-    static func addRequestDataReference(_ reqData: CKRecord, image: CKRecord) {
-        let ref = CKRecord.Reference(record: reqData, action: .none)
-        image["requestData"] = ref
-    }
-    
-    static func getRequestData(_ record: CKRecord, ctx: NSManagedObjectContext) -> ERequestData? {
-        if let ref = record["requestData"] as? CKRecord.Reference {
-            return self.db.getRequestData(id: self.ck.entityID(recordID: ref.recordID), ctx: ctx)
-        }
-        return nil
-    }
-    
     public static func fromDictionary(_ dict: [String: Any], ctx: NSManagedObjectContext) -> EImage? {
         guard let id = dict["id"] as? String, let wsId = dict["wsId"] as? String, let data = dict["data"] as? String,
         let name = dict["name"] as? String, let type = dict["type"] as? String else { return nil }
@@ -90,66 +77,6 @@ public class EImage: NSManagedObject, Entity {
         if let x = dict["version"] as? Int64 { image.version = x }
         image.markForDelete = false
         return image
-    }
-    
-    /// EImage belongs to ERequestData with belongs to ERequestBodyData. ERequestData can be form or binary type.
-    static func getCKRecord(id: String, reqBodyId: String, reqDataId: String, reqId: String, projId: String, wsId: String, reqType: RequestDataType, ctx: NSManagedObjectContext) -> CKRecord? {
-        var image: EImage!
-        var ckImage: CKRecord!
-        // We fetch ERequestData which belongs to body
-        guard let ckReqData = ERequestData.getCKRecord(id: reqDataId, reqBodyId: reqBodyId, reqId: reqId, projId: projId, wsId: wsId, reqType: reqType, ctx: ctx) else { return ckImage }
-        ctx.performAndWait {
-            image = db.getImageData(id: id, ctx: ctx)
-            let zoneID = image.getZoneID()
-            let ckImageID = self.ck.recordID(entityId: id, zoneID: zoneID)
-            ckImage = self.ck.createRecord(recordID: ckImageID, recordType: image.recordType)
-            image.updateCKRecord(ckImage, requestData: ckReqData)
-        }
-        return ckImage
-    }
-    
-    func updateCKRecord(_ record: CKRecord, requestData: CKRecord) {
-        self.managedObjectContext?.performAndWait {
-            record["created"] = self.created! as CKRecordValue
-            record["modified"] = self.modified! as CKRecordValue
-            if let name = self.name, let data = self.data {
-                let url = EAFileManager.getTemporaryURL(name)
-                do {
-                    try data.write(to: url)
-                    record["data"] = CKAsset(fileURL: url)
-                } catch let error {
-                    Log.error("Error: \(error)")
-                }
-            }
-            record["id"] = self.getId() as CKRecordValue
-            record["wsId"] = self.getWsId() as CKRecordValue
-            record["isCameraMode"] = self.isCameraMode as CKRecordValue
-            record["name"] = (self.name ?? "") as CKRecordValue
-            record["type"] = (self.type ?? "") as CKRecordValue
-            record["version"] = self.version as CKRecordValue
-            let ref = CKRecord.Reference(record: requestData, action: .deleteSelf)
-            record["requestData"] = ref
-        }
-    }
-    
-    func updateFromCKRecord(_ record: CKRecord, ctx: NSManagedObjectContext) {
-        if let moc = self.managedObjectContext {
-            moc.performAndWait {
-                if let x = record["created"] as? Date { self.created = x }
-                if let x = record["modified"] as? Date { self.modified = x }
-                if let x = record["data"] as? CKAsset, let url = x.fileURL {
-                    do { self.data = try Data(contentsOf: url) } catch let error { Log.error("Error getting data from file url: \(error)") }
-                }
-                if let x = record["id"] as? String { self.id = x }
-                if let x = record["isCameraMode"] as? Bool { self.isCameraMode = x }
-                if let x = record["name"] as? String { self.name = x }
-                if let x = record["type"] as? String { self.type = x }
-                if let x = record["version"] as? Int64 { self.version = x }
-                if let ref = record["requestData"] as? CKRecord.Reference, let reqData = ERequestData.getRequestDataFromReference(ref, record: record, ctx: moc) {
-                    self.requestData = reqData
-                }
-            }
-        }
     }
     
     public func toDictionary() -> [String : Any] {
