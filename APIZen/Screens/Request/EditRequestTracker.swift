@@ -8,6 +8,8 @@
 
 import Foundation
 import CoreData
+import AZCommon
+import AZData
 
 /// Used to track add/edit request changes state. The request entity associated should be in a background context until saved.
 public class EditRequestTracker {

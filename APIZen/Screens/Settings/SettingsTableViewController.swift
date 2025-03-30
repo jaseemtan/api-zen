@@ -10,6 +10,8 @@ import Foundation
 import UIKit
 import StoreKit
 import MessageUI
+import AZCommon
+import AZData
 
 class SettingsTableViewController: APITesterProTableViewController {
     private let app = App.shared
@@ -19,7 +21,7 @@ class SettingsTableViewController: APITesterProTableViewController {
     // private lazy var db = { PersistenceService.shared }()
     private lazy var workspace = { self.app.getSelectedWorkspace() }()
     @IBOutlet weak var aboutTitle: UILabel!
-    private lazy var utils = { EAUtils.shared }()
+    private lazy var utils = { AZUtils.shared }()
     private var indicatorView: UIView?
     private var exportFileURL: URL?
     
@@ -68,7 +70,7 @@ class SettingsTableViewController: APITesterProTableViewController {
     }
     
     func updateAbout() {
-        let name = Const.appName
+        let name = AZConst.appName
         let version = self.utils.appVersion() ?? ""
         self.aboutTitle.text = version.isEmpty ? "\(name)" : "\(name) v\(version)"
     }
@@ -80,7 +82,7 @@ class SettingsTableViewController: APITesterProTableViewController {
     func rateApp() {
         if #available(iOS 10.3, *) {
             SKStoreReviewController.requestReview()
-        } else if let url = URL(string: "itms-apps://itunes.apple.com/app/" + Const.appId) {
+        } else if let url = URL(string: "itms-apps://itunes.apple.com/app/" + AZConst.appId) {
             UIApplication.shared.open(url, options: [:], completionHandler: nil)
         }
     }
@@ -89,20 +91,20 @@ class SettingsTableViewController: APITesterProTableViewController {
         if MFMailComposeViewController.canSendMail() {
             let mail = MFMailComposeViewController()
             mail.mailComposeDelegate = self
-            mail.setToRecipients([Const.feedbackEmail])
+            mail.setToRecipients([AZConst.feedbackEmail])
             mail.setSubject("API Zen Feedback")
             if let version = self.utils.appVersion() {
                 mail.setMessageBody("<br /><p>App version: v\(version)</p>", isHTML: true)
             }
             self.present(mail, animated: true)
         } else {
-            UI.viewToast("Unable to compose e-mail. Please send your feedback to \(Const.feedbackEmail).", vc: self)
+            UI.viewToast("Unable to compose e-mail. Please send your feedback to \(AZConst.feedbackEmail).", vc: self)
         }
     }
     
     func shareLink() {
-        if let url = URL(string: Const.appURL), let image = UIImage(named: "api-tester-pro-icon") {
-            let objectsToShare: [Any] = [Const.shareText, url, image]
+        if let url = URL(string: AZConst.appURL), let image = UIImage(named: "api-tester-pro-icon") {
+            let objectsToShare: [Any] = [AZConst.shareText, url, image]
             let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: nil)
             if UIDevice.current.userInterfaceIdiom == .pad {
                 if let popup = activityVC.popoverPresentationController {

@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import WebKit
+import AZCommon
 
 extension Notification.Name {
     static let editorTextDidChange = Notification.Name("editor-text-did-change")

@@ -9,6 +9,9 @@
 import Foundation
 import UIKit
 import CoreData
+import AZCommon
+import AZData
+import AZPhone
 
 typealias RequestVC = EditRequestTableViewController
 
@@ -70,7 +73,7 @@ class EditRequestTableViewController: APITesterProTableViewController, UITextFie
     var isEndEditing = false
     var isOptionFromNotif = false
     private let docPicker = EADocumentPicker.shared
-    private let utils = EAUtils.shared
+    private let utils = AZUtils.shared
     private let tvUtils = KVTableViewUtils.shared
     private lazy var localdb = { CoreDataService.shared }()
     private lazy var localdbSvc = { PersistenceService.shared }()
@@ -455,8 +458,8 @@ class EditRequestTableViewController: APITesterProTableViewController, UITextFie
     }
     
     @objc func requestMethodDidChange(_ notif: Notification) {
-        if let info = notif.userInfo as? [String: Any], let name = info[Const.requestMethodNameKey] as? String,
-            let idx = info[Const.optionSelectedIndexKey] as? Int {
+        if let info = notif.userInfo as? [String: Any], let name = info[AZConst.requestMethodNameKey] as? String,
+            let idx = info[AZConst.optionSelectedIndexKey] as? Int {
             DispatchQueue.main.async {
                 self.methodLabel.text = name
                 self.request.method = self.methods[idx]
@@ -469,7 +472,7 @@ class EditRequestTableViewController: APITesterProTableViewController, UITextFie
     }
     
     @objc func customRequestMethodDidAdd(_ notif: Notification) {
-        if let info = notif.userInfo as? [String: Any], let name = info[Const.requestMethodNameKey] as? String,
+        if let info = notif.userInfo as? [String: Any], let name = info[AZConst.requestMethodNameKey] as? String,
            let data = self.request, let ctx = data.managedObjectContext {
             if let method = self.localdb.createRequestMethodData(id: self.localdb.requestMethodDataId(), wsId: data.getWsId(), name: name, checkExists: true, ctx: ctx) {
                 method.order = self.methods.last!.order!.inc().int()
@@ -479,13 +482,13 @@ class EditRequestTableViewController: APITesterProTableViewController, UITextFie
                 self.requestTracker.trackNewRequestMethod(method)
                 self.requestTracker.didRequestChange(self.request, callback: { [weak self] status in self?.updateDoneButton(status) })
                 self.nc.post(name: .optionPickerShouldReload, object: self,
-                             userInfo: [Const.optionModelKey: method, Const.optionDataActionKey: OptionDataAction.add])
+                             userInfo: [AZConst.optionModelKey: method, AZConst.optionDataActionKey: OptionDataAction.add])
             }
         }
     }
     
     @objc func customRequestMethodShouldDelete(_ notif: Notification) {
-        if let info = notif.userInfo as? [String: Any], let data = info[Const.optionModelKey] as? ERequestMethodData, let ctx = data.managedObjectContext {
+        if let info = notif.userInfo as? [String: Any], let data = info[AZConst.optionModelKey] as? ERequestMethodData, let ctx = data.managedObjectContext {
             if let id = data.id {
                 var selectedIdx = self.methods.firstIndex(of: self.request.method!) ?? 0
                 if self.request.method == data {  // deleting the selected request method => choose GET as the selected
@@ -498,13 +501,13 @@ class EditRequestTableViewController: APITesterProTableViewController, UITextFie
                 self.request.method = self.methods.first
                 self.requestTracker.didRequestChange(self.request, callback: { [weak self] status in self?.updateDoneButton(status) })
                 self.nc.post(name: .optionPickerShouldReload, object: self,
-                             userInfo: [Const.optionDataActionKey: OptionDataAction.delete, Const.dataKey: id, Const.optionSelectedIndexKey: selectedIdx])
+                             userInfo: [AZConst.optionDataActionKey: OptionDataAction.delete, AZConst.dataKey: id, AZConst.optionSelectedIndexKey: selectedIdx])
             }
         }
     }
  
     @objc func requestBodyDidChange(_ notif: Notification) {
-        if let info = notif.userInfo as? [String: Any], let idx = info[Const.optionSelectedIndexKey] as? Int {
+        if let info = notif.userInfo as? [String: Any], let idx = info[AZConst.optionSelectedIndexKey] as? Int {
             let wsId = self.request.getWsId()
             // If form is selected and there are no fields add one
             if idx == RequestBodyType.form.rawValue, let xs = self.request.body?.form, xs.isEmpty {
@@ -543,13 +546,13 @@ class EditRequestTableViewController: APITesterProTableViewController, UITextFie
     
     @objc func presentOptionsScreen(_ notif: Notification) {
         if let info = notif.userInfo as? [String: Any] {
-            let opt = info[Const.optionTypeKey] as? Int ?? 0
+            let opt = info[AZConst.optionTypeKey] as? Int ?? 0
             guard let type = OptionPickerType(rawValue: opt) else { return }
-            let modelIndex = info[Const.modelIndexKey] as? Int ?? 0
-            let selectedIndex = info[Const.optionSelectedIndexKey] as? Int ?? 0
-            let data = info[Const.optionDataKey] as? [String] ?? []
-            let title = info[Const.optionTitleKey] as? String ?? ""
-            let model = info[Const.optionModelKey]
+            let modelIndex = info[AZConst.modelIndexKey] as? Int ?? 0
+            let selectedIndex = info[AZConst.optionSelectedIndexKey] as? Int ?? 0
+            let data = info[AZConst.optionDataKey] as? [String] ?? []
+            let title = info[AZConst.optionTitleKey] as? String ?? ""
+            let model = info[AZConst.optionModelKey]
             DispatchQueue.main.async {
                 self.app.presentOptionPicker(type: type, title: title, modelIndex: modelIndex, selectedIndex: selectedIndex, data: data, model: model,
                                              storyboard: self.storyboard!, navVC: self.navigationController!)
@@ -1085,11 +1088,11 @@ class KVEditBodyContentCell: UITableViewCell, KVEditContentCellType, UICollectio
         guard let ctx = request.managedObjectContext, let body = request.body else { return }
         selected = Int(body.selected)
         self.nc.post(name: .optionScreenShouldPresent, object: self,
-                     userInfo: [Const.optionTypeKey: OptionPickerType.requestBodyForm.rawValue,
-                                Const.modelIndexKey: self.tag,
-                                Const.optionSelectedIndexKey: selected as Any,
-                                Const.optionDataKey: RequestBodyType.allCases as [Any],
-                                Const.optionModelKey: self.localdb.getRequestBodyData(id: self.bodyDataId, ctx: ctx) as Any])
+                     userInfo: [AZConst.optionTypeKey: OptionPickerType.requestBodyForm.rawValue,
+                                AZConst.modelIndexKey: self.tag,
+                                AZConst.optionSelectedIndexKey: selected as Any,
+                                AZConst.optionDataKey: RequestBodyType.allCases as [Any],
+                                AZConst.optionModelKey: self.localdb.getRequestBodyData(id: self.bodyDataId, ctx: ctx) as Any])
     }
     
     func getDeleteView() -> UIView {
@@ -1319,7 +1322,7 @@ class KVEditBodyFieldTableViewCell: UITableViewCell, UITextFieldDelegate, UIColl
     var selectedFieldFormat: RequestBodyFormFieldFormatType = .text
     private let app = App.shared
     private lazy var localdb = { CoreDataService.shared }()
-    private let utils = EAUtils.shared
+    private let utils = AZUtils.shared
     var reqDataId = ""  // Will be empty if there are no fields added
 
     override func awakeFromNib() {
@@ -1389,11 +1392,11 @@ class KVEditBodyFieldTableViewCell: UITableViewCell, UITextFieldDelegate, UIColl
         editTVDelegate.getVC().addRequestBodyToState()
         let reqData = self.localdb.getRequestData(id: self.reqDataId, ctx: ctx)
         self.nc.post(name: .optionScreenShouldPresent, object: self,
-                     userInfo: [Const.optionTypeKey: OptionPickerType.requestBodyFormField.rawValue,
-                                Const.modelIndexKey: self.tag,
-                                Const.optionSelectedIndexKey: self.selectedFieldFormat.rawValue,
-                                Const.optionDataKey: RequestBodyFormFieldFormatType.allCases,
-                                Const.optionModelKey: reqData as Any])
+                     userInfo: [AZConst.optionTypeKey: OptionPickerType.requestBodyFormField.rawValue,
+                                AZConst.modelIndexKey: self.tag,
+                                AZConst.optionSelectedIndexKey: self.selectedFieldFormat.rawValue,
+                                AZConst.optionDataKey: RequestBodyFormFieldFormatType.allCases,
+                                AZConst.optionModelKey: reqData as Any])
     }
     
     @objc func presentDocPicker() {
@@ -1509,7 +1512,7 @@ class KVEditBodyFieldTableView: UITableView, UITableViewDelegate, UITableViewDat
     private let app = App.shared
     private lazy var localdb = { CoreDataService.shared }()
     private lazy var localdbSvc = { PersistenceService.shared }()
-    private let utils = EAUtils.shared
+    private let utils = AZUtils.shared
     weak var editTVDelegate: KVEditTableViewDelegate?
     
     deinit {
@@ -1544,8 +1547,8 @@ class KVEditBodyFieldTableView: UITableView, UITableViewDelegate, UITableViewDat
     }
     
     @objc func requestBodyFieldDidChange(_ notif: Notification) {
-        if let info = notif.userInfo as? [String: Any], let idx = info[Const.optionSelectedIndexKey] as? Int,
-            let reqData = info[Const.optionModelKey] as? ERequestData {
+        if let info = notif.userInfo as? [String: Any], let idx = info[AZConst.optionSelectedIndexKey] as? Int,
+            let reqData = info[AZConst.optionModelKey] as? ERequestData {
             if let request = self.editTVDelegate?.getRequest() {
                 self.editTVDelegate?.didRequestChange(request, callback: { status in self.editTVDelegate?.getVC().updateDoneButton(status) })
             }
@@ -1598,7 +1601,7 @@ class KVEditBodyFieldTableView: UITableView, UITableViewDelegate, UITableViewDat
                         switch result {
                         case .success(let x):
                             Log.debug("body form field creating file attachment")
-                            let name = self.app.getFileName(element)
+                            let name = self.utils.getFileName(element)
                             if let file = self.localdb.createFile(data: x, wsId: wsId, name: name, path: element,
                                                                   type: self.selectedType == .form ? .form : .multipart, checkExists: true, ctx: ctx) {
                                 ctx.performAndWait {
@@ -1868,7 +1871,7 @@ class KVEditTableViewManager: NSObject, UITableViewDelegate, UITableViewDataSour
     var tableViewType: KVTableViewType = .header
     private lazy var localdb = { CoreDataService.shared }()
     private lazy var localdbSvc = { PersistenceService.shared }()
-    private let utils = EAUtils.shared
+    private let utils = AZUtils.shared
     private let app = App.shared
     private let nc = NotificationCenter.default
     
@@ -2015,7 +2018,7 @@ class KVEditTableViewManager: NSObject, UITableViewDelegate, UITableViewDataSour
                                     self.delegate?.getRequestTracker().trackDeletedEntity(file)
                                 }
                             }
-                            let name = self.app.getFileName(fileURL)
+                            let name = self.utils.getFileName(fileURL)
                             if let file = self.localdb.createFile(data: fileData, wsId: data.getWsId(), name: name, path: fileURL,
                                                                   type: .binary, checkExists: true, ctx: ctx) {
                                 file.requestData = binary

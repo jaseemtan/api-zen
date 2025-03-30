@@ -9,6 +9,8 @@
 import Foundation
 import UIKit
 import CoreData
+import AZCommon
+import AZData
 
 extension Notification.Name {
     static let requestVCShouldPresent = Notification.Name("request-vc-should-present")
@@ -22,7 +24,7 @@ class RequestTabBarController: UITabBarController, UITabBarControllerDelegate {
     private var request: ERequest?
     var responseData: ResponseData?
     var segView: UISegmentedControl!
-    private lazy var utils = { EAUtils.shared }()
+    private lazy var utils = { AZUtils.shared }()
     private lazy var localdb = { CoreDataService.shared }()
     private let nc = NotificationCenter.default
     private var tabBarViewSelectedTab: Tab = .request  // Renamed from selectedTab as iOS 18 adds this property to the SDK.
@@ -149,14 +151,14 @@ class RequestTabBarController: UITabBarController, UITabBarControllerDelegate {
     func segmentControl() -> UISegmentedControl {
         if self.segView != nil { return self.segView }
         self.segView = UISegmentedControl(items: ResponseMode.allCases)
-        self.segView.selectedSegmentIndex = self.utils.getValue(Const.responseSegmentIndexKey) as? Int ?? ResponseMode.info.rawValue
+        self.segView.selectedSegmentIndex = self.utils.getValue(AZConst.responseSegmentIndexKey) as? Int ?? ResponseMode.info.rawValue
         self.segView.sizeToFit()
         self.segView.addTarget(self, action: #selector(self.segmentDidChange(_:)), for: .valueChanged)
         return self.segView!
     }
     
     func viewNavbarSegment() {
-        self.segView.selectedSegmentIndex = self.utils.getValue(Const.responseSegmentIndexKey) as? Int ?? ResponseMode.info.rawValue
+        self.segView.selectedSegmentIndex = self.utils.getValue(AZConst.responseSegmentIndexKey) as? Int ?? ResponseMode.info.rawValue
         if self.tabBarViewSelectedTab == .response {
             self.navigationItem.titleView = self.segView
         }

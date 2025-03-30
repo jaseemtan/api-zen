@@ -11,6 +11,8 @@ import UIKit
 import MobileCoreServices
 import AVFoundation
 import Photos
+import AZCommon
+import AZPhone
 
 final class EADocumentPicker: NSObject {
     static let shared = EADocumentPicker()

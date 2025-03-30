@@ -8,11 +8,13 @@
 
 import Foundation
 import UIKit
+import AZCommon
+import AZData
 
 class RequestTableViewController: APITesterProTableViewController {
     private let app = App.shared
     private lazy var localdb = { CoreDataService.shared }()
-    private let utils = EAUtils.shared
+    private let utils = AZUtils.shared
     private let nc = NotificationCenter.default
     var request: ERequest?
     var headers: [ERequestData] = []

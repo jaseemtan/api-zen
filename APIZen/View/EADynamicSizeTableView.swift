@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import AZCommon
 
 public extension Notification.Name {
     static var dynamicSizeTableViewHeightDidChange = Notification.Name("dynamic-size-table-view-height-did-change")

@@ -8,6 +8,9 @@
 
 import Foundation
 import UIKit
+import AZCommon
+import AZPhone
+import AZData
 
 struct AppState {
     static var workspaces: [EWorkspace] = []
@@ -96,12 +99,14 @@ struct AppState {
             
         }
     }
+    
+    
 }
 
 /// Holds a map with the MD5 hash of the response data and the temporary file URL to the data.
 struct ResponseCache {
     private var hashes: [String: EATemporaryFile] = [:]
-    private lazy var utils = { EAUtils.shared }()
+    private lazy var utils = { AZUtils.shared }()
     
     mutating func getURL(_ data: Data) -> URL? {
         let hash = self.hash(data)
@@ -177,45 +182,5 @@ struct ResponseCache {
         let file = try EATemporaryFile(fileName: hash)
         try data.write(to: file.fileURL)
         return file
-    }
-}
-
-struct DocumentPickerState {
-    /// List of URLs for document attachment type
-    static var docs: [URL] = []
-    /// Photo or camera attachment
-    static var image: UIImage?
-    /// The image name with extension
-    static var imageName: String = ""
-    /// kUTTypeImage
-    static var imageType: String = "png"
-    /// If camera is chosen
-    static var isCameraMode: Bool = false
-    /// The index of data in the model
-    static var modelIndex: Int = 0
-    /// The body form field model `RequestData` id.
-    static var reqDataId = ""
-    
-    static func clear() {
-        DocumentPickerState.docs = []
-        DocumentPickerState.image = nil
-        DocumentPickerState.imageType = "png"
-        DocumentPickerState.isCameraMode = false
-        DocumentPickerState.modelIndex = 0
-        DocumentPickerState.reqDataId = ""
-    }
-
-    static var debugDescription: String {
-        return
-            """
-            DocumentPickerState
-            docs: \(DocumentPickerState.docs)
-            image: \(String(describing: DocumentPickerState.image))
-            imageName: \(DocumentPickerState.imageName)
-            imageType: \(DocumentPickerState.imageType)
-            isCameraMode: \(DocumentPickerState.isCameraMode)
-            modelIndex: \(DocumentPickerState.modelIndex)
-            reqDataId: \(DocumentPickerState.reqDataId)
-            """
     }
 }

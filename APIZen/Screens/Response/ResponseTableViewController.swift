@@ -9,6 +9,8 @@
 import Foundation
 import UIKit
 @preconcurrency import WebKit
+import AZCommon
+import AZData
 
 // MARK: - ResponseWebViewCell
 
@@ -191,7 +193,7 @@ final class ResponseInfoCell: UITableViewCell {
     var mode: ResponseMode = .preview
     var data: ResponseData?
     private lazy var app = { App.shared }()
-    private lazy var utils = { EAUtils.shared }()
+    private lazy var utils = { AZUtils.shared }()
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -464,7 +466,7 @@ extension Notification.Name {
 class ResponseTableViewController: APITesterProTableViewController {
     private let nc = NotificationCenter.default
     private lazy var localdb = { CoreDataService.shared }()
-    private lazy var utils = { EAUtils.shared }()
+    private lazy var utils = { AZUtils.shared }()
     private lazy var tabbarController: RequestTabBarController? = { self.tabBarController as? RequestTabBarController }()
     var mode: ResponseMode = .info
     @IBOutlet weak var infoCell: ResponseInfoCell!
@@ -717,7 +719,7 @@ class ResponseTableViewController: APITesterProTableViewController {
         Log.debug("segment did change notif")
         if let info = notif.userInfo, let idx = info["index"] as? Int {
             if self.viewType == .requestResponse {
-                self.utils.setValue(key: Const.responseSegmentIndexKey, value: idx)
+                self.utils.setValue(key: AZConst.responseSegmentIndexKey, value: idx)
             }
             self.mode = ResponseMode(rawValue: idx) ?? .info
             Log.debug("response mode changed: \(self.mode)")

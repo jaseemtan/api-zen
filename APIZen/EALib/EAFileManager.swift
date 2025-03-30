@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import AZCommon
 
 /// File open mode
 public enum FileIOMode {

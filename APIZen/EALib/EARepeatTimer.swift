@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import AZCommon
 
 /// A class that repeats the given block which uses DispatchSourceTimer. Running timers constantly can drain battery.
 public final class EARepeatTimer {

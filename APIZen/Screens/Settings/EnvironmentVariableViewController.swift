@@ -9,6 +9,8 @@
 import Foundation
 import UIKit
 import CoreData
+import AZCommon
+import AZData
 
 class EnvVarCell: UITableViewCell {
     @IBOutlet weak var nameLabel: UILabel!

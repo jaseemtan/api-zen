@@ -9,6 +9,8 @@
 import Foundation
 import UIKit
 import CoreData
+import AZCommon
+import AZData
 
 extension Notification.Name {
     static let navigatedBackToRequestList = Notification.Name("navigated-back-to-request-list")
@@ -22,7 +24,7 @@ class RequestListViewController: APITesterProViewController {
     @IBOutlet weak var windowBtn: UIBarButtonItem!
     @IBOutlet weak var addBtn: UIBarButtonItem!
     @IBOutlet weak var helpTextLabel: UILabel!
-    private let utils = EAUtils.shared
+    private let utils = AZUtils.shared
     private let app: App = App.shared
     private lazy var localdb = { CoreDataService.shared }()
     private lazy var localdbSvc = { PersistenceService.shared }()

@@ -9,6 +9,7 @@
 import UIKit
 import CloudKit
 import UserNotifications
+import AZCommon
 
 class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
     var window: UIWindow?

@@ -8,6 +8,8 @@
 
 import UIKit
 import CoreData
+import AZCommon
+import AZData
 
 extension Notification.Name {
     static let workspaceVCShouldPresent = Notification.Name("workspace-vc-should-present")
@@ -31,7 +33,7 @@ class WorkspaceListViewController: APITesterProViewController {
     private var popupBottomContraints: NSLayoutConstraint?
     private var isKeyboardActive = false
     private var keyboardHeight: CGFloat = 0.0
-    private let utils = EAUtils.shared
+    private let utils = AZUtils.shared
     private let app: App = App.shared
     private let nc = NotificationCenter.default
     private lazy var db = { CoreDataService.shared }()

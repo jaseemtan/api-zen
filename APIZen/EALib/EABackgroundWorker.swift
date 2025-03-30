@@ -7,11 +7,12 @@
 //
 
 import Foundation
+import AZCommon
 
 public class EABackgroundWorker: NSObject {
     private var thread: Thread!
     private var block: (() -> Void)!
-    private let utils = EAUtils.shared
+    private let utils = AZUtils.shared
     
     @objc func runBlock() { self.block() }
     

@@ -8,6 +8,7 @@
 
 import Foundation
 import CoreData
+import AZData
 
 /// Class for persisting entities. Created entities are first saved to local and then synced to cloud. Deleted entites needs to be first removed from iCloud and then from local.
 class PersistenceService {

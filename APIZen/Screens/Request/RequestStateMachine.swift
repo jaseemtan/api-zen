@@ -8,6 +8,7 @@
 
 import Foundation
 import GameplayKit
+import AZData
  
  class RequestStateMachine: GKStateMachine {
     unowned var request: ERequest

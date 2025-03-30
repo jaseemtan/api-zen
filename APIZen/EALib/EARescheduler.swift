@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import AZCommon
 
 public enum EAReschedulerType {
     /// All functions should produce a truthy value. If any function returns false, the evaluation short circuits.

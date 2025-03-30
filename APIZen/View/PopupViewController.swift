@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import AZCommon
 
 /// The model for the popup view controller
 struct PopupModel {

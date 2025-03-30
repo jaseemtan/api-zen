@@ -8,6 +8,8 @@
 
 import Foundation
 import UIKit
+import AZCommon
+import AZData
 
 enum OptionPickerType: Int {
     /// Body types: json, xml, raw, etc.
@@ -115,21 +117,21 @@ class OptionsPickerViewController: UIViewController, UITableViewDelegate, UITabl
     
     @objc func optionPickerShouldReload(_ notif: Notification) {
         Log.debug("option picker should reload")
-        if let info = notif.userInfo as? [String: Any], let action = info[Const.optionDataActionKey] as? OptionDataAction {
-            if action == .add, let data = info[Const.optionModelKey] as? ERequestMethodData, let name = data.name {
+        if let info = notif.userInfo as? [String: Any], let action = info[AZConst.optionDataActionKey] as? OptionDataAction {
+            if action == .add, let data = info[AZConst.optionModelKey] as? ERequestMethodData, let name = data.name {
                 if !self.data.contains(name) {
                     self.data.append(name)
                     self.modelxs.append(data)
                     self.cancelBtn.setTitle("Done", for: .normal)
                 }
-            } else if action == .delete, let id = info[Const.dataKey] as? String {
+            } else if action == .delete, let id = info[AZConst.dataKey] as? String {
                 if let idx = (self.modelxs.firstIndex(where: { x -> Bool in
                     if let y = x as? ERequestMethodData { return y.id == id }
                     return false
                 })) {
                     self.modelxs.remove(at: idx)
                     self.data.remove(at: idx)
-                    self.selectedIndex = info[Const.optionSelectedIndexKey] as? Int ?? 0
+                    self.selectedIndex = info[AZConst.optionSelectedIndexKey] as? Int ?? 0
                     self.cancelBtn.setTitle("Done", for: .normal)
                 }
             }
@@ -142,11 +144,11 @@ class OptionsPickerViewController: UIViewController, UITableViewDelegate, UITabl
         Log.debug("footer did tap")
         if !self.isPopupActive {
             self.isPopupActive = true
-            self.app.viewPopupScreen(self, model: PopupModel(title: "New Method", helpText: Const.helpTextForAddNewRequestMethod, descFieldEnabled: false,
+            self.app.viewPopupScreen(self, model: PopupModel(title: "New Method", helpText: AZConst.helpTextForAddNewRequestMethod, descFieldEnabled: false,
                                                              shouldValidate: true, shouldDisplayHelp: true, doneHandler: { model in
                 Log.debug("model: \(model)")
                 self.isPopupActive = false
-                self.nc.post(name: .customRequestMethodDidAdd, object: self, userInfo: [Const.requestMethodNameKey: model.name, Const.modelIndexKey: self.data.count])
+                self.nc.post(name: .customRequestMethodDidAdd, object: self, userInfo: [AZConst.requestMethodNameKey: model.name, AZConst.modelIndexKey: self.data.count])
             }, validateHandler: { model in
                 if model.name.trim().isEmpty { return false }
                 return self.data.first { x -> Bool in x == model.name } == nil
@@ -182,19 +184,19 @@ class OptionsPickerViewController: UIViewController, UITableViewDelegate, UITabl
     func postRequestMethodChangeNotification() {
         if self.data.isEmpty { return }
         self.nc.post(name: .requestMethodDidChange, object: self,
-                     userInfo: [Const.optionSelectedIndexKey: self.selectedIndex, Const.modelIndexKey: self.modelIndex,
-                                Const.requestMethodNameKey: self.data[self.selectedIndex]])
+                     userInfo: [AZConst.optionSelectedIndexKey: self.selectedIndex, AZConst.modelIndexKey: self.modelIndex,
+                                AZConst.requestMethodNameKey: self.data[self.selectedIndex]])
     }
     
     func postRequestBodyChangeNotification() {
         self.nc.post(name: .requestBodyTypeDidChange, object: self,
-                     userInfo: [Const.optionSelectedIndexKey: self.selectedIndex, Const.modelIndexKey: self.modelIndex])
+                     userInfo: [AZConst.optionSelectedIndexKey: self.selectedIndex, AZConst.modelIndexKey: self.modelIndex])
     }
     
     func postRequestBodyFieldChangeNotification() {
         self.nc.post(name: .requestBodyFormFieldTypeDidChange, object: self,
-                     userInfo: [Const.optionSelectedIndexKey: self.selectedIndex, Const.modelIndexKey: self.modelIndex,
-                                Const.optionModelKey: self.model as Any])
+                     userInfo: [AZConst.optionSelectedIndexKey: self.selectedIndex, AZConst.modelIndexKey: self.modelIndex,
+                                AZConst.optionModelKey: self.model as Any])
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -266,7 +268,7 @@ class OptionsPickerViewController: UIViewController, UITableViewDelegate, UITabl
                 self.postRequestMethodChangeNotification()
             }
             self.nc.post(name: .customRequestMethodShouldDelete, object: self,
-                         userInfo: [Const.optionModelKey: self.modelxs[index], Const.indexKey: index])
+                         userInfo: [AZConst.optionModelKey: self.modelxs[index], AZConst.indexKey: index])
         }
     }
 }

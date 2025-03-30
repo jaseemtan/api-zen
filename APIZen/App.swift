@@ -10,20 +10,15 @@ import Foundation
 import UIKit
 import CoreData
 import CloudKit
-
-struct EditRequestInfo: Hashable {
-    var id: String
-    var moID: NSManagedObjectID
-    var recordType: RecordType
-    var isDelete: Bool = false
-}
+import AZCommon
+import AZData
 
 @objc
 class App: NSObject {
     @objc static let shared: App = App()
     var popupBottomContraints: NSLayoutConstraint?
     private lazy var localdb = { CoreDataService.shared }()
-    private let utils = EAUtils.shared
+    private let utils = AZUtils.shared
     private let nc = NotificationCenter.default
     private var appLaunched = false
     
@@ -45,6 +40,7 @@ class App: NSObject {
     func bootstrap() {
         self.initDB()
         self.initState()
+        self.initEvents()
     }
     
     func initDB() {
@@ -53,6 +49,10 @@ class App: NSObject {
     
     func initState() {
         _ = self.getSelectedWorkspace()
+    }
+    
+    func initEvents() {
+        self.nc.addObserver(self, selector: #selector(self.clearCurrentWorkspace(_:)), name: .clearCurrentWorkspace, object: nil)
     }
     
     func initUI(_ vc: UINavigationController) {
@@ -84,22 +84,22 @@ class App: NSObject {
     
     func willEnterForground() {
         do {
-            self.nc.addObserver(self, selector: #selector(self.reachabilityDidChange(_:)), name: .reachabilityDidChange, object: EAReachability.shared)
-            try EAReachability.shared.startNotifier()
+            self.nc.addObserver(self, selector: #selector(self.reachabilityDidChange(_:)), name: .reachabilityDidChange, object: AZReachability.shared)
+            try AZReachability.shared.startNotifier()
         } catch let error {
             Log.error("Error starting reachability notifier: \(error)")
         }
     }
     
     func didEnterBackground() {
-        self.nc.removeObserver(self, name: .reachabilityDidChange, object: EAReachability.shared)
-        EAReachability.shared.stopNotifier()
+        self.nc.removeObserver(self, name: .reachabilityDidChange, object: AZReachability.shared)
+        AZReachability.shared.stopNotifier()
         self.saveState()
     }
     
     @objc func reachabilityDidChange(_ notif: Notification) {
         Log.debug("reachability did change: \(notif)")
-        if let reachability = notif.object as? EAReachability {
+        if let reachability = notif.object as? AZReachability {
             Log.debug("network status: \(reachability.connection.description)")
             if reachability.connection == .unavailable {
                 self.nc.post(name: .offline, object: self)
@@ -121,6 +121,10 @@ class App: NSObject {
     func addProject(_ project: EProject) {
         // TODO
         //AppState.workspaces[AppState.selectedWorkspace].projects.append(project)
+    }
+    
+    @objc func clearCurrentWorkspace(_ notif: Notification) {
+        AppState.currentWorkspace = nil
     }
     
     /// Present the option picker view as a modal with the given data
@@ -205,10 +209,6 @@ class App: NSObject {
         //}
     }
     
-    func getFileName(_ url: URL) -> String {
-        return url.lastPathComponent
-    }
-    
     /// Return a request name based on the current project's request count.
     func getNewRequestName() -> String {
         if let proj = AppState.currentProject {
@@ -256,8 +256,8 @@ class App: NSObject {
     /// Returns the current workspace
     func getSelectedWorkspace() -> EWorkspace {
         // if AppState.currentWorkspace != nil { return AppState.currentWorkspace! }
-        let wsId = self.utils.getValue(Const.selectedWorkspaceIdKey) as? String ?? ""
-        let container = self.utils.getValue(Const.selectedWorkspaceContainerKey) as? String ?? CoreDataContainer.cloud.rawValue
+        let wsId = self.utils.getValue(AZConst.selectedWorkspaceIdKey) as? String ?? ""
+        let container = self.utils.getValue(AZConst.selectedWorkspaceContainerKey) as? String ?? CoreDataContainer.cloud.rawValue
         Log.debug("ws: selected container: \(container)")
         if !wsId.isEmpty, let ws = self.localdb.getWorkspace(id: wsId, ctx: container == CoreDataContainer.cloud.rawValue ? self.localdb.ckMainMOC : self.localdb.localMainMOC) {
             AppState.currentWorkspace = ws
@@ -265,25 +265,17 @@ class App: NSObject {
         }
         let ws = self.localdb.getDefaultWorkspace()
         Log.debug("ws: \(ws)")
-        self.saveSelectedWorkspaceId(ws.getId())
-        self.saveSelectedWorkspaceContainer(self.localdb.getContainer(ws.managedObjectContext!))
+        AZCoreDataUtils.shared.saveSelectedWorkspaceId(ws.getId())
+        AZCoreDataUtils.shared.saveSelectedWorkspaceContainer(self.localdb.getContainer(ws.managedObjectContext!))
         return ws
     }
     
     func setSelectedWorkspace(_ ws: EWorkspace) {
         AppState.currentWorkspace = ws
         if let wsId = ws.id {
-            self.saveSelectedWorkspaceId(wsId)
-            self.saveSelectedWorkspaceContainer(self.localdb.getContainer(ws.managedObjectContext!))
+            AZCoreDataUtils.shared.saveSelectedWorkspaceId(wsId)
+            AZCoreDataUtils.shared.saveSelectedWorkspaceContainer(self.localdb.getContainer(ws.managedObjectContext!))
         }
-    }
-    
-    func saveSelectedWorkspaceId(_ id: String) {
-        self.utils.setValue(key: Const.selectedWorkspaceIdKey, value: id)
-    }
-    
-    func saveSelectedWorkspaceContainer(_ container: CoreDataContainer) {
-        self.utils.setValue(key: Const.selectedWorkspaceContainerKey, value: container.rawValue)
     }
     
     func didReceiveMemoryWarning() {
@@ -542,25 +534,6 @@ enum RequestBodyType: Int {
         case .binary:
             return "binary"
         }
-    }
-}
-
-/// Indicates to which model the `ERequestData` belongs to
-enum RequestDataType: Int {
-    case header
-    case param
-    case form
-    case multipart
-    case binary
-}
-
-/// Form fields under request body
-enum RequestBodyFormFieldFormatType: Int {
-    case text
-    case file
-
-    static var allCases: [String] {
-        return ["Text", "File"]
     }
 }
 

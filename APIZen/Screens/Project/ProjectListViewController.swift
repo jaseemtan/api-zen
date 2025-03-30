@@ -9,6 +9,8 @@
 import Foundation
 import UIKit
 import CoreData
+import AZCommon
+import AZData
 
 extension Notification.Name {
     static let navigatedBackToProjectList = Notification.Name("did-navigate-back-to-project-list-vc")
@@ -29,7 +31,7 @@ class ProjectListViewController: APITesterProViewController {
     private var popupBottomContraints: NSLayoutConstraint?
     private var isKeyboardActive = false
     private var keyboardHeight: CGFloat = 0.0
-    private let utils: EAUtils = EAUtils.shared
+    private let utils: AZUtils = AZUtils.shared
     private let app: App = App.shared
     private let nc = NotificationCenter.default
     private lazy var localdb = { CoreDataService.shared }()
