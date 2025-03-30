@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		9EFB70932D9919EF0089AC7A /* AZData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EFB708A2D9919EF0089AC7A /* AZData.framework */; };
+		9EFB71C42D99236B0089AC7A /* AZCommon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EFB71C32D99236B0089AC7A /* AZCommon.framework */; };
+		9EFB71C52D99236B0089AC7A /* AZCommon.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 9EFB71C32D99236B0089AC7A /* AZCommon.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -20,9 +22,24 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		9EFB71C62D99236B0089AC7A /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				9EFB71C52D99236B0089AC7A /* AZCommon.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		9EFB708A2D9919EF0089AC7A /* AZData.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AZData.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9EFB70922D9919EF0089AC7A /* AZDataTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AZDataTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		9EFB71C32D99236B0089AC7A /* AZCommon.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = AZCommon.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -56,6 +73,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9EFB71C42D99236B0089AC7A /* AZCommon.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -75,6 +93,7 @@
 			children = (
 				9EFB708C2D9919EF0089AC7A /* AZData */,
 				9EFB70962D9919EF0089AC7A /* AZDataTests */,
+				9EFB71332D99206D0089AC7A /* Frameworks */,
 				9EFB708B2D9919EF0089AC7A /* Products */,
 			);
 			sourceTree = "<group>";
@@ -86,6 +105,14 @@
 				9EFB70922D9919EF0089AC7A /* AZDataTests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		9EFB71332D99206D0089AC7A /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				9EFB71C32D99236B0089AC7A /* AZCommon.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -109,6 +136,7 @@
 				9EFB70862D9919EF0089AC7A /* Sources */,
 				9EFB70872D9919EF0089AC7A /* Frameworks */,
 				9EFB70882D9919EF0089AC7A /* Resources */,
+				9EFB71C62D99236B0089AC7A /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -244,7 +272,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
@@ -253,7 +281,7 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 15.2;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				MARKETING_VERSION = 1.0;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
@@ -266,7 +294,7 @@
 				SWIFT_INSTALL_OBJC_HEADER = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,7";
-				XROS_DEPLOYMENT_TARGET = 2.2;
+				XROS_DEPLOYMENT_TARGET = 1.3;
 			};
 			name = Debug;
 		};
@@ -286,7 +314,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
@@ -295,7 +323,7 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 15.2;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				MARKETING_VERSION = 1.0;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
@@ -308,7 +336,7 @@
 				SWIFT_INSTALL_OBJC_HEADER = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,7";
-				XROS_DEPLOYMENT_TARGET = 2.2;
+				XROS_DEPLOYMENT_TARGET = 1.3;
 			};
 			name = Release;
 		};
