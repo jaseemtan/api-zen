@@ -43,6 +43,10 @@ class App: NSObject {
         self.initEvents()
     }
     
+    deinit {
+        self.nc.removeObserver(self)
+    }
+    
     func initDB() {
         
     }
