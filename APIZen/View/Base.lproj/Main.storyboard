@@ -909,15 +909,15 @@
                         <sections>
                             <tableViewSection id="sTo-C5-qKP">
                                 <cells>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" rowHeight="24" id="GTm-3V-ZBU" userLabel="Spacer Cell">
-                                        <rect key="frame" x="0.0" y="50" width="414" height="24"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" rowHeight="36" id="GTm-3V-ZBU" userLabel="Spacer Cell">
+                                        <rect key="frame" x="0.0" y="50" width="414" height="36"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="GTm-3V-ZBU" id="mjY-Pl-yWT">
-                                            <rect key="frame" x="0.0" y="0.0" width="414" height="24"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="36"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yF5-YS-20j" userLabel="Spacer Cell View">
-                                                    <rect key="frame" x="0.0" y="0.0" width="414" height="24"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="414" height="36"/>
                                                     <color key="backgroundColor" name="table-view-bg"/>
                                                 </view>
                                             </subviews>
@@ -932,7 +932,7 @@
                                         <color key="backgroundColor" name="table-view-bg"/>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" rowHeight="54" id="y0l-A2-M5d" userLabel="Purchase Status Cell" customClass="ValidateSSLCell" customModule="APIZen" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="74" width="414" height="54"/>
+                                        <rect key="frame" x="0.0" y="86" width="414" height="54"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="y0l-A2-M5d" id="A9V-Gn-zKQ">
                                             <rect key="frame" x="0.0" y="0.0" width="414" height="54"/>
@@ -1006,7 +1006,7 @@
                                         <color key="backgroundColor" name="table-view-bg"/>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" rowHeight="24" id="c4F-nl-Rl0" userLabel="Spacer Cell">
-                                        <rect key="frame" x="0.0" y="128" width="414" height="24"/>
+                                        <rect key="frame" x="0.0" y="140" width="414" height="24"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="c4F-nl-Rl0" id="8v0-aA-VRU">
                                             <rect key="frame" x="0.0" y="0.0" width="414" height="24"/>
@@ -1028,7 +1028,7 @@
                                         <color key="backgroundColor" name="table-view-bg"/>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" rowHeight="44" id="VLd-V4-FeQ" userLabel="Unlock full version button cell">
-                                        <rect key="frame" x="0.0" y="152" width="414" height="44"/>
+                                        <rect key="frame" x="0.0" y="164" width="414" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="VLd-V4-FeQ" id="HVh-EO-rZx">
                                             <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
@@ -1061,7 +1061,7 @@
                                         <color key="backgroundColor" name="table-view-bg"/>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" rowHeight="24" id="FxQ-z5-rr4" userLabel="Spacer Cell">
-                                        <rect key="frame" x="0.0" y="196" width="414" height="24"/>
+                                        <rect key="frame" x="0.0" y="208" width="414" height="24"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="FxQ-z5-rr4" id="4Ix-0v-8PO">
                                             <rect key="frame" x="0.0" y="0.0" width="414" height="24"/>
@@ -1082,16 +1082,30 @@
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" name="table-view-bg"/>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" rowHeight="24" id="p55-cf-zxe" userLabel="Spacer Cell">
-                                        <rect key="frame" x="0.0" y="220" width="414" height="24"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" rowHeight="120" id="p55-cf-zxe" userLabel="Trial message cell">
+                                        <rect key="frame" x="0.0" y="232" width="414" height="120"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="p55-cf-zxe" id="aPQ-1M-Yil">
-                                            <rect key="frame" x="0.0" y="0.0" width="414" height="24"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="120"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3Hx-52-Vbv" userLabel="Spacer Cell View">
-                                                    <rect key="frame" x="0.0" y="0.0" width="414" height="24"/>
+                                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3Hx-52-Vbv" userLabel="Message Cell View">
+                                                    <rect key="frame" x="0.0" y="0.0" width="414" height="120"/>
+                                                    <subviews>
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="icX-CZ-BLK">
+                                                            <rect key="frame" x="20" y="6.5" width="374" height="107.5"/>
+                                                            <string key="text">The app is in trial mode. Trial mode lasts for one week. During trial you can experience the full functionality of the app without any restrictions. After the trial period app moves into free mode where the app functionality will be restricted. You can unlock the full functionality by one time purchase of the full version.</string>
+                                                            <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                                            <color key="textColor" name="help-text-fg"/>
+                                                            <nil key="highlightedColor"/>
+                                                        </label>
+                                                    </subviews>
                                                     <color key="backgroundColor" name="table-view-bg"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="trailing" secondItem="icX-CZ-BLK" secondAttribute="trailing" constant="20" id="3Tn-jb-4C8"/>
+                                                        <constraint firstItem="icX-CZ-BLK" firstAttribute="centerY" secondItem="3Hx-52-Vbv" secondAttribute="centerY" id="X6y-9m-8x2"/>
+                                                        <constraint firstItem="icX-CZ-BLK" firstAttribute="leading" secondItem="3Hx-52-Vbv" secondAttribute="leading" constant="20" id="fBe-vh-jaP"/>
+                                                    </constraints>
                                                 </view>
                                             </subviews>
                                             <constraints>
@@ -1104,15 +1118,15 @@
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" name="table-view-bg"/>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" rowHeight="24" id="n33-DM-sfp" userLabel="Spacer Cell">
-                                        <rect key="frame" x="0.0" y="244" width="414" height="24"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" rowHeight="0.0" id="n33-DM-sfp" userLabel="Free message cell">
+                                        <rect key="frame" x="0.0" y="352" width="414" height="1.1920928955078125e-07"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="n33-DM-sfp" id="KTw-VJ-aEf">
-                                            <rect key="frame" x="0.0" y="0.0" width="414" height="24"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="1.1920928955078125e-07"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="mqp-do-zgm" userLabel="Spacer Cell View">
-                                                    <rect key="frame" x="0.0" y="0.0" width="414" height="24"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="414" height="0.0"/>
                                                     <color key="backgroundColor" name="table-view-bg"/>
                                                 </view>
                                             </subviews>
@@ -1126,18 +1140,18 @@
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" name="table-view-bg"/>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" rowHeight="50" id="wr5-MD-AGR" userLabel="Spacer Cell">
-                                        <rect key="frame" x="0.0" y="268" width="414" height="50"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" rowHeight="0.0" id="wr5-MD-AGR" userLabel="Full version message cell">
+                                        <rect key="frame" x="0.0" y="352.00000011920929" width="414" height="1.1920928955078125e-07"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="wr5-MD-AGR" id="8yl-3m-l8g">
-                                            <rect key="frame" x="0.0" y="0.0" width="414" height="50"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="1.1920928955078125e-07"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="USf-sj-mzS" userLabel="Spacer Cell View">
-                                                    <rect key="frame" x="0.0" y="0.0" width="414" height="50"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="414" height="0.0"/>
                                                     <subviews>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ICp-ab-cHz">
-                                                            <rect key="frame" x="207" y="48" width="0.0" height="0.0"/>
+                                                            <rect key="frame" x="207" y="-2" width="0.0" height="0.0"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                                             <color key="textColor" systemColor="secondaryLabelColor"/>
                                                             <nil key="highlightedColor"/>
@@ -1156,6 +1170,63 @@
                                                 <constraint firstItem="USf-sj-mzS" firstAttribute="leading" secondItem="8yl-3m-l8g" secondAttribute="leading" id="FX3-B4-NoH"/>
                                                 <constraint firstItem="USf-sj-mzS" firstAttribute="leading" secondItem="8yl-3m-l8g" secondAttribute="leading" id="Xce-pt-VlN"/>
                                                 <constraint firstAttribute="bottom" secondItem="USf-sj-mzS" secondAttribute="bottom" id="ei5-WC-s39"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <color key="backgroundColor" name="table-view-bg"/>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" rowHeight="50" id="hsr-l1-Qgx" userLabel="Spacer Cell">
+                                        <rect key="frame" x="0.0" y="352.00000023841858" width="414" height="50"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="hsr-l1-Qgx" id="yGL-Ix-abt">
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="50"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="uuM-le-LGB" userLabel="Spacer Cell View">
+                                                    <rect key="frame" x="0.0" y="0.0" width="414" height="50"/>
+                                                    <color key="backgroundColor" name="table-view-bg"/>
+                                                </view>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="trailing" secondItem="uuM-le-LGB" secondAttribute="trailing" id="2iC-hW-jT6"/>
+                                                <constraint firstItem="uuM-le-LGB" firstAttribute="leading" secondItem="yGL-Ix-abt" secondAttribute="leading" id="5e0-LQ-D9n"/>
+                                                <constraint firstAttribute="bottom" secondItem="uuM-le-LGB" secondAttribute="bottom" id="Ejv-VU-o8D"/>
+                                                <constraint firstItem="uuM-le-LGB" firstAttribute="top" secondItem="yGL-Ix-abt" secondAttribute="top" id="Qs0-l1-0GB"/>
+                                                <constraint firstItem="uuM-le-LGB" firstAttribute="leading" secondItem="yGL-Ix-abt" secondAttribute="leading" id="TE1-S9-gjW"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <color key="backgroundColor" name="table-view-bg"/>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" rowHeight="200" id="lGl-2g-nKL" userLabel="Circuit Image Cell">
+                                        <rect key="frame" x="0.0" y="402.00000023841858" width="414" height="200"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="lGl-2g-nKL" id="XnR-E8-gTq">
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="200"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="u4c-0f-Q8R" userLabel="Circuit Image Cell View">
+                                                    <rect key="frame" x="0.0" y="0.0" width="414" height="200"/>
+                                                    <subviews>
+                                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="circuit-board" translatesAutoresizingMaskIntoConstraints="NO" id="hFg-hf-uNx">
+                                                            <rect key="frame" x="0.0" y="0.0" width="414" height="200"/>
+                                                        </imageView>
+                                                    </subviews>
+                                                    <color key="backgroundColor" name="table-view-bg"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="trailing" secondItem="hFg-hf-uNx" secondAttribute="trailing" id="O1b-vt-DJP"/>
+                                                        <constraint firstItem="hFg-hf-uNx" firstAttribute="centerY" secondItem="u4c-0f-Q8R" secondAttribute="centerY" id="VdW-0X-7t1"/>
+                                                        <constraint firstAttribute="bottom" secondItem="hFg-hf-uNx" secondAttribute="bottom" id="eT7-A7-5Nm"/>
+                                                        <constraint firstItem="hFg-hf-uNx" firstAttribute="leading" secondItem="u4c-0f-Q8R" secondAttribute="leading" id="gRA-Qm-wSa"/>
+                                                        <constraint firstItem="hFg-hf-uNx" firstAttribute="centerX" secondItem="u4c-0f-Q8R" secondAttribute="centerX" id="vif-cj-8iL"/>
+                                                        <constraint firstItem="hFg-hf-uNx" firstAttribute="top" secondItem="u4c-0f-Q8R" secondAttribute="top" id="zLP-LE-gSm"/>
+                                                    </constraints>
+                                                </view>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="bottom" secondItem="u4c-0f-Q8R" secondAttribute="bottom" id="532-VC-Ckx"/>
+                                                <constraint firstItem="u4c-0f-Q8R" firstAttribute="top" secondItem="XnR-E8-gTq" secondAttribute="top" id="A1w-MW-KRL"/>
+                                                <constraint firstItem="u4c-0f-Q8R" firstAttribute="leading" secondItem="XnR-E8-gTq" secondAttribute="leading" id="ANh-M5-AzX"/>
+                                                <constraint firstAttribute="trailing" secondItem="u4c-0f-Q8R" secondAttribute="trailing" id="V1R-yr-nE6"/>
+                                                <constraint firstItem="u4c-0f-Q8R" firstAttribute="leading" secondItem="XnR-E8-gTq" secondAttribute="leading" id="zWK-A8-zsA"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" name="table-view-bg"/>
@@ -6198,14 +6269,14 @@
                                                         <stackView opaque="NO" contentMode="scaleToFill" distribution="equalCentering" alignment="center" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="KCm-bW-ztD">
                                                             <rect key="frame" x="18" y="0.0" width="378" height="53"/>
                                                             <subviews>
-                                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Workspace Type" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iSy-pV-Tl2" userLabel="Sync workspace label">
+                                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" text="Workspace Type" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iSy-pV-Tl2" userLabel="Sync workspace label">
                                                                     <rect key="frame" x="0.0" y="17.5" width="326" height="18"/>
                                                                     <color key="backgroundColor" name="table-view-cell-bg"/>
                                                                     <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                                                     <nil key="textColor"/>
                                                                     <nil key="highlightedColor"/>
                                                                 </label>
-                                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="iCloud" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MN8-uD-u3U">
+                                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="iCloud" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MN8-uD-u3U">
                                                                     <rect key="frame" x="334" y="17.5" width="44" height="18"/>
                                                                     <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                                                     <nil key="textColor"/>
@@ -6918,6 +6989,7 @@
     <resources>
         <image name="add" width="16" height="16"/>
         <image name="arrow" width="12" height="21"/>
+        <image name="circuit-board" width="1150" height="1000"/>
         <image name="delete" width="16" height="16"/>
         <image name="line.3.horizontal.decrease.circle" catalog="system" width="128" height="123"/>
         <image name="project" width="25" height="23"/>
