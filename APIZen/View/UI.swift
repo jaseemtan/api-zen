@@ -405,6 +405,23 @@ class UI {
         return UIApplication.shared.windows.first?.windowScene?.interfaceOrientation ?? UIInterfaceOrientation.portrait
     }
     
+    /// Returns true for devices that has a notch. If device has home button like older models, it returns false.
+    static func hasNotch() -> Bool {
+        if #available(iOS 13.0, *) {
+            let scenes = UIApplication.shared.connectedScenes
+            let windowScene = scenes.first as? UIWindowScene
+            guard let window = windowScene?.windows.first else { return false }
+            return window.safeAreaInsets.top > 20
+        }
+        if #available(iOS 11.0, *) {
+            let top = UIApplication.shared.windows[0].safeAreaInsets.top
+            return top > 20
+        } else {
+            // Fallback on earlier versions
+            return false
+        }
+    }
+    
     /// Disables dynamic font for the given UI. This needs to be called with the view for each view controller.
     /// Another way would be to use a base class with these properties set.
     static func disableDynamicFont(_ view: UIView) {

@@ -49,9 +49,35 @@ class PurchaseTableViewController: UITableViewController {
             return 0
         case CellId.spaceAfterFullVersionMessage.rawValue:
             let height = UIScreen.main.bounds.height
-            let computedHeight = height - (36 + 44 + 24 + 44 + 24 + 120 + 200 + 100)
+            var computedHeight = height - (36 + 44 + 24 + 44 + 24 + 120)
+            if UI.getDeviceType() == .pad {
+                if UI.getCurrentDeviceOrientation() == .landscapeLeft || UI.getCurrentDeviceOrientation() == .landscapeRight {
+                    computedHeight = computedHeight - (200 + 80)  // 200 image size; 80 safe area height adjustment
+                } else {
+                    computedHeight = computedHeight - (310 + 80)
+                }
+            } else {  // phone
+                if UI.getCurrentDeviceOrientation() == .landscapeLeft || UI.getCurrentDeviceOrientation() == .landscapeRight {
+                    computedHeight = computedHeight - (200 + 125)
+                } else {
+                    if UI.hasNotch() {
+                        computedHeight = computedHeight - (200 + 115)  // On phone, we don't need to add additional space. We need to reduce it to so that it aligns beaufifully with the bottom and looks like it's growing.
+                    } else {
+                        computedHeight = computedHeight - (200 + 70)  // On devices with home button
+                    }
+                }
+            }
             return computedHeight < 50 ? 50 : computedHeight
         case CellId.circuitImage.rawValue:
+            if UI.getDeviceType() == .pad {
+                if UI.getCurrentDeviceOrientation() == .landscapeLeft || UI.getCurrentDeviceOrientation() == .landscapeRight {
+                    return 200
+                }
+                return 310
+            }
+            if UI.getCurrentDeviceOrientation() == .landscapeLeft || UI.getCurrentDeviceOrientation() == .landscapeRight {
+                return 160
+            }
             return 200
         default:
             break
