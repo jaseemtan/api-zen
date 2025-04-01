@@ -15,6 +15,7 @@
 		9E4935AD2C96FAC000A50721 /* WebCodeEditorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E4935AC2C96FAC000A50721 /* WebCodeEditorViewController.swift */; };
 		9E5397742D9BBEB4006E2F5E /* TPInAppReceipt in Frameworks */ = {isa = PBXBuildFile; productRef = 9E5397732D9BBEB4006E2F5E /* TPInAppReceipt */; };
 		9E5397762D9BBED0006E2F5E /* AZStoreKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E5397752D9BBED0006E2F5E /* AZStoreKit.swift */; };
+		9E5397782D9C2596006E2F5E /* PurchaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E5397772D9C2596006E2F5E /* PurchaseViewController.swift */; };
 		9E571CE62B24B7F60090F1CF /* EAExtensionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E571CE52B24B7F60090F1CF /* EAExtensionsTests.swift */; };
 		9E81D0522AF44BE9004095CF /* APIZenUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E81D0512AF44BE9004095CF /* APIZenUITestsLaunchTests.swift */; };
 		9E81D0822AF44CC0004095CF /* APIZenTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E81D07D2AF44CBD004095CF /* APIZenTests.swift */; };
@@ -139,6 +140,7 @@
 		9E4875EB2AF590A300D624DA /* APIZen.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = APIZen.xctestplan; sourceTree = "<group>"; };
 		9E4935AC2C96FAC000A50721 /* WebCodeEditorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebCodeEditorViewController.swift; sourceTree = "<group>"; };
 		9E5397752D9BBED0006E2F5E /* AZStoreKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AZStoreKit.swift; sourceTree = "<group>"; };
+		9E5397772D9C2596006E2F5E /* PurchaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseViewController.swift; sourceTree = "<group>"; };
 		9E571CE52B24B7F60090F1CF /* EAExtensionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EAExtensionsTests.swift; sourceTree = "<group>"; };
 		9E81D0282AF44BE7004095CF /* APIZen.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = APIZen.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9E81D03C2AF44BE8004095CF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -446,6 +448,7 @@
 				9E81D1172AF4522C004095CF /* EnvironmentGroupViewController.swift */,
 				9E81D1182AF4522C004095CF /* EnvironmentVariableViewController.swift */,
 				9E81D1192AF4522C004095CF /* ImportExportViewController.swift */,
+				9E5397772D9C2596006E2F5E /* PurchaseViewController.swift */,
 				9E81D1162AF4522B004095CF /* SettingsTableViewController.swift */,
 			);
 			path = Settings;
@@ -679,6 +682,7 @@
 				9E81D0D32AF451EA004095CF /* EARescheduler.swift in Sources */,
 				9E81D11F2AF4522C004095CF /* ImportExportViewController.swift in Sources */,
 				9E81D10F2AF45218004095CF /* RequestTableViewController.swift in Sources */,
+				9E5397782D9C2596006E2F5E /* PurchaseViewController.swift in Sources */,
 				9E81D0A32AF44F4F004095CF /* AppDelegate.swift in Sources */,
 				9E81D1142AF45221004095CF /* HistoryViewController.swift in Sources */,
 				9E81D1002AF45211004095CF /* ProjectListViewController.swift in Sources */,

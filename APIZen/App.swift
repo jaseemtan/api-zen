@@ -35,6 +35,7 @@ class App: NSObject {
         case requestBodyTypeList  // json, xml ..
         case requestBodyFormTypeList  // text, file
         case popup
+        case purchase
     }
     
     func bootstrap() {
@@ -484,6 +485,7 @@ enum StoryboardId: String {
     case historyVC
     case workspaceListVC
     case webCodeEditorVC
+    case purchaseVC
 }
 
 /// The request option elements

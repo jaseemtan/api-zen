@@ -216,6 +216,8 @@ class SettingsTableViewController: APITesterProTableViewController {
                     self.exportCurrentWorkspace()
                 }
             )
+        } else if indexPath.row == CellId.unlockFullVersion.rawValue {
+            UI.pushScreen(self.navigationController!, storyboard: self.storyboard!, storyboardId: StoryboardId.purchaseVC.rawValue)
         } else if indexPath.row == CellId.rate.rawValue {
             self.rateApp()
         } else if indexPath.row == CellId.feedback.rawValue {
