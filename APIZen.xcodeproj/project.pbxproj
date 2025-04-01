@@ -13,6 +13,8 @@
 		9E04F4FD2B138F38007A0773 /* PersistenceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E04F4FC2B138F38007A0773 /* PersistenceService.swift */; };
 		9E4875E82AF5856A00D624DA /* AppDelegateMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E81D0812AF44CBF004095CF /* AppDelegateMock.swift */; };
 		9E4935AD2C96FAC000A50721 /* WebCodeEditorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E4935AC2C96FAC000A50721 /* WebCodeEditorViewController.swift */; };
+		9E5397742D9BBEB4006E2F5E /* TPInAppReceipt in Frameworks */ = {isa = PBXBuildFile; productRef = 9E5397732D9BBEB4006E2F5E /* TPInAppReceipt */; };
+		9E5397762D9BBED0006E2F5E /* AZStoreKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E5397752D9BBED0006E2F5E /* AZStoreKit.swift */; };
 		9E571CE62B24B7F60090F1CF /* EAExtensionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E571CE52B24B7F60090F1CF /* EAExtensionsTests.swift */; };
 		9E81D0522AF44BE9004095CF /* APIZenUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E81D0512AF44BE9004095CF /* APIZenUITestsLaunchTests.swift */; };
 		9E81D0822AF44CC0004095CF /* APIZenTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E81D07D2AF44CBD004095CF /* APIZenTests.swift */; };
@@ -136,6 +138,7 @@
 		9E04F4FC2B138F38007A0773 /* PersistenceService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceService.swift; sourceTree = "<group>"; };
 		9E4875EB2AF590A300D624DA /* APIZen.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = APIZen.xctestplan; sourceTree = "<group>"; };
 		9E4935AC2C96FAC000A50721 /* WebCodeEditorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebCodeEditorViewController.swift; sourceTree = "<group>"; };
+		9E5397752D9BBED0006E2F5E /* AZStoreKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AZStoreKit.swift; sourceTree = "<group>"; };
 		9E571CE52B24B7F60090F1CF /* EAExtensionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EAExtensionsTests.swift; sourceTree = "<group>"; };
 		9E81D0282AF44BE7004095CF /* APIZen.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = APIZen.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9E81D03C2AF44BE8004095CF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -232,6 +235,7 @@
 				9ED187772D9972A300FA0EC5 /* AZCommon.framework in Frameworks */,
 				9E04F4F22B12138C007A0773 /* MessageUI.framework in Frameworks */,
 				9ED1877B2D9972AB00FA0EC5 /* AZPhone.framework in Frameworks */,
+				9E5397742D9BBEB4006E2F5E /* TPInAppReceipt in Frameworks */,
 				9ED1877E2D9972AF00FA0EC5 /* AZData.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -278,7 +282,7 @@
 			isa = PBXGroup;
 			children = (
 				9E04F4FB2B131A3C007A0773 /* APIZen.entitlements */,
-				9E81D0A62AF44F85004095CF /* EALib */,
+				9E81D0A62AF44F85004095CF /* Libs */,
 				9E81D0AA2AF44FC8004095CF /* Service */,
 				9E81D0A92AF44FBE004095CF /* Screens */,
 				9E81D0AB2AF44FCE004095CF /* View */,
@@ -316,9 +320,10 @@
 			path = APIZenUITests;
 			sourceTree = "<group>";
 		};
-		9E81D0A62AF44F85004095CF /* EALib */ = {
+		9E81D0A62AF44F85004095CF /* Libs */ = {
 			isa = PBXGroup;
 			children = (
+				9E5397752D9BBED0006E2F5E /* AZStoreKit.swift */,
 				9EEA0E292B152E0200DFB42B /* EABackgroundWorker.swift */,
 				9E04F4F42B122577007A0773 /* EACloudKit.swift */,
 				9E81D0B52AF451E9004095CF /* EACommon.swift */,
@@ -333,7 +338,7 @@
 				9E81D0C32AF451E9004095CF /* EARescheduler.swift */,
 				9E81D0C42AF451E9004095CF /* EASystem.swift */,
 			);
-			path = EALib;
+			path = Libs;
 			sourceTree = "<group>";
 		};
 		9E81D0A82AF44FB7004095CF /* Resources */ = {
@@ -511,6 +516,7 @@
 			);
 			name = APIZen;
 			packageProductDependencies = (
+				9E5397732D9BBEB4006E2F5E /* TPInAppReceipt */,
 			);
 			productName = APITesterPro;
 			productReference = 9E81D0282AF44BE7004095CF /* APIZen.app */;
@@ -588,6 +594,7 @@
 			);
 			mainGroup = 9E81D01F2AF44BE7004095CF;
 			packageReferences = (
+				9E5397722D9BBEB4006E2F5E /* XCRemoteSwiftPackageReference "TPInAppReceipt" */,
 			);
 			productRefGroup = 9E81D0292AF44BE7004095CF /* Products */;
 			projectDirPath = "";
@@ -659,6 +666,7 @@
 				9E81D11C2AF4522C004095CF /* SettingsTableViewController.swift in Sources */,
 				9E81D10B2AF45218004095CF /* EnvironmentPickerViewController.swift in Sources */,
 				9E81D0D22AF451EA004095CF /* EAFileManager.swift in Sources */,
+				9E5397762D9BBED0006E2F5E /* AZStoreKit.swift in Sources */,
 				9E81D0A52AF44F4F004095CF /* AppState.swift in Sources */,
 				9EE60B0D2B6F82A0006A5D77 /* EmptyMessageCell.swift in Sources */,
 				9E81D09B2AF44F4F004095CF /* SceneDelegate.swift in Sources */,
@@ -1073,6 +1081,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		9E5397722D9BBEB4006E2F5E /* XCRemoteSwiftPackageReference "TPInAppReceipt" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/tikhop/TPInAppReceipt.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.4.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		9E5397732D9BBEB4006E2F5E /* TPInAppReceipt */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9E5397722D9BBEB4006E2F5E /* XCRemoteSwiftPackageReference "TPInAppReceipt" */;
+			productName = TPInAppReceipt;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 9E81D0202AF44BE7004095CF /* Project object */;
 }
