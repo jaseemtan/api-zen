@@ -1206,7 +1206,7 @@
                                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="u4c-0f-Q8R" userLabel="Circuit Image Cell View">
                                                     <rect key="frame" x="0.0" y="0.0" width="414" height="200"/>
                                                     <subviews>
-                                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="circuit-board" translatesAutoresizingMaskIntoConstraints="NO" id="hFg-hf-uNx">
+                                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="circuit-board-portrait" translatesAutoresizingMaskIntoConstraints="NO" id="hFg-hf-uNx">
                                                             <rect key="frame" x="0.0" y="0.0" width="414" height="200"/>
                                                         </imageView>
                                                     </subviews>
@@ -1239,6 +1239,9 @@
                             <outlet property="delegate" destination="Vtt-Tf-v4g" id="THu-nt-W1a"/>
                         </connections>
                     </tableView>
+                    <connections>
+                        <outlet property="circuitBoard" destination="hFg-hf-uNx" id="Ddj-RK-V2Q"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="LTw-9g-cdj" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -6989,7 +6992,7 @@
     <resources>
         <image name="add" width="16" height="16"/>
         <image name="arrow" width="12" height="21"/>
-        <image name="circuit-board" width="1150" height="1000"/>
+        <image name="circuit-board-portrait" width="1150" height="1000"/>
         <image name="delete" width="16" height="16"/>
         <image name="line.3.horizontal.decrease.circle" catalog="system" width="128" height="123"/>
         <image name="project" width="25" height="23"/>

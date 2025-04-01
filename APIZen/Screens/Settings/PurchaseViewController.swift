@@ -11,6 +11,8 @@ import UIKit
 import AZCommon
 
 class PurchaseTableViewController: UITableViewController {
+    @IBOutlet weak var circuitBoard: UIImageView!
+    
     enum CellId: Int {
         case spacerAfterTop
         case purchaseStatus
@@ -52,14 +54,18 @@ class PurchaseTableViewController: UITableViewController {
             var computedHeight = height - (36 + 44 + 24 + 44 + 24 + 120)
             if UI.getDeviceType() == .pad {
                 if UI.getCurrentDeviceOrientation() == .landscapeLeft || UI.getCurrentDeviceOrientation() == .landscapeRight {
+                    circuitBoard.image = UIImage(named: "circuit-board-ipad-landscape")
                     computedHeight = computedHeight - (200 + 80)  // 200 image size; 80 safe area height adjustment
                 } else {
+                    circuitBoard.image = UIImage(named: "circuit-board-ipad-portrait")
                     computedHeight = computedHeight - (310 + 80)
                 }
             } else {  // phone
                 if UI.getCurrentDeviceOrientation() == .landscapeLeft || UI.getCurrentDeviceOrientation() == .landscapeRight {
+                    circuitBoard.image = UIImage(named: "circuit-board-landscape")
                     computedHeight = computedHeight - (200 + 125)
                 } else {
+                    circuitBoard.image = UIImage(named: "circuit-board-portrait")
                     if UI.hasNotch() {
                         computedHeight = computedHeight - (200 + 115)  // On phone, we don't need to add additional space. We need to reduce it to so that it aligns beaufifully with the bottom and looks like it's growing.
                     } else {
@@ -71,12 +77,12 @@ class PurchaseTableViewController: UITableViewController {
         case CellId.circuitImage.rawValue:
             if UI.getDeviceType() == .pad {
                 if UI.getCurrentDeviceOrientation() == .landscapeLeft || UI.getCurrentDeviceOrientation() == .landscapeRight {
-                    return 200
+                    return 225
                 }
-                return 310
+                return 315
             }
             if UI.getCurrentDeviceOrientation() == .landscapeLeft || UI.getCurrentDeviceOrientation() == .landscapeRight {
-                return 160
+                return 200
             }
             return 200
         default:
