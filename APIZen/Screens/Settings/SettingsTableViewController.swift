@@ -38,6 +38,9 @@ class SettingsTableViewController: APITesterProTableViewController {
         case importData
         case exportData
         case spaceAfterExportData
+        case purchasesTitle
+        case unlockFullVersion
+        case spaceAfterPurchases
         case rate
         case feedback
         case share
@@ -247,6 +250,12 @@ class SettingsTableViewController: APITesterProTableViewController {
         case CellId.exportData.rawValue:
             return 44
         case CellId.spaceAfterExportData.rawValue:
+            return 0
+        case CellId.toolsTitle.rawValue:
+            return 24
+        case CellId.unlockFullVersion.rawValue:
+            return 44
+        case CellId.spaceAfterPurchases.rawValue:
             return 24
         case CellId.rate.rawValue:
             return 44

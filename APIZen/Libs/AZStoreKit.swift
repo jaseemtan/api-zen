@@ -11,6 +11,8 @@ import TPInAppReceipt
 import AZCommon
 
 public class AZStoreKit {
+    public static let shared = AZStoreKit()
+    
     /// Check if the user had purchased the paid app version from the App Store.
     public func isPaidAppPurchased() -> Bool {
         let lastPaidVersion = Decimal(string: "2.6")!
