@@ -12,6 +12,7 @@ import AZCommon
 
 class PurchaseTableViewController: UITableViewController {
     @IBOutlet weak var circuitBoard: UIImageView!
+    private var barBtn: UIButton!
     
     enum CellId: Int {
         case spacerAfterTop
@@ -29,6 +30,24 @@ class PurchaseTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         Log.debug("purchase tvc did load")
+        self.initUI()
+    }
+    
+    func initUI() {
+        self.addNavigationBarRestoreButton()
+    }
+    
+    func addNavigationBarRestoreButton() {
+        self.barBtn = UIButton(type: .custom)
+        self.barBtn.titleLabel?.font = UIFont.systemFont(ofSize: 16)
+        self.barBtn.setTitleColor(self.barBtn.tintColor, for: .normal)
+        self.barBtn.addTarget(self, action: #selector(self.restoreBarButtonDidTap(_:)), for: .touchUpInside)
+        self.barBtn.setTitle("Restore", for: .normal)
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: self.barBtn)
+    }
+    
+    @objc func restoreBarButtonDidTap(_ sender: Any) {
+        Log.debug("restore button did tap")
     }
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
