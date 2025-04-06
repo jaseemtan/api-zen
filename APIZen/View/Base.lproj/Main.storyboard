@@ -5972,10 +5972,10 @@
             </objects>
             <point key="canvasLocation" x="7082.6086956521749" y="598.66071428571422"/>
         </scene>
-        <!--Tester Pro Navigation Controller-->
+        <!--API Tester Pro Navigation Controller-->
         <scene sceneID="UTV-B4-hkT">
             <objects>
-                <navigationController storyboardIdentifier="rootNav" automaticallyAdjustsScrollViewInsets="NO" useStoryboardIdentifierAsRestorationIdentifier="YES" id="0VT-ys-k4S" customClass="APITesterProNavigationController" customModule="APIZen" customModuleProvider="target" sceneMemberID="viewController">
+                <navigationController storyboardIdentifier="rootNav" automaticallyAdjustsScrollViewInsets="NO" useStoryboardIdentifierAsRestorationIdentifier="YES" id="0VT-ys-k4S" userLabel="API Tester Pro Navigation Controller" customClass="APITesterProNavigationController" customModule="APIZen" customModuleProvider="target" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="uWB-bX-8Fc">
                         <rect key="frame" x="0.0" y="48" width="414" height="44"/>
