@@ -15,6 +15,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     var window: UIWindow?
     private let app = App.shared
     private let nc = NotificationCenter.default
+    private let azsk = AZStoreKit.shared
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         Log.debug("app delegate did finish launching with options")
@@ -26,7 +27,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             self.window?.makeKeyAndVisible()
         }
         application.registerForRemoteNotifications()
+        self.checkInAppPurchases()
         return true
+    }
+    
+    func checkInAppPurchases() {
+        self.azsk.getListOfInAppProducts()
     }
     
     func applicationDidBecomeActive(_ application: UIApplication) {
