@@ -325,7 +325,7 @@
 		9E81D0A62AF44F85004095CF /* Libs */ = {
 			isa = PBXGroup;
 			children = (
-				9E5397752D9BBED0006E2F5E /* AZStoreKit.swift */,
+				9ED7541C2DA97B970026A1AD /* StoreKit */,
 				9EEA0E292B152E0200DFB42B /* EABackgroundWorker.swift */,
 				9E04F4F42B122577007A0773 /* EACloudKit.swift */,
 				9E81D0B52AF451E9004095CF /* EACommon.swift */,
@@ -387,11 +387,11 @@
 				9E81D1252AF45241004095CF /* EADynamicSizeTableView.swift */,
 				9E81D1272AF45241004095CF /* EATextField.swift */,
 				9E81D1292AF45241004095CF /* EATextView.swift */,
+				9EE60B0C2B6F82A0006A5D77 /* EmptyMessageCell.swift */,
 				9E81D1262AF45241004095CF /* KVCell.swift */,
 				9E81D1242AF45241004095CF /* OptionsPickerViewController.swift */,
 				9E81D1232AF45241004095CF /* PopupViewController.swift */,
 				9E81D1282AF45241004095CF /* UI.swift */,
-				9EE60B0C2B6F82A0006A5D77 /* EmptyMessageCell.swift */,
 				9E4935AC2C96FAC000A50721 /* WebCodeEditorViewController.swift */,
 			);
 			path = View;
@@ -486,6 +486,14 @@
 				9EC705752BA6E8E500CF4DE3 /* editor.html */,
 			);
 			path = editor;
+			sourceTree = "<group>";
+		};
+		9ED7541C2DA97B970026A1AD /* StoreKit */ = {
+			isa = PBXGroup;
+			children = (
+				9E5397752D9BBED0006E2F5E /* AZStoreKit.swift */,
+			);
+			path = StoreKit;
 			sourceTree = "<group>";
 		};
 		9ED969A22AF5A35F0029E83E /* Frameworks */ = {

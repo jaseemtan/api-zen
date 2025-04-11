@@ -268,9 +268,9 @@ class UI {
     
     /// Display circular progress indicator with a custom background. The default activity indicator is having a white background.
     /// - Parameters:
-    ///   - bgView: The activity indicator will be added to this view and this view will be added to the main view to display the indicator. This reference is later required to remove the indicator from the view
-    ///   - mainView: The view controller's main view where the activity indicator will be added
-    ///   - shouldDisableInteraction: Whether the UI should not respond until the indicator is removed
+    ///   - bgView: The activity indicator will be added to this view and this view will be added to the main view to display the indicator. This reference is later required to remove the indicator from the view.
+    ///   - mainView: The view controller's main view where the activity indicator will be added.
+    ///   - shouldDisableInteraction: Whether the UI should not respond until the indicator is removed.
     static func showCustomActivityIndicator(_ bgView: UIView, mainView: UIView, shouldDisableInteraction: Bool = false) {
         guard let window = UIApplication.shared.windows.first(where: \.isKeyWindow) else { return }
         let indicator = UIActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 35, height: 35))

@@ -10,9 +10,13 @@ import Foundation
 import UIKit
 import AZCommon
 
-class PurchaseTableViewController: UITableViewController {
+class PurchaseTableViewController: APITesterProTableViewController {
     @IBOutlet weak var circuitBoard: UIImageView!
+    @IBOutlet weak var purchaseFullVersionBtn: UIButton!
+    private let app = App.shared
+    private let azsk = AZStoreKit.shared
     private var barBtn: UIButton!
+    private var indicatorView: UIView?
     
     enum CellId: Int {
         case spacerAfterTop
@@ -33,8 +37,20 @@ class PurchaseTableViewController: UITableViewController {
         self.initUI()
     }
     
-    func initUI() {
+    override func initUI() {
+        super.initUI()
+        self.app.updateViewBackground(self.view)
+        self.app.updateNavigationControllerBackground(self.navigationController)
+        self.tableView.backgroundColor = App.Color.tableViewBg
+        self.navigationItem.title = "Purchases"
+        self.tableView.estimatedRowHeight = 44
+        self.tableView.rowHeight = UITableView.automaticDimension
         self.addNavigationBarRestoreButton()
+        self.purchaseFullVersionBtn.isEnabled = false
+        DispatchQueue.main.async {
+            // TODO: display loading based on AZStoreKit state
+            self.showLoadingIndicator()
+        }
     }
     
     func addNavigationBarRestoreButton() {
@@ -44,6 +60,18 @@ class PurchaseTableViewController: UITableViewController {
         self.barBtn.addTarget(self, action: #selector(self.restoreBarButtonDidTap(_:)), for: .touchUpInside)
         self.barBtn.setTitle("Restore", for: .normal)
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: self.barBtn)
+    }
+    
+    func showLoadingIndicator() {
+        if self.indicatorView == nil { self.indicatorView = UIView() }
+        UI.showCustomActivityIndicator(self.indicatorView!, mainView: self.view, shouldDisableInteraction: true)
+    }
+    
+    func hideLoadingIndicator() {
+        if let indicatorView = self.indicatorView {
+            UI.removeCustomActivityIndicator(indicatorView)
+            self.indicatorView = nil
+        }
     }
     
     @objc func restoreBarButtonDidTap(_ sender: Any) {

@@ -123,8 +123,6 @@ class SettingsTableViewController: APITesterProTableViewController {
         Log.debug("save history switch did change")
         self.workspace.saveResponse = self.saveHistorySwitch.isOn
         self.localDB.saveMainContext()
-        // TODO: ck: save workspace to cloud
-        // self.db.saveWorkspaceToCloud(self.workspace)
     }
     
     func showLoadingIndicator() {

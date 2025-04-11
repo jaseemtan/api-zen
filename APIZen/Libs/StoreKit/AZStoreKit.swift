@@ -51,6 +51,13 @@ public class AZStoreKit: NSObject {
         productRequest.start()
     }
     
+    public func getUnlockFullVersionProduct() -> SKProduct? {
+        if self.products.isEmpty { return nil }
+        return self.products.first { product in
+            product.productIdentifier == IAPID.unlockFullVersion
+        }
+    }
+    
     /// Make a purchase of the given In-App product
     public func makePurchase(product: SKProduct) {
         let payment = SKPayment(product: product)
