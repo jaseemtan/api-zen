@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import TPInAppReceipt
 import AZCommon
 import StoreKit
 
@@ -22,6 +21,10 @@ public class AZStoreKit: NSObject {
     public static let shared = AZStoreKit()
     let productIds: Set<String> = [IAPID.thanks, IAPID.thankYou, IAPID.thankYouVeryMuch]
     var products: [SKProduct] = []
+    public typealias ProductFetchedHandler = ([SKProduct]) -> Void
+    public typealias PurchaseHandler = () -> Void
+    var productFetchedHandler: ProductFetchedHandler? = nil
+    var purchaseHandler: PurchaseHandler? = nil
     
     public override init() {
         super.init()
@@ -32,26 +35,40 @@ public class AZStoreKit: NSObject {
         SKPaymentQueue.default().remove(self)
     }
     
-    /// Check if the user had purchased the paid app version from the App Store.
-    public func isPaidAppPurchased() -> Bool {
-        let lastPaidVersion = Decimal(string: "2.6")!
-        do {
-            let receipt = try InAppReceipt.localReceipt()
-            let origAppVersionStr = receipt.originalAppVersion
-            if let origAppVersion = Decimal(string: origAppVersionStr) {
-                return origAppVersion <= lastPaidVersion
-            }
-        } catch {
-            Log.error("Error getting original app version: \(error)")
-        }
-        return false
-    }
-    
     /// Retrieves the list of In-App products from the App Store.
-    public func getListOfInAppProducts() {
+    public func getListOfInAppProducts(_ completion: ProductFetchedHandler? = nil) {
+        self.productFetchedHandler = completion
         let productRequest = SKProductsRequest(productIdentifiers: self.productIds)
         productRequest.delegate = self
         productRequest.start()
+    }
+    
+    public func getDonationLowTier() -> SKProduct? {
+        if self.products.isEmpty { return nil }
+        return self.products.first { product in
+            product.productIdentifier == IAPID.thanks
+        }
+    }
+    
+    public func getDonationMediumTier() -> SKProduct? {
+        if self.products.isEmpty { return nil }
+        return self.products.first { product in
+            product.productIdentifier == IAPID.thankYou
+        }
+    }
+    
+    public func getDonationHighTier() -> SKProduct? {
+        if self.products.isEmpty { return nil }
+        return self.products.first { product in
+            product.productIdentifier == IAPID.thankYouVeryMuch
+        }
+    }
+    
+    public func getProductForIdentifier(_ id: String) -> SKProduct? {
+        if self.products.isEmpty { return nil }
+        return self.products.first { product in
+            product.productIdentifier == id
+        }
     }
     
     /// Make a purchase of the given In-App product
@@ -59,6 +76,30 @@ public class AZStoreKit: NSObject {
         let payment = SKPayment(product: product)
         SKPaymentQueue.default().add(payment)
         SKPaymentQueue.default().restoreCompletedTransactions()
+    }
+    
+    public func makeDonationLowTier(_ completion: PurchaseHandler? = nil) {
+        if self.products.isEmpty { return }
+        if let product = self.getDonationLowTier() {
+            self.purchaseHandler = completion
+            self.makePurchase(product: product)
+        }
+    }
+    
+    public func makeDonationMediumTier(_ completion: PurchaseHandler? = nil) {
+        if self.products.isEmpty { return }
+        if let product = self.getDonationMediumTier() {
+            self.purchaseHandler = completion
+            self.makePurchase(product: product)
+        }
+    }
+    
+    public func makeDonationHighTier(_ completion: PurchaseHandler? = nil) {
+        if self.products.isEmpty { return }
+        if let product = self.getDonationHighTier() {
+            self.purchaseHandler = completion
+            self.makePurchase(product: product)
+        }
     }
     
     public func restorePurchases() {
@@ -95,12 +136,15 @@ extension AZStoreKit: SKProductsRequestDelegate {
     public func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) {
         let products = response.products
         Log.debug("products: \(products)")
-        /*
-         localizedTitle: "Unlock full version"
-         productIdentifier: "net.jsloop.APIZen.UnlockFullVersion"
-         */
+        #if DEBUG
+        products.forEach { product in
+            Log.debug(product.productIdentifier)
+        }
+        #endif
         self.products = products
-        self.restorePurchases()
+        if let completion = self.productFetchedHandler {
+            completion(self.products)
+        }
     }
 }
 
@@ -118,12 +162,26 @@ extension AZStoreKit: SKPaymentQueueDelegate {
         for transaction in transactions {
             switch transaction.transactionState {
             case .purchased, .restored:
-                if transaction.payment.productIdentifier == IAPID.unlockFullVersion {
-                    Log.debug("Restored or purchased \(IAPID.unlockFullVersion)")
-                    // TODO: set user defaults value
+                Log.debug("Donated successfully")
+                SKPaymentQueue.default().finishTransaction(transaction)
+                if let product = self.getProductForIdentifier(transaction.payment.productIdentifier) {
+                    Log.debug("Donated \(product.productIdentifier) for \(product.priceLocale.currencySymbol ?? "")\(product.price)")
+                    // TODO: save to DB and display in UI
+                }
+                if let completion = self.purchaseHandler {
+                    completion()
+                }
+            case .failed:
+                Log.error("Error donating")
+                SKPaymentQueue.default().finishTransaction(transaction)
+                if let completion = self.purchaseHandler {
+                    completion()
                 }
             default:
                 Log.debug("IAP state: \(transaction.transactionState) - ID: \(transaction.payment.productIdentifier)")
+                if let completion = self.purchaseHandler {
+                    completion()
+                }
                 break
             }
         }

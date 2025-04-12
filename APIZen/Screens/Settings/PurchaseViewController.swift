@@ -30,6 +30,7 @@ class DonateTableViewController: APITesterProTableViewController {
         case thankYou
         case spacerAfterThankYou
         case thankYouVeryMuch
+        case spacerAfterThankYouVeryMuch
         case noteToUser
         case spacerAfterNoteToUser
         case circuitImage
@@ -39,6 +40,16 @@ class DonateTableViewController: APITesterProTableViewController {
         super.viewDidLoad()
         Log.debug("purchase tvc did load")
         self.initUI()
+        DispatchQueue.main.async {
+            self.showLoadingIndicator()
+            self.disableDonateButtons()
+            self.azsk.getListOfInAppProducts { _ in
+                DispatchQueue.main.async {
+                    self.enableDonateButtons()
+                    self.hideLoadingIndicator()
+                }
+            }
+        }
     }
     
     override func initUI() {
@@ -49,26 +60,24 @@ class DonateTableViewController: APITesterProTableViewController {
         self.navigationItem.title = "Donation"
         self.tableView.estimatedRowHeight = 44
         self.tableView.rowHeight = UITableView.automaticDimension
-        self.addNavigationBarRestoreButton()
         self.thanksBtn.isEnabled = false
-        DispatchQueue.main.async {
-            // TODO: display loading based on AZStoreKit state
-            self.showLoadingIndicator()
-        }
     }
     
-    func addNavigationBarRestoreButton() {
-        self.barBtn = UIButton(type: .custom)
-        self.barBtn.titleLabel?.font = UIFont.systemFont(ofSize: 16)
-        self.barBtn.setTitleColor(self.barBtn.tintColor, for: .normal)
-        self.barBtn.addTarget(self, action: #selector(self.restoreBarButtonDidTap(_:)), for: .touchUpInside)
-        self.barBtn.setTitle("Restore", for: .normal)
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: self.barBtn)
+    func disableDonateButtons() {
+        self.thanksBtn.isEnabled = false
+        self.thankYouBtn.isEnabled = false
+        self.thankYouVeryMuchBtn.isEnabled = false
+    }
+    
+    func enableDonateButtons() {
+        self.thanksBtn.isEnabled = true
+        self.thankYouBtn.isEnabled = true
+        self.thankYouVeryMuchBtn.isEnabled = true
     }
     
     func showLoadingIndicator() {
         if self.indicatorView == nil { self.indicatorView = UIView() }
-        UI.showCustomActivityIndicator(self.indicatorView!, mainView: self.view, shouldDisableInteraction: true)
+        UI.showCustomActivityIndicator(self.indicatorView!, mainView: self.view, shouldDisableInteraction: false)
     }
     
     func hideLoadingIndicator() {
@@ -78,8 +87,43 @@ class DonateTableViewController: APITesterProTableViewController {
         }
     }
     
-    @objc func restoreBarButtonDidTap(_ sender: Any) {
-        Log.debug("restore button did tap")
+    @IBAction func thankButtonDidTap(_ sender: Any) {
+        DispatchQueue.main.async {
+            self.showLoadingIndicator()
+            self.disableDonateButtons()
+            self.azsk.makeDonationLowTier {
+                DispatchQueue.main.async {
+                    self.enableDonateButtons()
+                    self.hideLoadingIndicator()
+                }
+            }
+        }
+    }
+    
+    @IBAction func thankYouButtonDidTap(_ sender: Any) {
+        DispatchQueue.main.async {
+            self.showLoadingIndicator()
+            self.disableDonateButtons()
+            self.azsk.makeDonationMediumTier {
+                DispatchQueue.main.async {
+                    self.enableDonateButtons()
+                    self.hideLoadingIndicator()
+                }
+            }
+        }
+    }
+    
+    @IBAction func thankYouVeryMuchButtonDidTap(_ sender: Any) {
+        DispatchQueue.main.async {
+            self.showLoadingIndicator()
+            self.disableDonateButtons()
+            self.azsk.makeDonationHighTier {
+                DispatchQueue.main.async {
+                    self.enableDonateButtons()
+                    self.hideLoadingIndicator()
+                }
+            }
+        }
     }
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -100,6 +144,8 @@ class DonateTableViewController: APITesterProTableViewController {
             return 24
         case CellId.thankYouVeryMuch.rawValue:
             return 44
+        case CellId.spacerAfterThankYouVeryMuch.rawValue:
+            return 24
         case CellId.noteToUser.rawValue:
             return 44
         case CellId.spacerAfterNoteToUser.rawValue:  // TODO: test

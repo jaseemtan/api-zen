@@ -38,9 +38,8 @@ class SettingsTableViewController: APITesterProTableViewController {
         case importData
         case exportData
         case spaceAfterExportData
-        case purchasesTitle
-        case unlockFullVersion
-        case spaceAfterPurchases
+        case donations
+        case spaceAfterDonations
         case rate
         case feedback
         case share
@@ -214,7 +213,7 @@ class SettingsTableViewController: APITesterProTableViewController {
                     self.exportCurrentWorkspace()
                 }
             )
-        } else if indexPath.row == CellId.unlockFullVersion.rawValue {
+        } else if indexPath.row == CellId.donations.rawValue {
             UI.pushScreen(self.navigationController!, storyboard: self.storyboard!, storyboardId: StoryboardId.purchaseVC.rawValue)
         } else if indexPath.row == CellId.rate.rawValue {
             self.rateApp()
@@ -250,12 +249,10 @@ class SettingsTableViewController: APITesterProTableViewController {
         case CellId.exportData.rawValue:
             return 44
         case CellId.spaceAfterExportData.rawValue:
-            return 0
-        case CellId.toolsTitle.rawValue:
             return 24
-        case CellId.unlockFullVersion.rawValue:
+        case CellId.donations.rawValue:
             return 44
-        case CellId.spaceAfterPurchases.rawValue:
+        case CellId.spaceAfterDonations.rawValue:
             return 24
         case CellId.rate.rawValue:
             return 44

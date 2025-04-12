@@ -27,12 +27,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             self.window?.makeKeyAndVisible()
         }
         application.registerForRemoteNotifications()
-        self.checkInAppPurchases()
         return true
-    }
-    
-    func checkInAppPurchases() {
-        self.azsk.getListOfInAppProducts()
     }
     
     func applicationDidBecomeActive(_ application: UIApplication) {

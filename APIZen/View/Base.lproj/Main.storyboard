@@ -1041,6 +1041,9 @@
                                                             <rect key="frame" x="167.5" y="0.0" width="79.5" height="34.5"/>
                                                             <state key="normal" title="Button"/>
                                                             <buttonConfiguration key="configuration" style="filled" title="Thanks"/>
+                                                            <connections>
+                                                                <action selector="thankButtonDidTap:" destination="Vtt-Tf-v4g" eventType="touchUpInside" id="Dla-ce-Niv"/>
+                                                            </connections>
                                                         </button>
                                                     </subviews>
                                                     <color key="backgroundColor" name="table-view-bg"/>
@@ -1096,6 +1099,9 @@
                                                             <rect key="frame" x="155.5" y="0.0" width="103.5" height="34.5"/>
                                                             <state key="normal" title="Button"/>
                                                             <buttonConfiguration key="configuration" style="filled" title="Thank you"/>
+                                                            <connections>
+                                                                <action selector="thankYouButtonDidTap:" destination="Vtt-Tf-v4g" eventType="touchUpInside" id="VCL-ic-XE2"/>
+                                                            </connections>
                                                         </button>
                                                     </subviews>
                                                     <color key="backgroundColor" name="table-view-bg"/>
@@ -1151,6 +1157,9 @@
                                                             <rect key="frame" x="113.5" y="0.0" width="187" height="34.5"/>
                                                             <state key="normal" title="Button"/>
                                                             <buttonConfiguration key="configuration" style="filled" title="Thank you very much"/>
+                                                            <connections>
+                                                                <action selector="thankYouVeryMuchButtonDidTap:" destination="Vtt-Tf-v4g" eventType="touchUpInside" id="7Te-QW-Mjb"/>
+                                                            </connections>
                                                         </button>
                                                     </subviews>
                                                     <color key="backgroundColor" name="table-view-bg"/>
@@ -1170,8 +1179,30 @@
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" name="table-view-bg"/>
                                     </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" rowHeight="24" id="1V8-Bv-13m" userLabel="Spacer Cell">
+                                        <rect key="frame" x="0.0" y="344" width="414" height="24"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="1V8-Bv-13m" id="wbt-f4-eyX">
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="24"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zpI-gZ-Tst" userLabel="Spacer Cell View">
+                                                    <rect key="frame" x="0.0" y="0.0" width="414" height="24"/>
+                                                    <color key="backgroundColor" name="table-view-bg"/>
+                                                </view>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="trailing" secondItem="zpI-gZ-Tst" secondAttribute="trailing" id="FjR-Mh-JM7"/>
+                                                <constraint firstAttribute="bottom" secondItem="zpI-gZ-Tst" secondAttribute="bottom" id="OqZ-hJ-aD9"/>
+                                                <constraint firstItem="zpI-gZ-Tst" firstAttribute="leading" secondItem="wbt-f4-eyX" secondAttribute="leading" id="UL6-gw-5SF"/>
+                                                <constraint firstItem="zpI-gZ-Tst" firstAttribute="top" secondItem="wbt-f4-eyX" secondAttribute="top" id="UnD-62-1NJ"/>
+                                                <constraint firstItem="zpI-gZ-Tst" firstAttribute="leading" secondItem="wbt-f4-eyX" secondAttribute="leading" id="pFJ-tD-VCv"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <color key="backgroundColor" name="table-view-bg"/>
+                                    </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" rowHeight="120" id="p55-cf-zxe" userLabel="Note to user cell">
-                                        <rect key="frame" x="0.0" y="344" width="414" height="120"/>
+                                        <rect key="frame" x="0.0" y="368" width="414" height="120"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="p55-cf-zxe" id="aPQ-1M-Yil">
                                             <rect key="frame" x="0.0" y="0.0" width="414" height="120"/>
@@ -1206,7 +1237,7 @@
                                         <color key="backgroundColor" name="table-view-bg"/>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" rowHeight="50" id="hsr-l1-Qgx" userLabel="Spacer Cell">
-                                        <rect key="frame" x="0.0" y="464" width="414" height="50"/>
+                                        <rect key="frame" x="0.0" y="488" width="414" height="50"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="hsr-l1-Qgx" id="yGL-Ix-abt">
                                             <rect key="frame" x="0.0" y="0.0" width="414" height="50"/>
@@ -1228,7 +1259,7 @@
                                         <color key="backgroundColor" name="table-view-bg"/>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" rowHeight="200" id="lGl-2g-nKL" userLabel="Circuit Image Cell">
-                                        <rect key="frame" x="0.0" y="514" width="414" height="200"/>
+                                        <rect key="frame" x="0.0" y="538" width="414" height="200"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="lGl-2g-nKL" id="XnR-E8-gTq">
                                             <rect key="frame" x="0.0" y="0.0" width="414" height="200"/>
@@ -6698,43 +6729,8 @@
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" name="table-view-bg"/>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" rowHeight="24" id="Ecg-0G-Gtl" userLabel="Purchase Title Cell">
-                                        <rect key="frame" x="0.0" y="476" width="414" height="24"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Ecg-0G-Gtl" id="XEb-FP-V1x">
-                                            <rect key="frame" x="0.0" y="0.0" width="414" height="24"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <subviews>
-                                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="i0w-i0-z37" userLabel="Spacer Cell View">
-                                                    <rect key="frame" x="0.0" y="0.0" width="414" height="24"/>
-                                                    <subviews>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="PURCHASES" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IYP-lT-Rd6">
-                                                            <rect key="frame" x="20" y="2" width="374" height="16"/>
-                                                            <fontDescription key="fontDescription" type="system" pointSize="13"/>
-                                                            <color key="textColor" systemColor="secondaryLabelColor"/>
-                                                            <nil key="highlightedColor"/>
-                                                        </label>
-                                                    </subviews>
-                                                    <color key="backgroundColor" name="table-view-bg"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="bottom" secondItem="IYP-lT-Rd6" secondAttribute="bottom" constant="6" id="J03-f1-glo"/>
-                                                        <constraint firstAttribute="trailing" secondItem="IYP-lT-Rd6" secondAttribute="trailing" constant="20" symbolic="YES" id="VOb-7J-VRu"/>
-                                                        <constraint firstItem="IYP-lT-Rd6" firstAttribute="leading" secondItem="i0w-i0-z37" secondAttribute="leading" constant="20" symbolic="YES" id="YAR-8J-YEv"/>
-                                                    </constraints>
-                                                </view>
-                                            </subviews>
-                                            <constraints>
-                                                <constraint firstItem="i0w-i0-z37" firstAttribute="leading" secondItem="XEb-FP-V1x" secondAttribute="leading" id="5W4-sa-g0v"/>
-                                                <constraint firstItem="i0w-i0-z37" firstAttribute="top" secondItem="XEb-FP-V1x" secondAttribute="top" id="89X-jK-HnL"/>
-                                                <constraint firstAttribute="trailing" secondItem="i0w-i0-z37" secondAttribute="trailing" id="JR6-FX-sbt"/>
-                                                <constraint firstItem="i0w-i0-z37" firstAttribute="leading" secondItem="XEb-FP-V1x" secondAttribute="leading" id="h2g-L7-c0m"/>
-                                                <constraint firstAttribute="bottom" secondItem="i0w-i0-z37" secondAttribute="bottom" id="qyL-sC-HWi"/>
-                                            </constraints>
-                                        </tableViewCellContentView>
-                                        <color key="backgroundColor" name="table-view-bg"/>
-                                    </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" rowHeight="43.5" id="MaO-ZT-mkZ" userLabel="Unlock full version Cell">
-                                        <rect key="frame" x="0.0" y="500" width="414" height="43.5"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" rowHeight="43.5" id="MaO-ZT-mkZ" userLabel="Donations Cell">
+                                        <rect key="frame" x="0.0" y="476" width="414" height="43.5"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="MaO-ZT-mkZ" id="ETe-Bg-wX6">
                                             <rect key="frame" x="0.0" y="0.0" width="414" height="43.5"/>
@@ -6747,7 +6743,7 @@
                                                         <constraint firstAttribute="height" constant="0.5" id="hGt-kT-cXU"/>
                                                     </constraints>
                                                 </view>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Unlock full version" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qwX-fA-yfa">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Donations" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qwX-fA-yfa" userLabel="Donations">
                                                     <rect key="frame" x="20" y="13" width="356" height="18"/>
                                                     <color key="backgroundColor" name="table-view-cell-bg"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="15"/>
@@ -6788,7 +6784,7 @@
                                         <color key="backgroundColor" name="table-view-bg"/>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" rowHeight="24" id="eAj-2a-BeH" userLabel="Spacer Cell">
-                                        <rect key="frame" x="0.0" y="543.5" width="414" height="24"/>
+                                        <rect key="frame" x="0.0" y="519.5" width="414" height="24"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="eAj-2a-BeH" id="ZAN-yl-xzo">
                                             <rect key="frame" x="0.0" y="0.0" width="414" height="24"/>
@@ -6810,7 +6806,7 @@
                                         <color key="backgroundColor" name="table-view-bg"/>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" rowHeight="43.5" id="4Ti-qJ-q3e" userLabel="Rate Cell">
-                                        <rect key="frame" x="0.0" y="567.5" width="414" height="43.5"/>
+                                        <rect key="frame" x="0.0" y="543.5" width="414" height="43.5"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="4Ti-qJ-q3e" id="LJi-AD-xvk">
                                             <rect key="frame" x="0.0" y="0.0" width="414" height="43.5"/>
@@ -6864,7 +6860,7 @@
                                         <color key="backgroundColor" name="table-view-bg"/>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" rowHeight="43.5" id="DAP-mn-Jiu" userLabel="Feedback Cell">
-                                        <rect key="frame" x="0.0" y="611" width="414" height="43.5"/>
+                                        <rect key="frame" x="0.0" y="587" width="414" height="43.5"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="DAP-mn-Jiu" id="rY0-UN-5ns">
                                             <rect key="frame" x="0.0" y="0.0" width="414" height="43.5"/>
@@ -6918,7 +6914,7 @@
                                         <color key="backgroundColor" name="table-view-bg"/>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" rowHeight="43.5" id="5Dj-cn-q0Q" userLabel="Share Cell">
-                                        <rect key="frame" x="0.0" y="654.5" width="414" height="43.5"/>
+                                        <rect key="frame" x="0.0" y="630.5" width="414" height="43.5"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="5Dj-cn-q0Q" id="vWA-Fd-C3r">
                                             <rect key="frame" x="0.0" y="0.0" width="414" height="43.5"/>
@@ -6972,7 +6968,7 @@
                                         <color key="backgroundColor" name="table-view-bg"/>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" rowHeight="50" id="fBK-TM-OrV" userLabel="Spacer Cell">
-                                        <rect key="frame" x="0.0" y="698" width="414" height="50"/>
+                                        <rect key="frame" x="0.0" y="674" width="414" height="50"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="fBK-TM-OrV" id="Bz5-jQ-wfL">
                                             <rect key="frame" x="0.0" y="0.0" width="414" height="50"/>

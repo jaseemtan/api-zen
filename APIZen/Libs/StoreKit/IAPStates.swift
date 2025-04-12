@@ -9,7 +9,12 @@
 import Foundation
 import GameplayKit
 
-/// In this state all In-App products will be fetched from the App Store. This is the first state always.
+/// Display the total amount donated in the UI. This value will be retrieved from user's iCloud DB.
+class DonationAmountDisplayState: GKState {
+    
+}
+
+/// In this state all In-App products will be fetched from the App Store.
 class ProductsFetchState: GKState {
     
 }
@@ -25,6 +30,6 @@ class DonateMediumState: GKState {
 }
 
 /// Thank you very much IAP donation.
-class DonateHightState: GKState {
+class DonateHighState: GKState {
     
 }
