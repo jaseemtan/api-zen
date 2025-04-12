@@ -148,9 +148,9 @@ class DonateTableViewController: APITesterProTableViewController {
             return 24
         case CellId.noteToUser.rawValue:
             return 44
-        case CellId.spacerAfterNoteToUser.rawValue:  // TODO: test
+        case CellId.spacerAfterNoteToUser.rawValue:
             let height = UIScreen.main.bounds.height
-            var computedHeight = height - (36 + 44 + 24 + 44 + 24 + 120)
+            var computedHeight = height - (36 + 44 + 24 + 44 + 24 + 120 + 24 + 24)
             if UI.getDeviceType() == .pad {
                 if UI.getCurrentDeviceOrientation() == .landscapeLeft || UI.getCurrentDeviceOrientation() == .landscapeRight {
                     circuitBoard.image = UIImage(named: "circuit-board-ipad-landscape")
