@@ -12,12 +12,15 @@ import AZCommon
 import StoreKit
 
 public struct IAPID {
-    public static let unlockFullVersion = "net.jsloop.APIZen.UnlockFullVersion"
+    /// Consumables
+    public static let thanks = "net.jsloop.APIZen.Thanks"
+    public static let thankYou = "net.jsloop.APIZen.Thankyou"
+    public static let thankYouVeryMuch = "net.jsloop.APIZen.Thankyouverymuch"
 }
 
 public class AZStoreKit: NSObject {
     public static let shared = AZStoreKit()
-    let productIds: Set<String> = [IAPID.unlockFullVersion]
+    let productIds: Set<String> = [IAPID.thanks, IAPID.thankYou, IAPID.thankYouVeryMuch]
     var products: [SKProduct] = []
     
     public override init() {
@@ -51,13 +54,6 @@ public class AZStoreKit: NSObject {
         productRequest.start()
     }
     
-    public func getUnlockFullVersionProduct() -> SKProduct? {
-        if self.products.isEmpty { return nil }
-        return self.products.first { product in
-            product.productIdentifier == IAPID.unlockFullVersion
-        }
-    }
-    
     /// Make a purchase of the given In-App product
     public func makePurchase(product: SKProduct) {
         let payment = SKPayment(product: product)
@@ -67,6 +63,31 @@ public class AZStoreKit: NSObject {
     
     public func restorePurchases() {
         SKPaymentQueue.default().restoreCompletedTransactions()
+    }
+    
+    /// Backup data for storing user's total donations
+    public func saveTotalDonationAmountToCloudKitKVStore() {
+        // todo:
+    }
+    
+    /// Backup data retrieving user's total donations. The value from CloudKit Core Data store takes precedence in case of a mismatch.
+    public func getTotalDonationAmountFromCloudKitKVStore() {
+        // todo:
+    }
+    
+    public func saveDonationToDB() {
+        // donation amount - decimal (for regions other than US with price adjustment)
+        // currency - name, symbol
+        // date - day, month, year, time
+        // Device meta that made the purchase
+    }
+    
+    public func getDonationsFromDB() {
+        
+    }
+    
+    public func getTotalDonationFromDB() {
+        
     }
 }
 

@@ -1,5 +1,5 @@
 //
-//  PurchaseViewController.swift
+//  DonateViewController.swift
 //  APIZen
 //
 //  Created by Jaseem V V on 01/04/25.
@@ -10,9 +10,12 @@ import Foundation
 import UIKit
 import AZCommon
 
-class PurchaseTableViewController: APITesterProTableViewController {
+class DonateTableViewController: APITesterProTableViewController {
     @IBOutlet weak var circuitBoard: UIImageView!
-    @IBOutlet weak var purchaseFullVersionBtn: UIButton!
+    @IBOutlet weak var donationAmountLabel: UILabel!
+    @IBOutlet weak var thanksBtn: UIButton!
+    @IBOutlet weak var thankYouBtn: UIButton!
+    @IBOutlet weak var thankYouVeryMuchBtn: UIButton!
     private let app = App.shared
     private let azsk = AZStoreKit.shared
     private var barBtn: UIButton!
@@ -20,14 +23,15 @@ class PurchaseTableViewController: APITesterProTableViewController {
     
     enum CellId: Int {
         case spacerAfterTop
-        case purchaseStatus
-        case spacerAfterPurchaseStatus
-        case unlockFullVersionButton
-        case spacerAfterUnlockFullVersionButton
-        case trialMessage
-        case freeMessage
-        case fullVersionMessage
-        case spaceAfterFullVersionMessage
+        case donationAmount
+        case spacerAfterDonationAmount
+        case thanks
+        case spacerAfterThanks
+        case thankYou
+        case spacerAfterThankYou
+        case thankYouVeryMuch
+        case noteToUser
+        case spacerAfterNoteToUser
         case circuitImage
     }
     
@@ -42,11 +46,11 @@ class PurchaseTableViewController: APITesterProTableViewController {
         self.app.updateViewBackground(self.view)
         self.app.updateNavigationControllerBackground(self.navigationController)
         self.tableView.backgroundColor = App.Color.tableViewBg
-        self.navigationItem.title = "Purchases"
+        self.navigationItem.title = "Donation"
         self.tableView.estimatedRowHeight = 44
         self.tableView.rowHeight = UITableView.automaticDimension
         self.addNavigationBarRestoreButton()
-        self.purchaseFullVersionBtn.isEnabled = false
+        self.thanksBtn.isEnabled = false
         DispatchQueue.main.async {
             // TODO: display loading based on AZStoreKit state
             self.showLoadingIndicator()
@@ -82,21 +86,23 @@ class PurchaseTableViewController: APITesterProTableViewController {
         switch indexPath.row {
         case CellId.spacerAfterTop.rawValue:
             return 36
-        case CellId.purchaseStatus.rawValue:
+        case CellId.donationAmount.rawValue:
             return 44
-        case CellId.spacerAfterPurchaseStatus.rawValue:
+        case CellId.spacerAfterDonationAmount.rawValue:
             return 24
-        case CellId.unlockFullVersionButton.rawValue:
+        case CellId.thanks.rawValue:
             return 44
-        case CellId.spacerAfterUnlockFullVersionButton.rawValue:
+        case CellId.spacerAfterThanks.rawValue:
             return 24
-        case CellId.trialMessage.rawValue:
-            return 120  // TODO: get dynamic value
-        case CellId.freeMessage.rawValue:
-            return 0
-        case CellId.fullVersionMessage.rawValue:
-            return 0
-        case CellId.spaceAfterFullVersionMessage.rawValue:
+        case CellId.thankYou.rawValue:
+            return 44
+        case CellId.spacerAfterThankYou.rawValue:
+            return 24
+        case CellId.thankYouVeryMuch.rawValue:
+            return 44
+        case CellId.noteToUser.rawValue:
+            return 44
+        case CellId.spacerAfterNoteToUser.rawValue:  // TODO: test
             let height = UIScreen.main.bounds.height
             var computedHeight = height - (36 + 44 + 24 + 44 + 24 + 120)
             if UI.getDeviceType() == .pad {
