@@ -170,21 +170,21 @@ class DonateTableViewController: APITesterProTableViewController {
             if UI.getDeviceType() == .pad {
                 if UI.getCurrentDeviceOrientation() == .landscapeLeft || UI.getCurrentDeviceOrientation() == .landscapeRight {
                     circuitBoard.image = UIImage(named: "circuit-board-ipad-landscape")
-                    computedHeight = computedHeight - (200 + 80)  // 200 image size; 80 safe area height adjustment
+                    computedHeight = computedHeight - (200 + 80 + 18)  // 200 image size; 80 safe area height adjustment
                 } else {
                     circuitBoard.image = UIImage(named: "circuit-board-ipad-portrait")
-                    computedHeight = computedHeight - (310 + 80)
+                    computedHeight = computedHeight - (310 + 80 + 18)
                 }
             } else {  // phone
                 if UI.getCurrentDeviceOrientation() == .landscapeLeft || UI.getCurrentDeviceOrientation() == .landscapeRight {
                     circuitBoard.image = UIImage(named: "circuit-board-landscape")
-                    computedHeight = computedHeight - (200 + 125)
+                    computedHeight = computedHeight - (200 + 125 + 18)
                 } else {
                     circuitBoard.image = UIImage(named: "circuit-board-portrait")
                     if UI.hasNotch() {
-                        computedHeight = computedHeight - (200 + 115)  // On phone, we don't need to add additional space. We need to reduce it to so that it aligns beaufifully with the bottom and looks like it's growing.
+                        computedHeight = computedHeight - (200 + 100 + 18)  // On phone, we don't need to add additional space. We need to reduce it to so that it aligns beaufifully with the bottom and looks like it's growing.
                     } else {
-                        computedHeight = computedHeight - (200 + 70)  // On devices with home button
+                        computedHeight = computedHeight - (200 + 70 + 18)  // On devices with home button
                     }
                 }
             }
