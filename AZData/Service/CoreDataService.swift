@@ -252,7 +252,7 @@ public class CoreDataService {
     public let defaultWorkspaceName = "Default workspace"
     public let defaultWorkspaceDesc = "The default workspace"
     public let cloudKitContainerId = AZConst.cloudKitContainerID
-    public static let modelVersion: Int64 = 2
+    public static let modelVersion: Int64 = 3
     
     public init() {
         self.bootstrap()
