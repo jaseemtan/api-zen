@@ -160,8 +160,6 @@ extension AZStoreKit: SKPaymentTransactionObserver {}
 extension AZStoreKit: SKPaymentQueueDelegate {
     public func paymentQueueRestoreCompletedTransactionsFinished(_ queue: SKPaymentQueue) {
         Log.debug("Payment queue restore completed")
-        // TODO: check for user defaults value
-        // When there are no previous purchases, the updatedTransactions is not invoked.
     }
     
     public func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
@@ -176,17 +174,26 @@ extension AZStoreKit: SKPaymentQueueDelegate {
                 }
                 if let completion = self.purchaseHandler {
                     completion()
+                    self.purchaseHandler = nil
                 }
             case .failed:
                 Log.error("Error donating")
                 SKPaymentQueue.default().finishTransaction(transaction)
                 if let completion = self.purchaseHandler {
                     completion()
+                    self.purchaseHandler = nil
                 }
-            default:
+            case .purchasing:
+                Log.debug("Purchasing")
+                break
+            case .deferred:
+                Log.debug("Deferred")
+                break
+            @unknown default:
                 Log.debug("IAP state: \(transaction.transactionState) - ID: \(transaction.payment.productIdentifier)")
                 if let completion = self.purchaseHandler {
                     completion()
+                    self.purchaseHandler = nil
                 }
                 break
             }
