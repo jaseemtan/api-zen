@@ -106,6 +106,8 @@ public class AZStoreKit: NSObject {
         SKPaymentQueue.default().restoreCompletedTransactions()
     }
     
+    // NB: **New model version Core Data**
+    
     /// Backup data for storing user's total donations
     public func saveTotalDonationAmountToCloudKitKVStore() {
         // todo:

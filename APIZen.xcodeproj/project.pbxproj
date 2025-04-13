@@ -89,7 +89,6 @@
 		9ED1877C2D9972AB00FA0EC5 /* AZPhone.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 9ED1877A2D9972AB00FA0EC5 /* AZPhone.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		9ED1877E2D9972AF00FA0EC5 /* AZData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9ED1877D2D9972AF00FA0EC5 /* AZData.framework */; };
 		9ED1877F2D9972AF00FA0EC5 /* AZData.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 9ED1877D2D9972AF00FA0EC5 /* AZData.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		9ED7541E2DAA4D650026A1AD /* IAPStates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9ED7541D2DAA4D650026A1AD /* IAPStates.swift */; };
 		9ED969A42AF5A35F0029E83E /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9ED969A32AF5A35F0029E83E /* WebKit.framework */; };
 		9ED969A82AF5A38B0029E83E /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9ED969A72AF5A38B0029E83E /* CloudKit.framework */; };
 		9EDBC0162BCACB52008783EA /* userscript.js in Resources */ = {isa = PBXBuildFile; fileRef = 9EDBC0142BCACB52008783EA /* userscript.js */; };
@@ -217,7 +216,6 @@
 		9ED187762D9972A300FA0EC5 /* AZCommon.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = AZCommon.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9ED1877A2D9972AB00FA0EC5 /* AZPhone.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = AZPhone.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9ED1877D2D9972AF00FA0EC5 /* AZData.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = AZData.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		9ED7541D2DAA4D650026A1AD /* IAPStates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IAPStates.swift; sourceTree = "<group>"; };
 		9ED969A32AF5A35F0029E83E /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		9ED969A52AF5A36A0029E83E /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		9ED969A72AF5A38B0029E83E /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
@@ -325,7 +323,7 @@
 		9E81D0A62AF44F85004095CF /* Libs */ = {
 			isa = PBXGroup;
 			children = (
-				9ED7541C2DA97B970026A1AD /* StoreKit */,
+				9E5397752D9BBED0006E2F5E /* AZStoreKit.swift */,
 				9EEA0E292B152E0200DFB42B /* EABackgroundWorker.swift */,
 				9E04F4F42B122577007A0773 /* EACloudKit.swift */,
 				9E81D0B52AF451E9004095CF /* EACommon.swift */,
@@ -486,15 +484,6 @@
 				9EC705752BA6E8E500CF4DE3 /* editor.html */,
 			);
 			path = editor;
-			sourceTree = "<group>";
-		};
-		9ED7541C2DA97B970026A1AD /* StoreKit */ = {
-			isa = PBXGroup;
-			children = (
-				9E5397752D9BBED0006E2F5E /* AZStoreKit.swift */,
-				9ED7541D2DAA4D650026A1AD /* IAPStates.swift */,
-			);
-			path = StoreKit;
 			sourceTree = "<group>";
 		};
 		9ED969A22AF5A35F0029E83E /* Frameworks */ = {
@@ -696,7 +685,6 @@
 				9E81D0CB2AF451E9004095CF /* EAOperationQueue.swift in Sources */,
 				9E81D12B2AF45241004095CF /* OptionsPickerViewController.swift in Sources */,
 				9E81D10A2AF45218004095CF /* RequestTabBarViewController.swift in Sources */,
-				9ED7541E2DAA4D650026A1AD /* IAPStates.swift in Sources */,
 				9EBE3C8C2B79363600EE8A0B /* EACopiableLabel.swift in Sources */,
 				9EEA0E2A2B152E0200DFB42B /* EABackgroundWorker.swift in Sources */,
 				9E81D1092AF45218004095CF /* RequestStates.swift in Sources */,
