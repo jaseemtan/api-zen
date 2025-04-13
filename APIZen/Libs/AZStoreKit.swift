@@ -71,6 +71,10 @@ public class AZStoreKit: NSObject {
         }
     }
     
+    public func getDisplayPriceForProduct(_ product: SKProduct, iAPId: String) -> String {
+        return "\(product.priceLocale.currencySymbol ?? "") \(product.price)"
+    }
+    
     /// Make a purchase of the given In-App product
     public func makePurchase(product: SKProduct) {
         let payment = SKPayment(product: product)

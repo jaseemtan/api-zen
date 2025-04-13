@@ -45,6 +45,7 @@ class DonateTableViewController: APITesterProTableViewController {
             self.disableDonateButtons()
             self.azsk.getListOfInAppProducts { _ in
                 DispatchQueue.main.async {
+                    self.updateDonateButtonsWithPriceInfo()
                     self.enableDonateButtons()
                     self.hideLoadingIndicator()
                 }
@@ -73,6 +74,21 @@ class DonateTableViewController: APITesterProTableViewController {
         self.thanksBtn.isEnabled = true
         self.thankYouBtn.isEnabled = true
         self.thankYouVeryMuchBtn.isEnabled = true
+    }
+    
+    func updateDonateButtonsWithPriceInfo() {
+        if let tier1Product = self.azsk.getProductForIdentifier(IAPID.thanks) {
+            let price = self.azsk.getDisplayPriceForProduct(tier1Product, iAPId: IAPID.thanks)
+            self.thanksBtn.setTitle("Thanks: \(price)", for: .normal)
+        }
+        if let tier2Product = self.azsk.getProductForIdentifier(IAPID.thankYou) {
+            let price = self.azsk.getDisplayPriceForProduct(tier2Product, iAPId: IAPID.thankYou)
+            self.thankYouBtn.setTitle("Thank you: \(price)", for: .normal)
+        }
+        if let tier3Product = self.azsk.getProductForIdentifier(IAPID.thankYouVeryMuch) {
+            let price = self.azsk.getDisplayPriceForProduct(tier3Product, iAPId: IAPID.thankYouVeryMuch)
+            self.thankYouVeryMuchBtn.setTitle("Thank you very much: \(price)", for: .normal)
+        }
     }
     
     func showLoadingIndicator() {
