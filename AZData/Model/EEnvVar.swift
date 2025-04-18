@@ -8,7 +8,6 @@
 
 import Foundation
 import CoreData
-import CloudKit
 
 public class EEnvVar: NSManagedObject, Entity {
     static var db: CoreDataService = { CoreDataService.shared }()

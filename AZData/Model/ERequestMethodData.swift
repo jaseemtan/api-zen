@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import CloudKit
 import CoreData
 
 public class ERequestMethodData: NSManagedObject, Entity {

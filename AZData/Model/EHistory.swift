@@ -8,7 +8,6 @@
 
 import Foundation
 import CoreData
-import CloudKit
 
 public class EHistory: NSManagedObject, Entity {
     static var db: CoreDataService = { CoreDataService.shared }()
