@@ -41,8 +41,8 @@ public enum RecordType: String, Hashable {
     case history = "History"
     case env = "Env"
     case envVar = "EnvVar"
-    // CloudKit specific
-    case zone = "Zone"
+    case donation = "EDonation"
+    
     
     static func from(id: String) -> RecordType? {
         if id == "default" { return .workspace }
@@ -63,14 +63,14 @@ public enum RecordType: String, Hashable {
             return self.file
         case "im":
             return self.image
-        case "zn":
-            return self.zone
         case "hs":
             return self.history
         case "en":
             return self.env
         case "ev":
             return self.envVar
+        case "dn":
+            return self.donation
         default:
             return nil
         }
@@ -94,14 +94,14 @@ public enum RecordType: String, Hashable {
             return "fl"
         case .image:
             return "im"
-        case .zone:
-            return "zn"
         case .history:
             return "hs"
         case .env:
             return "en"
         case .envVar:
             return "ev"
+        case .donation:
+            return "dn"
         }
     }
     
@@ -365,6 +365,10 @@ public class CoreDataService {
     
     public func envVarId() -> String {
         return "\(RecordType.prefix(for: .envVar))\(self.utils.genRandomString())"
+    }
+    
+    public func donationId() -> String {
+        return "\(RecordType.prefix(for: .donation))\(self.utils.genRandomString())"
     }
     
     // MARK: - Sort
@@ -1548,6 +1552,26 @@ public class CoreDataService {
         return xs
     }
     
+    // MARK: - Donation
+    
+    public func getDonation(id: String, ctx: NSManagedObjectContext? = CoreDataService.shared.ckMainMOC) -> EDonation? {
+        var x: EDonation?
+        let moc = self.getMainMOC(ctx: ctx)
+        moc.performAndWait {
+            let fr = NSFetchRequest<EDonation>(entityName: "EDonation")
+            fr.predicate = NSPredicate(format: "id == %@", id)
+            fr.fetchLimit = 1
+            do {
+                x = try moc.fetch(fr).first
+            } catch let error {
+                Log.error("Error fetching donation: \(error)")
+            }
+        }
+        return x
+    }
+    
+    // MARK: - Misc
+    
     public func getDataMarkedForDelete(obj: any Entity.Type, ctx: NSManagedObjectContext? = CoreDataService.shared.ckMainMOC) -> NSFetchedResultsController<NSFetchRequestResult> {
         let moc = self.getMainMOC(ctx: ctx)
         var frc: NSFetchedResultsController<NSFetchRequestResult>!
@@ -1907,6 +1931,23 @@ public class CoreDataService {
             if let isExists = checkExists, isExists, let data = self.getEnvVar(id: envVarId, ctx: ctx) { x = data }
             let data = x != nil ? x! : EEnvVar(context: moc)
             data.id = envVarId
+            data.created = x == nil ? date: x!.created
+            data.modified = date
+            data.version = x == nil ? CoreDataService.modelVersion : x!.version
+            x = data
+        }
+        return x
+    }
+    
+    public func createDonation(id: String? = CoreDataService.shared.donationId(), checkExists: Bool? = true, ctx: NSManagedObjectContext? = CoreDataService.shared.ckMainMOC) -> EDonation? {
+        var x: EDonation?
+        let date = Date()
+        let moc = self.getMainMOC(ctx: ctx)
+        moc.performAndWait {
+            let donationId = id == nil ? self.donationId() : id!
+            if let isExists = checkExists, isExists, let data = self.getDonation(id: donationId, ctx: ctx) { x = data }
+            let data = x != nil ? x! : EDonation(context: moc)
+            data.id = donationId
             data.created = x == nil ? date: x!.created
             data.modified = date
             data.version = x == nil ? CoreDataService.modelVersion : x!.version
