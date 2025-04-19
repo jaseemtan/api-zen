@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9ED1878F2D9ACA1F00FA0EC5 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9ED1878E2D9ACA1F00FA0EC5 /* StoreKit.framework */; };
 		9EFB71572D9921260089AC7A /* AZCommon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EFB714E2D9921260089AC7A /* AZCommon.framework */; };
 /* End PBXBuildFile section */
 
@@ -21,6 +22,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		9ED1878E2D9ACA1F00FA0EC5 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.2.sdk/System/Library/Frameworks/StoreKit.framework; sourceTree = DEVELOPER_DIR; };
 		9EFB714E2D9921260089AC7A /* AZCommon.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AZCommon.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9EFB71562D9921260089AC7A /* AZCommonTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AZCommonTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -56,6 +58,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9ED1878F2D9ACA1F00FA0EC5 /* StoreKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -70,11 +73,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		9ED1878D2D9ACA1F00FA0EC5 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				9ED1878E2D9ACA1F00FA0EC5 /* StoreKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		9EFB71442D9921260089AC7A = {
 			isa = PBXGroup;
 			children = (
 				9EFB71502D9921260089AC7A /* AZCommon */,
 				9EFB715A2D9921260089AC7A /* AZCommonTests */,
+				9ED1878D2D9ACA1F00FA0EC5 /* Frameworks */,
 				9EFB714F2D9921260089AC7A /* Products */,
 			);
 			sourceTree = "<group>";
