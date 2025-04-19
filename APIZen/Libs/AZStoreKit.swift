@@ -7,14 +7,28 @@
 //
 
 import Foundation
-import AZCommon
 import StoreKit
+import AZCommon
+import AZData
 
 public struct IAPID {
     /// Consumables
     public static let thanks = "net.jsloop.APIZen.Thanks"
     public static let thankYou = "net.jsloop.APIZen.Thankyou"
     public static let thankYouVeryMuch = "net.jsloop.APIZen.Thankyouverymuch"
+    
+    public static func getTier(_ productId: String) -> Int64 {
+        switch productId {
+        case IAPID.thanks:
+            return 1
+        case IAPID.thankYou:
+            return 2
+        case IAPID.thankYouVeryMuch:
+            return 3
+        default:
+            return 2
+        }
+    }
 }
 
 public class AZStoreKit: NSObject {
@@ -25,6 +39,8 @@ public class AZStoreKit: NSObject {
     public typealias PurchaseHandler = () -> Void
     var productFetchedHandler: ProductFetchedHandler? = nil
     var purchaseHandler: PurchaseHandler? = nil
+    private lazy var db = { CoreDataService.shared }()
+    private let nc = NotificationCenter.default
     
     public override init() {
         super.init()
@@ -122,15 +138,41 @@ public class AZStoreKit: NSObject {
         // todo:
     }
     
-    public func saveDonationToDB() {
+    public func saveDonationToDB(_ product: SKProduct) {
         // donation amount - decimal (for regions other than US with price adjustment)
         // currency - name, symbol
         // date - day, month, year, time
         // Device meta that made the purchase
+        let productId = product.productIdentifier
+        let price = product.price
+        let currencySymbol = product.priceLocale.currencySymbol
+        var currency = ""
+        if #available(iOS 16, *) {
+            currency = product.priceLocale.currency?.identifier ?? ""
+        } else {
+            currency = ""
+        }
+        if let donation = self.db.createDonation(ctx: self.db.ckMainMOC) {
+            donation.amount = price
+            donation.currency = currency
+            donation.currencySymbol = currencySymbol
+            donation.deviceName = UIDevice.current.name
+            donation.iapId = productId
+            donation.model = UIDevice.current.model
+            donation.systemName = UIDevice.current.systemName
+            donation.systemVersion = UIDevice.current.systemVersion
+            donation.tier = IAPID.getTier(productId)
+            donation.vendorId = UIDevice.current.identifierForVendor
+            donation.version = CoreDataService.modelVersion
+            self.db.saveMainContext { _ in
+                self.nc.post(name: .donationDidChange, object: self)
+            }
+        }
     }
     
     public func getDonationsFromDB() {
-        
+        let donations = self.db.getDonations()
+        Log.debug("donations count: \(donations.count)")
     }
     
     public func getTotalDonationFromDB() {
@@ -170,7 +212,7 @@ extension AZStoreKit: SKPaymentQueueDelegate {
                 SKPaymentQueue.default().finishTransaction(transaction)
                 if let product = self.getProductForIdentifier(transaction.payment.productIdentifier) {
                     Log.debug("Donated \(product.productIdentifier) for \(product.priceLocale.currencySymbol ?? "")\(product.price)")
-                    // TODO: save to DB and display in UI
+                    self.saveDonationToDB(product)
                 }
                 if let completion = self.purchaseHandler {
                     completion()

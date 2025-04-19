@@ -9,6 +9,12 @@
 import Foundation
 import UIKit
 import AZCommon
+import AZData
+
+extension Notification.Name {
+    static let donationDidChange = Notification.Name("donation-did-change")
+}
+
 
 class DonateTableViewController: APITesterProTableViewController {
     @IBOutlet weak var circuitBoard: UIImageView!
@@ -20,6 +26,8 @@ class DonateTableViewController: APITesterProTableViewController {
     private let azsk = AZStoreKit.shared
     private var barBtn: UIButton!
     private var indicatorView: UIView?
+    private lazy var db = { CoreDataService.shared }()
+    private let nc = NotificationCenter.default
     
     enum CellId: Int {
         case spacerAfterTop
@@ -34,6 +42,15 @@ class DonateTableViewController: APITesterProTableViewController {
         case noteToUser
         case spacerAfterNoteToUser
         case circuitImage
+    }
+    
+    deinit {
+        self.nc.removeObserver(self)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.updateDonationAmount()
     }
     
     override func viewDidLoad() {
@@ -51,6 +68,7 @@ class DonateTableViewController: APITesterProTableViewController {
                 }
             }
         }
+        self.initEvents()
     }
     
     override func initUI() {
@@ -61,7 +79,10 @@ class DonateTableViewController: APITesterProTableViewController {
         self.navigationItem.title = "Donation"
         self.tableView.estimatedRowHeight = 44
         self.tableView.rowHeight = UITableView.automaticDimension
-        self.thanksBtn.isEnabled = false
+    }
+    
+    func initEvents() {
+        self.nc.addObserver(self, selector: #selector(self.donationDidChange(_:)), name: .donationDidChange, object: nil)
     }
     
     func disableDonateButtons() {
@@ -88,6 +109,15 @@ class DonateTableViewController: APITesterProTableViewController {
         if let tier3Product = self.azsk.getProductForIdentifier(IAPID.thankYouVeryMuch) {
             let price = self.azsk.getDisplayPriceForProduct(tier3Product, iAPId: IAPID.thankYouVeryMuch)
             self.thankYouVeryMuchBtn.setTitle("Thank you very much: \(price)", for: .normal)
+        }
+    }
+    
+    func updateDonationAmount() {
+        if let donation = self.db.getLatestDonation() {
+            let totalDonationAmount = self.db.getTotalDonationAmount(ctx: self.db.ckMainMOC)
+            self.donationAmountLabel.text = "\(donation.currencySymbol ?? UI.getCurrencySymbol()) \(totalDonationAmount)"
+        } else {
+            self.donationAmountLabel.text = "\(UI.getCurrencySymbol()) 0.0"
         }
     }
     
@@ -139,6 +169,13 @@ class DonateTableViewController: APITesterProTableViewController {
                     self.hideLoadingIndicator()
                 }
             }
+        }
+    }
+    
+    @objc func donationDidChange(_ notif: Notification) {
+        Log.debug("donation did change")
+        DispatchQueue.main.async {
+            self.updateDonationAmount()
         }
     }
     

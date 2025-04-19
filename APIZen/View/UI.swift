@@ -432,6 +432,16 @@ class UI {
            // ignore
         }
     }
+    
+    /// Returns $ from US region.
+    static func getCurrencySymbol() -> String {
+        return Locale.current.currencySymbol ?? ""
+    }
+    
+    /// Returns USD for US region.
+    static func getCurrencyCode() -> String {
+        return Locale.current.currencyCode ?? ""
+    }
 }
 
 extension UIView {
