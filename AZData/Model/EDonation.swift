@@ -62,12 +62,14 @@ public class EDonation: NSManagedObject, Entity {
         if let x = dict["created"] as? String { donation.created = Date.toUTCDate(x) }
         if let x = dict["modified"] as? String { donation.modified = Date.toUTCDate(x) }
         if let x = dict["amount"] as? Decimal { donation.amount = (x) as NSDecimalNumber }
+        if let x = dict["currency"] as? String { donation.currency = x }
+        if let x = dict["currencySymbol"] as? String { donation.currencySymbol = x }
         if let x = dict["deviceName"] as? String { donation.deviceName = x }
         if let x = dict["model"] as? String { donation.model = x }
         if let x = dict["systemName"] as? String { donation.systemName = x }
         if let x = dict["systemVersion"] as? String { donation.systemVersion = x }
         if let x = dict["tier"] as? Int64 { donation.tier = x }
-        if let x = dict["vendorId"] as? String { donation.vendorId = x }
+        if let x = dict["vendorId"] as? UUID { donation.vendorId = x }
         if let x = dict["version"] as? Int64 { donation.version = x }
         return donation
     }
@@ -78,6 +80,8 @@ public class EDonation: NSManagedObject, Entity {
         dict["modified"] = self.modified?.toUTCStr()
         dict["id"] = self.id
         dict["amount"] = self.amount
+        dict["currency"] = self.currency
+        dict["currencySymbol"] = self.currencySymbol
         dict["deviceName"] = self.deviceName
         dict["model"] = self.model
         dict["systemName"] = self.systemName

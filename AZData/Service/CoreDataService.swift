@@ -1570,6 +1570,63 @@ public class CoreDataService {
         return x
     }
     
+    public func getDonations(ctx: NSManagedObjectContext = CoreDataService.shared.ckMainMOC) -> [EDonation] {
+        var xs: [EDonation] = []
+        let moc = self.getMainMOC(ctx: ctx)
+        moc.performAndWait {
+            let fr = NSFetchRequest<EDonation>(entityName: "EDonation")
+            fr.sortDescriptors = [NSSortDescriptor(key: "created", ascending: true)]
+            fr.fetchBatchSize = self.fetchBatchSize
+            do {
+                xs = try moc.fetch(fr)
+            } catch let error {
+                Log.error("Error getting entities - \(error)")
+            }
+        }
+        return xs
+    }
+    
+    public func getLatestDonation(ctx: NSManagedObjectContext = CoreDataService.shared.ckMainMOC) -> EDonation? {
+        var x: EDonation?
+        let moc = self.getMainMOC(ctx: ctx)
+        moc.performAndWait {
+            let fr = NSFetchRequest<EDonation>(entityName: "EDonation")
+            fr.sortDescriptors = [NSSortDescriptor(key: "created", ascending: false)]
+            fr.fetchLimit = 1
+            do {
+                x = try moc.fetch(fr).first
+            } catch let error {
+                Log.error("Error getting entities - \(error)")
+            }
+        }
+        return x
+    }
+    
+    public func getTotalDonationAmount(ctx: NSManagedObjectContext = CoreDataService.shared.ckMainMOC) -> NSDecimalNumber {
+        var amount: NSDecimalNumber = 0.0
+        let moc = self.getMainMOC(ctx: ctx)
+        let keypathExp = NSExpression(forKeyPath: "amount")
+        let expression = NSExpression(forFunction: "sum:", arguments: [keypathExp])
+        let sumDesc = NSExpressionDescription()
+        sumDesc.expression = expression
+        sumDesc.name = "totalAmount"
+        sumDesc.expressionResultType = .decimalAttributeType
+        let fr = NSFetchRequest<NSDictionary>(entityName: "EDonation")
+        fr.returnsObjectsAsFaults = false
+        fr.propertiesToFetch = [sumDesc]
+        fr.resultType = .dictionaryResultType
+        do {
+            let results = try moc.fetch(fr)
+            if let resultDict = results.first,
+               let totalAmount = resultDict.object(forKey: "totalAmount") as? NSDecimalNumber {
+                amount = totalAmount
+            }
+        } catch let error {
+            Log.error("Error summing amount: \(error)")
+        }
+        return amount
+    }
+    
     // MARK: - Misc
     
     public func getDataMarkedForDelete(obj: any Entity.Type, ctx: NSManagedObjectContext? = CoreDataService.shared.ckMainMOC) -> NSFetchedResultsController<NSFetchRequestResult> {

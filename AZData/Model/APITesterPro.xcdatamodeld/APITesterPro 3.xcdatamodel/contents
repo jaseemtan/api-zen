@@ -3,14 +3,17 @@
     <entity name="EDonation" representedClassName=".EDonation" syncable="YES" codeGenerationType="category">
         <attribute name="amount" optional="YES" attributeType="Decimal" defaultValueString="0.0"/>
         <attribute name="created" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="currency" optional="YES" attributeType="String"/>
+        <attribute name="currencySymbol" optional="YES" attributeType="String"/>
         <attribute name="deviceName" optional="YES" attributeType="String"/>
+        <attribute name="iapId" optional="YES" attributeType="String"/>
         <attribute name="id" optional="YES" attributeType="String"/>
         <attribute name="model" optional="YES" attributeType="String"/>
         <attribute name="modified" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="systemName" optional="YES" attributeType="String"/>
         <attribute name="systemVersion" optional="YES" attributeType="String"/>
         <attribute name="tier" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="vendorId" optional="YES" attributeType="String"/>
+        <attribute name="vendorId" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="version" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <fetchIndex name="byId">
             <fetchIndexElement property="id" type="Binary" order="ascending"/>
