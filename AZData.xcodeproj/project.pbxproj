@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		9EFB70932D9919EF0089AC7A /* AZData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EFB708A2D9919EF0089AC7A /* AZData.framework */; };
 		9EFB71C42D99236B0089AC7A /* AZCommon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EFB71C32D99236B0089AC7A /* AZCommon.framework */; };
-		9EFB71C52D99236B0089AC7A /* AZCommon.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 9EFB71C32D99236B0089AC7A /* AZCommon.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -21,20 +20,6 @@
 			remoteInfo = AZData;
 		};
 /* End PBXContainerItemProxy section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		9EFB71C62D99236B0089AC7A /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				9EFB71C52D99236B0089AC7A /* AZCommon.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		9EFB708A2D9919EF0089AC7A /* AZData.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AZData.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -136,7 +121,6 @@
 				9EFB70862D9919EF0089AC7A /* Sources */,
 				9EFB70872D9919EF0089AC7A /* Frameworks */,
 				9EFB70882D9919EF0089AC7A /* Resources */,
-				9EFB71C62D99236B0089AC7A /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
