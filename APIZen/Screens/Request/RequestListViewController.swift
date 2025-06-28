@@ -223,7 +223,20 @@ extension RequestListViewController: UITableViewDelegate, UITableViewDataSource 
             self.updateData()
             completion(true)
         }
-        let swipeActionConfig = UISwipeActionsConfiguration(actions: [delete])
+        delete.image = UIImage(systemName: "xmark.bin")
+        let copy = UIContextualAction(style: .normal, title: "Copy") { (action, view, completionHandler) in
+            Log.debug("Copy tapped for row \(indexPath.row)")
+            completionHandler(true)
+        }
+        copy.image = UIImage(systemName: "doc.on.doc")
+        copy.backgroundColor = .systemBlue
+        let move = UIContextualAction(style: .normal, title: "Move") { (action, view, completionHandler) in
+            Log.debug("Move tapped for row \(indexPath.row)")
+            completionHandler(true)
+        }
+        move.image = UIImage(systemName: "folder")
+        move.backgroundColor = .systemOrange
+        let swipeActionConfig = UISwipeActionsConfiguration(actions: [delete, copy, move])
         swipeActionConfig.performsFirstActionWithFullSwipe = false
         return swipeActionConfig
     }
