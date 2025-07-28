@@ -1,16 +1,12 @@
-## API Tester Pro
+## API Zen
 
 ### Subtitle
 
-Test HTTP API Endpoints
-
-### Promotional Text
-
-API Tester Pro helps you test your HTTP, HTTPS API endpoints with an intuitive request composer.
+Find the zen in API testing.
 
 ### Description
 
-API Tester Pro brings the convenience of HTTP API endpoint testing on the go. With its intuitive request composer and detailed response information, it helps developers test endpoints with ease.
+API Zen brings the convenience of HTTP API endpoint testing on the go. With its intuitive request composer and detailed response information, it helps developers test endpoints with ease.
 
 Main features  
 • Simple and intuitive request composer and viewer  
@@ -28,11 +24,11 @@ Main features
 
 ### Keywords
 
-api tester pro, http api testing, api tester, rest api, https api tester, http, https, api, rest
+api zen, http api testing, api tester, rest api, https api tester, http, https, api, rest
 
 ### Copyright
 
-2023 Jaseem Valiya Valappil  
+2019 Jaseem Valiya Valappil  
 All Rights Reserved.
 
 ### SKU
@@ -54,7 +50,7 @@ Automatically release this version
 
 ### Pricing
 
-Price: $5.99
+Price: Free with optional donations
 
 ### iPhone and iPad Apps on Apple Silicon Macs
 
@@ -64,8 +60,8 @@ Make this app available: Automatic macOS 11.0
 
 Data not collected
 
-https://jsloop.net/api-tester-pro-privacy-policy
+https://jsloop.net/app-privacy-policy
 
 ### Marketing URL
 
-https://www.jsloop.net/api-tester-pro
+https://www.jsloop.net/api-zen
