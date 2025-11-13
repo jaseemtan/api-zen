@@ -226,12 +226,16 @@ extension RequestListViewController: UITableViewDelegate, UITableViewDataSource 
         delete.image = UIImage(systemName: "xmark.bin")
         let copy = UIContextualAction(style: .normal, title: "Copy") { (action, view, completionHandler) in
             Log.debug("Copy tapped for row \(indexPath.row)")
+            let req = self.frc.object(at: indexPath)
+            AppState.setCopyRequest(req)
             completionHandler(true)
         }
         copy.image = UIImage(systemName: "doc.on.doc")
         copy.backgroundColor = .systemBlue
         let move = UIContextualAction(style: .normal, title: "Move") { (action, view, completionHandler) in
             Log.debug("Move tapped for row \(indexPath.row)")
+            let req = self.frc.object(at: indexPath)
+            AppState.setMoveRequest(req)
             completionHandler(true)
         }
         move.image = UIImage(systemName: "folder")

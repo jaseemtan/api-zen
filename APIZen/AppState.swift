@@ -31,6 +31,8 @@ struct AppState {
     static var requestState: [String: RequestManager] = [:]
     /// The response data cache for a given request. The key here is `requestId`.
     static var responseCache: [String: ResponseCache] = [:]
+    static private var copyRequest: ERequest?
+    static private var moveRequest: ERequest?
     
     static func addToRequestState(_ man: RequestManager) {
         self.requestState[man.request.getId()] = man
@@ -100,7 +102,21 @@ struct AppState {
         }
     }
     
+    static func setCopyRequest(_ req: ERequest) {
+        Self.copyRequest = req
+    }
     
+    static func clearCopyRequest() {
+        Self.copyRequest = nil
+    }
+    
+    static func setMoveRequest(_ req: ERequest) {
+        Self.moveRequest = req
+    }
+    
+    static func clearMoveRequest() {
+        Self.moveRequest = nil
+    }
 }
 
 /// Holds a map with the MD5 hash of the response data and the temporary file URL to the data.
