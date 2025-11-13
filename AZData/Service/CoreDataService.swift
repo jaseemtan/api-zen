@@ -311,62 +311,77 @@ public class CoreDataService {
         return CoreDataContainer.local
     }
     
+    /// Generates a new workspace id
     public func workspaceId() -> String {
         return "\(RecordType.prefix(for: .workspace))\(self.utils.genRandomString())"
     }
     
+    /// Generates a new project id
     public func projectId() -> String {
         return "\(RecordType.prefix(for: .project))\(self.utils.genRandomString())"
     }
     
+    /// Generates a new request id
     public func requestId() -> String {
         return "\(RecordType.prefix(for: .request))\(self.utils.genRandomString())"
     }
     
+    /// Generates a new request body data id
     public func requestBodyDataId() -> String {
         return "\(RecordType.prefix(for: .requestBodyData))\(self.utils.genRandomString())"
     }
     
+    /// Generates a new request data id
     public func requestDataId() -> String {
         return "\(RecordType.prefix(for: .requestData))\(self.utils.genRandomString())"
     }
     
+    /// Generates a new request method data id
     public func requestMethodDataId() -> String {
         return "\(RecordType.prefix(for: .requestMethodData))\(self.utils.genRandomString())"
     }
     
+    /// Generates a new request method data id
     public func requestMethodDataId(_ projId: String, methodName: String) -> String {
         return "\(RecordType.prefix(for: .requestMethodData))\(projId)-\(methodName)"
     }
     
+    /// Generates a new file id
     public func fileId() -> String {
         return "\(RecordType.prefix(for: .file))\(self.utils.genRandomString())"
     }
     
+    /// Genereates a new file id based on the hash of the given data
     public func fileId(_ data: Data) -> String {
         return  "\(RecordType.prefix(for: .file))\(Hash.md5(data: data))"
     }
     
+    /// Generates a new image id
     public func imageId() -> String {
         return "\(RecordType.prefix(for: .image))\(self.utils.genRandomString())"
     }
     
+    /// Generates a new image id based on the hash of the given data
     public func imageId(_ data: Data) -> String {
         return "\(RecordType.prefix(for: .image))\(Hash.md5(data: data))"
     }
     
+    /// Generates a new history id
     public func historyId() -> String {
         return "\(RecordType.prefix(for: .history))\(self.utils.genRandomString())"
     }
     
+    /// Generates an env id
     public func envId() -> String {
         return "\(RecordType.prefix(for: .env))\(self.utils.genRandomString())"
     }
     
+    /// Generates an env var id
     public func envVarId() -> String {
         return "\(RecordType.prefix(for: .envVar))\(self.utils.genRandomString())"
     }
     
+    /// Generates donation id
     public func donationId() -> String {
         return "\(RecordType.prefix(for: .donation))\(self.utils.genRandomString())"
     }
@@ -2011,6 +2026,12 @@ public class CoreDataService {
             x = data
         }
         return x
+    }
+    
+    // MARK: - Copy
+    
+    public func copyRequest(_ request: ERequest, toProj: EProject) -> ERequest? {
+        return request.copyEntity(toProj)
     }
     
     // MARK: - Save

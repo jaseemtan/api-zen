@@ -90,4 +90,15 @@ public class ERequestMethodData: NSManagedObject, Entity {
         dict["wsId"] = self.wsId
         return dict
     }
+    
+    /// Make a copy of the current request method with new id.
+    public func copyEntity(_ toProj: EProject) -> ERequestMethodData? {
+        let id = Self.db.requestMethodDataId()
+        let wsId = toProj.getWsId()
+        let method = Self.db.createRequestMethodData(id: id, wsId: wsId, name: self.getName())
+        method?.isCustom = self.isCustom
+        method?.order = self.order
+        method?.project = toProj
+        return method
+    }
 }

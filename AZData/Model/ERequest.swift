@@ -140,4 +140,30 @@ public class ERequest: NSManagedObject, Entity {
         xs = []
         return dict
     }
+    
+    public func copyEntity(_ toProj: EProject) -> ERequest? {
+        let wsId = toProj.getWsId()
+        let reqId = Self.db.requestId()
+        let req = Self.db.createRequest(id: reqId, wsId: wsId, name: self.getName())
+        req?.desc = self.desc
+        req?.envId = self.envId
+        req?.order = self.order  // TODO: update order after adding the new copy to the list
+        req?.validateSSL = self.validateSSL
+        req?.url = self.url
+        req?.method = self.method?.copyEntity(toProj)
+        req?.body = self.body?.copyEntity(toProj)
+        if let xs = self.headers?.allObjects as? [ERequestData] {
+            xs.forEach { reqData in
+                let newReqData = reqData.copyEntity(wsId: wsId)
+                newReqData?.header = req
+            }
+        }
+        if let xs = self.params?.allObjects as? [ERequestData] {
+            xs.forEach { reqData in
+                let newReqData = reqData.copyEntity(wsId: wsId)
+                newReqData?.param = req
+            }
+        }
+        return req
+    }
 }

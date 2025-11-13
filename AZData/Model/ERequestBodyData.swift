@@ -128,4 +128,28 @@ public class ERequestBodyData: NSManagedObject, Entity {
         }
         return dict
     }
+    
+    public func copyEntity(_ toProj: EProject) -> ERequestBodyData? {
+        let id = Self.db.requestBodyDataId()
+        let wsId = toProj.getWsId()
+        let body = Self.db.createRequestBodyData(id: id, wsId: wsId)
+        body?.json = self.json
+        body?.raw = self.raw
+        body?.selected = self.selected
+        body?.xml = self.xml
+        body?.binary = self.binary?.copyEntity(wsId: wsId)
+        if let xs = self.form?.allObjects as? [ERequestData] {
+            xs.forEach { form in
+                let newForm = form.copyEntity(wsId: wsId)
+                newForm?.form = body
+            }
+        }
+        if let xs = self.multipart?.allObjects as? [ERequestData] {
+            xs.forEach { multipart in
+                let newMultipart = multipart.copyEntity(wsId: wsId)
+                newMultipart?.multipart = body
+            }
+        }
+        return body
+    }
 }
