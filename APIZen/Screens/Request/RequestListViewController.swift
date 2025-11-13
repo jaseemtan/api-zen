@@ -34,6 +34,7 @@ class RequestListViewController: APITesterProViewController {
     private let nc = NotificationCenter.default
     var project: EProject?
     var methods: [ERequestMethodData] = []
+    var isCopyOrMoveMode = false
     
     deinit {
         self.nc.removeObserver(self)
@@ -65,6 +66,8 @@ class RequestListViewController: APITesterProViewController {
         self.app.updateViewBackground(self.view)
         self.app.updateNavigationControllerBackground(self.navigationController)
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(self.addBtnDidTap(_:)))
+        self.tableView.register(ActionButtonsCell.self, forCellReuseIdentifier: "ActionButtonsCell")
+
     }
     
     func initEvents() {
@@ -187,13 +190,31 @@ extension RequestListViewController: UITableViewDelegate, UITableViewDataSource 
         return "\(method) \(path.isEmpty ? "/" : path)"
     }
     
+    func numberOfSections(in tableView: UITableView) -> Int {
+        if self.isCopyOrMoveMode {
+            return 2
+        }
+        return 1
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.frc.numberOfRows(in: section)
+        if self.isCopyOrMoveMode && section == 0 {
+            return 1
+        }
+        return self.frc.numberOfRows(in: 0)
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        if self.isCopyOrMoveMode && indexPath.section == 0 {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "ActionButtonsCell", for: indexPath) as! ActionButtonsCell
+            cell.cancelButton.addTarget(self, action: #selector(cancelButtonDidTap), for: .touchUpInside)
+            cell.pasteButton.addTarget(self, action: #selector(pasteButtonDidTap), for: .touchUpInside)
+            cell.selectionStyle = .none
+            return cell
+        }
+        let idxPath = IndexPath(row: indexPath.row, section: 0)
         let cell = tableView.dequeueReusableCell(withIdentifier: self.cellReuseId, for: indexPath) as! RequestCell
-        let req = self.frc.object(at: indexPath)
+        let req = self.frc.object(at: idxPath)
         cell.nameLbl.text = req.name
         let desc = self.getDesc(req: req)
         cell.descLbl.text = desc
@@ -228,6 +249,8 @@ extension RequestListViewController: UITableViewDelegate, UITableViewDataSource 
             Log.debug("Copy tapped for row \(indexPath.row)")
             let req = self.frc.object(at: indexPath)
             AppState.setCopyRequest(req)
+            self.isCopyOrMoveMode = true
+            self.tableView.reloadData()
             completionHandler(true)
         }
         copy.image = UIImage(systemName: "doc.on.doc")
@@ -236,6 +259,8 @@ extension RequestListViewController: UITableViewDelegate, UITableViewDataSource 
             Log.debug("Move tapped for row \(indexPath.row)")
             let req = self.frc.object(at: indexPath)
             AppState.setMoveRequest(req)
+            self.isCopyOrMoveMode = true
+            self.tableView.reloadData()
             completionHandler(true)
         }
         move.image = UIImage(systemName: "folder")
@@ -246,13 +271,24 @@ extension RequestListViewController: UITableViewDelegate, UITableViewDataSource 
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        let req = self.frc.object(at: indexPath)
+        let idxPath = IndexPath(row: indexPath.row, section: 0)
+        let req = self.frc.object(at: idxPath)
         let name = req.name ?? ""
         let desc = self.getDesc(req: req)
         let w = tableView.frame.width
         let h1 = name.height(width: w, font: App.Font.font17) + 20
         let h2: CGFloat =  desc.isEmpty ? 0 : desc.height(width: w, font: App.Font.font15) + 10
         return max(h1 + h2, 46)
+    }
+    
+    @objc func cancelButtonDidTap() {
+        Log.debug("cancel button did tap")
+        self.isCopyOrMoveMode = false
+        self.tableView.reloadData()
+    }
+    
+    @objc func pasteButtonDidTap() {
+        Log.debug("paste button did tap")
     }
 }
 
@@ -271,3 +307,32 @@ extension RequestListViewController: NSFetchedResultsControllerDelegate {
         }
     }
 }
+
+class ActionButtonsCell: UITableViewCell {
+    let cancelButton = UIButton(type: .system)
+    let pasteButton = UIButton(type: .system)
+    
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        
+        self.cancelButton.setTitle("Cancel", for: .normal)
+        self.pasteButton.setTitle("Paste", for: .normal)
+        
+        [self.cancelButton, self.pasteButton].forEach {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            contentView.addSubview($0)
+        }
+        
+        NSLayoutConstraint.activate([
+            self.cancelButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
+            self.cancelButton.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            self.pasteButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
+            self.pasteButton.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
+        ])
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
