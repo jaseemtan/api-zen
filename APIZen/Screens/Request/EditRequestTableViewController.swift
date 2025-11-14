@@ -582,9 +582,9 @@ class EditRequestTableViewController: APITesterProTableViewController, UITextFie
         var text = ""
         var mode: PostRequestBodyMode = .json
         if let info = notif.userInfo, let txt = info["text"] as? String { text = txt }
-        if let info = notif.userInfo, let _mode = info["mode"] as? String { mode = PostRequestBodyMode(rawValue: _mode) ?? .json }
-        editor.text = text
-        editor.mode = mode
+        if let info = notif.userInfo, let _mode = info["mode"] as? PostRequestBodyMode { mode = _mode }
+        editor.setMode(mode)
+        editor.setText(text)
         editor.modalPresentationStyle = .automatic
         self.navigationController?.present(editor, animated: true)
     }
