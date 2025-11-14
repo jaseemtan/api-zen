@@ -35,6 +35,7 @@ class RequestListViewController: APITesterProViewController {
     var project: EProject?
     var methods: [ERequestMethodData] = []
     var isCopyOrMoveMode = false
+    var isMove = false
     
     deinit {
         self.nc.removeObserver(self)
@@ -289,6 +290,22 @@ extension RequestListViewController: UITableViewDelegate, UITableViewDataSource 
     
     @objc func pasteButtonDidTap() {
         Log.debug("paste button did tap")
+        self.isCopyOrMoveMode = false
+        self.tableView.reloadData()
+        var reqToCopyOrMove: ERequest?
+        if isMove {
+            reqToCopyOrMove = AppState.getMoveRequest()
+        } else {
+            reqToCopyOrMove = AppState.getCopyRequest()
+        }
+        guard let req = reqToCopyOrMove else { return }
+        if !isMove {
+            if let currProj = AppState.currentProject, let ctx = currProj.managedObjectContext {
+                let newReq = req.copyEntity(currProj, ctx: ctx)
+                self.localdb.saveMainContext()
+                self.updateData()
+            }
+        }
     }
 }
 

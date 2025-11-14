@@ -102,12 +102,20 @@ struct AppState {
         }
     }
     
+    static func getCopyRequest() -> ERequest? {
+        return Self.copyRequest
+    }
+    
     static func setCopyRequest(_ req: ERequest) {
         Self.copyRequest = req
     }
     
     static func clearCopyRequest() {
         Self.copyRequest = nil
+    }
+    
+    static func getMoveRequest() -> ERequest? {
+        return Self.moveRequest
     }
     
     static func setMoveRequest(_ req: ERequest) {
