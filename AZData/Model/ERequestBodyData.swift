@@ -138,6 +138,7 @@ public class ERequestBodyData: NSManagedObject, Entity {
         body?.selected = self.selected
         body?.xml = self.xml
         body?.binary = self.binary?.copyEntity(wsId: wsId, ctx: ctx)
+        body?.binary?.binary = body
         if let xs = self.form?.allObjects as? [ERequestData] {
             xs.forEach { form in
                 let newForm = form.copyEntity(wsId: wsId, ctx: ctx)

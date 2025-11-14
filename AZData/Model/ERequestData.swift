@@ -8,6 +8,7 @@
 
 import Foundation
 import CoreData
+import AZCommon
 
 public class ERequestData: NSManagedObject, Entity {
     static var db: CoreDataService = { CoreDataService.shared }()
@@ -131,6 +132,7 @@ public class ERequestData: NSManagedObject, Entity {
             xs.forEach { file in
                 let newFile = file.copyEntity(reqData, ctx: ctx)
                 newFile?.requestData = reqData
+                Log.debug("new file: \(String(describing: newFile))")
             }
         }
         reqData.image = self.image?.copyEntity(reqData, ctx: ctx)
