@@ -296,6 +296,8 @@ class ProjectListViewController: APITesterProViewController {
             self.updateListingWorkspace(ws)
             self.updateWorkspaceTypeIcon()
             self.updateWorkspaceTitle(ws.getName())
+            AppState.isCopy = false
+            AppState.clearCopyRequest()
         }
     }
     
