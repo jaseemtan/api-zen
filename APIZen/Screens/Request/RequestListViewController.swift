@@ -190,21 +190,21 @@ extension RequestListViewController: UITableViewDelegate, UITableViewDataSource 
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        if AppState.isCopy || AppState.isMove {
+        if AppState.isCopy {
             return 2
         }
         return 1
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if (AppState.isCopy || AppState.isMove) && section == 0 {
+        if AppState.isCopy && section == 0 {
             return 1
         }
         return self.frc.numberOfRows(in: 0)
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if (AppState.isCopy || AppState.isMove) && indexPath.section == 0 {
+        if AppState.isCopy && indexPath.section == 0 {
             let cell = tableView.dequeueReusableCell(withIdentifier: "ActionButtonsCell", for: indexPath) as! ActionButtonsCell
             cell.cancelButton.addTarget(self, action: #selector(cancelButtonDidTap), for: .touchUpInside)
             cell.pasteButton.addTarget(self, action: #selector(pasteButtonDidTap), for: .touchUpInside)
@@ -249,24 +249,12 @@ extension RequestListViewController: UITableViewDelegate, UITableViewDataSource 
             let req = self.frc.object(at: indexPath)
             AppState.setCopyRequest(req)
             AppState.isCopy = true
-            AppState.isMove = false
             self.tableView.reloadData()
             completionHandler(true)
         }
         copy.image = UIImage(systemName: "doc.on.doc")
         copy.backgroundColor = .systemBlue
-        let move = UIContextualAction(style: .normal, title: "Move") { (action, view, completionHandler) in
-            Log.debug("Move tapped for row \(indexPath.row)")
-            let req = self.frc.object(at: indexPath)
-            AppState.setMoveRequest(req)
-            AppState.isMove = true
-            AppState.isCopy = false
-            self.tableView.reloadData()
-            completionHandler(true)
-        }
-        move.image = UIImage(systemName: "folder")
-        move.backgroundColor = .systemOrange
-        let swipeActionConfig = UISwipeActionsConfiguration(actions: [delete, copy, move])
+        let swipeActionConfig = UISwipeActionsConfiguration(actions: [delete, copy])
         swipeActionConfig.performsFirstActionWithFullSwipe = false
         return swipeActionConfig
     }
@@ -288,23 +276,19 @@ extension RequestListViewController: UITableViewDelegate, UITableViewDataSource 
     @objc func cancelButtonDidTap() {
         Log.debug("cancel button did tap")
         AppState.isCopy = false
-        AppState.isMove = false
         self.tableView.reloadData()
     }
     
     @objc func pasteButtonDidTap() {
         Log.debug("paste button did tap")
         self.tableView.reloadData()
-        var reqToCopyOrMove: ERequest?
+        var reqToCopy: ERequest?
         if AppState.isCopy {
-            reqToCopyOrMove = AppState.getCopyRequest()
-        } else {
-            reqToCopyOrMove = AppState.getMoveRequest()
+            reqToCopy = AppState.getCopyRequest()
         }
-        guard let req = reqToCopyOrMove else { return }
+        guard let req = reqToCopy else { return }
         if AppState.isCopy {
             AppState.isCopy = false
-            AppState.isMove = false
             if let currProj = AppState.currentProject, let ctx = currProj.managedObjectContext {
                 let newReq = req.copyEntity(currProj, ctx: ctx)
                 Log.debug("newReq after copy: \(String(describing: newReq))")
