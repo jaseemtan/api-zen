@@ -134,6 +134,6 @@ public class ERequestData: NSManagedObject, Entity {
             }
         }
         reqData.image = self.image?.copyEntity(reqData, ctx: ctx)
-        return nil
+        return reqData
     }
 }
