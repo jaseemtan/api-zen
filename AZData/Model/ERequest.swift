@@ -150,7 +150,16 @@ public class ERequest: NSManagedObject, Entity {
         req?.order = self.order  // TODO: update order after adding the new copy to the list
         req?.validateSSL = self.validateSSL
         req?.url = self.url
-        req?.method = self.method?.copyEntity(toProj, ctx: ctx)
+        if let xs = toProj.requestMethods?.allObjects as? [ERequestMethodData] {
+            let method = xs.first { meth in
+                meth.getName() == self.method!.getName()
+            }
+            if method != nil {
+                req?.method = method
+            } else {
+                req?.method = self.method?.copyEntity(toProj, ctx: ctx)
+            }
+        }
         req?.body = self.body?.copyEntity(toProj, ctx: ctx)
         if let xs = self.headers?.allObjects as? [ERequestData] {
             xs.forEach { reqData in
