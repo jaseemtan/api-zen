@@ -33,6 +33,8 @@ struct AppState {
     static var responseCache: [String: ResponseCache] = [:]
     static private var copyRequest: ERequest?
     static private var moveRequest: ERequest?
+    static var isCopy = false
+    static var isMove = false
     
     static func addToRequestState(_ man: RequestManager) {
         self.requestState[man.request.getId()] = man

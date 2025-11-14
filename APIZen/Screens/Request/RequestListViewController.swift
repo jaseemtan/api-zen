@@ -34,8 +34,6 @@ class RequestListViewController: APITesterProViewController {
     private let nc = NotificationCenter.default
     var project: EProject?
     var methods: [ERequestMethodData] = []
-    var isCopyOrMoveMode = false
-    var isMove = false
     
     deinit {
         self.nc.removeObserver(self)
@@ -192,21 +190,21 @@ extension RequestListViewController: UITableViewDelegate, UITableViewDataSource 
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        if self.isCopyOrMoveMode {
+        if AppState.isCopy || AppState.isMove {
             return 2
         }
         return 1
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if self.isCopyOrMoveMode && section == 0 {
+        if (AppState.isCopy || AppState.isMove) && section == 0 {
             return 1
         }
         return self.frc.numberOfRows(in: 0)
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if self.isCopyOrMoveMode && indexPath.section == 0 {
+        if (AppState.isCopy || AppState.isMove) && indexPath.section == 0 {
             let cell = tableView.dequeueReusableCell(withIdentifier: "ActionButtonsCell", for: indexPath) as! ActionButtonsCell
             cell.cancelButton.addTarget(self, action: #selector(cancelButtonDidTap), for: .touchUpInside)
             cell.pasteButton.addTarget(self, action: #selector(pasteButtonDidTap), for: .touchUpInside)
@@ -250,7 +248,8 @@ extension RequestListViewController: UITableViewDelegate, UITableViewDataSource 
             Log.debug("Copy tapped for row \(indexPath.row)")
             let req = self.frc.object(at: indexPath)
             AppState.setCopyRequest(req)
-            self.isCopyOrMoveMode = true
+            AppState.isCopy = true
+            AppState.isMove = false
             self.tableView.reloadData()
             completionHandler(true)
         }
@@ -260,7 +259,8 @@ extension RequestListViewController: UITableViewDelegate, UITableViewDataSource 
             Log.debug("Move tapped for row \(indexPath.row)")
             let req = self.frc.object(at: indexPath)
             AppState.setMoveRequest(req)
-            self.isCopyOrMoveMode = true
+            AppState.isMove = true
+            AppState.isCopy = false
             self.tableView.reloadData()
             completionHandler(true)
         }
@@ -273,35 +273,41 @@ extension RequestListViewController: UITableViewDelegate, UITableViewDataSource 
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let idxPath = IndexPath(row: indexPath.row, section: 0)
-        let req = self.frc.object(at: idxPath)
-        let name = req.name ?? ""
-        let desc = self.getDesc(req: req)
-        let w = tableView.frame.width
-        let h1 = name.height(width: w, font: App.Font.font17) + 20
-        let h2: CGFloat =  desc.isEmpty ? 0 : desc.height(width: w, font: App.Font.font15) + 10
-        return max(h1 + h2, 46)
+        if self.frc.numberOfRows(in: 0) > 0 {
+            let req = self.frc.object(at: idxPath)
+            let name = req.name ?? ""
+            let desc = self.getDesc(req: req)
+            let w = tableView.frame.width
+            let h1 = name.height(width: w, font: App.Font.font17) + 20
+            let h2: CGFloat =  desc.isEmpty ? 0 : desc.height(width: w, font: App.Font.font15) + 10
+            return max(h1 + h2, 46)
+        }
+        return UITableView.automaticDimension
     }
     
     @objc func cancelButtonDidTap() {
         Log.debug("cancel button did tap")
-        self.isCopyOrMoveMode = false
+        AppState.isCopy = false
+        AppState.isMove = false
         self.tableView.reloadData()
     }
     
     @objc func pasteButtonDidTap() {
         Log.debug("paste button did tap")
-        self.isCopyOrMoveMode = false
         self.tableView.reloadData()
         var reqToCopyOrMove: ERequest?
-        if isMove {
-            reqToCopyOrMove = AppState.getMoveRequest()
-        } else {
+        if AppState.isCopy {
             reqToCopyOrMove = AppState.getCopyRequest()
+        } else {
+            reqToCopyOrMove = AppState.getMoveRequest()
         }
         guard let req = reqToCopyOrMove else { return }
-        if !isMove {
+        if AppState.isCopy {
+            AppState.isCopy = false
+            AppState.isMove = false
             if let currProj = AppState.currentProject, let ctx = currProj.managedObjectContext {
                 let newReq = req.copyEntity(currProj, ctx: ctx)
+                Log.debug("newReq after copy: \(String(describing: newReq))")
                 self.localdb.saveMainContext()
                 self.updateData()
             }
