@@ -2028,12 +2028,6 @@ public class CoreDataService {
         return x
     }
     
-    // MARK: - Copy
-    
-    public func copyRequest(_ request: ERequest, toProj: EProject) -> ERequest? {
-        return request.copyEntity(toProj)
-    }
-    
     // MARK: - Save
     
     public func refreshAllCKManagedObjects() {

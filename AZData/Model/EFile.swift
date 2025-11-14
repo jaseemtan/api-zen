@@ -103,13 +103,13 @@ public class EFile: NSManagedObject, Entity {
         return dict
     }
     
-    public func copyEntity(_ reqData: ERequestData) -> EFile? {
+    public func copyEntity(_ reqData: ERequestData, ctx: NSManagedObjectContext) -> EFile? {
         let id = Self.db.fileId()
         let wsId = reqData.getWsId()
         guard let data = self.data else { return nil }
         guard let path = self.path else { return nil }
         guard let type = RequestDataType(rawValue: self.type.toInt()) else { return nil }
-        guard let file = Self.db.createFile(fileId: id, data: data, wsId: wsId, name: self.getName(), path: path, type: type) else { return nil }
+        guard let file = Self.db.createFile(fileId: id, data: data, wsId: wsId, name: self.getName(), path: path, type: type, ctx: ctx) else { return nil }
         file.requestData = reqData
         return file
     }

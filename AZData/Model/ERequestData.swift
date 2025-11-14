@@ -119,21 +119,21 @@ public class ERequestData: NSManagedObject, Entity {
         return dict
     }
     
-    func copyEntity(wsId: String) -> ERequestData? {
+    func copyEntity(wsId: String, ctx: NSManagedObjectContext) -> ERequestData? {
         let id = Self.db.requestDataId()
         guard let type = RequestDataType(rawValue: self.type.toInt()) else { return nil }
         guard let format = RequestBodyFormFieldFormatType(rawValue: self.fieldFormat.toInt()) else { return nil }
-        guard let reqData = Self.db.createRequestData(id: id, wsId: wsId, type: type, fieldFormat: format) else { return nil }
+        guard let reqData = Self.db.createRequestData(id: id, wsId: wsId, type: type, fieldFormat: format, ctx: ctx) else { return nil }
         reqData.desc = self.desc
         reqData.key = self.key
         reqData.value = self.value
         if let xs = self.files?.allObjects as? [EFile] {
             xs.forEach { file in
-                let newFile = file.copyEntity(reqData)
+                let newFile = file.copyEntity(reqData, ctx: ctx)
                 newFile?.requestData = reqData
             }
         }
-        reqData.image = self.image?.copyEntity(reqData)
+        reqData.image = self.image?.copyEntity(reqData, ctx: ctx)
         return nil
     }
 }

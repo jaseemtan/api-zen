@@ -92,13 +92,14 @@ public class ERequestMethodData: NSManagedObject, Entity {
     }
     
     /// Make a copy of the current request method with new id.
-    public func copyEntity(_ toProj: EProject) -> ERequestMethodData? {
+    public func copyEntity(_ toProj: EProject, ctx: NSManagedObjectContext) -> ERequestMethodData? {
+        let destProj = Self.db.getProject(id: toProj.getId())
         let id = Self.db.requestMethodDataId()
         let wsId = toProj.getWsId()
-        let method = Self.db.createRequestMethodData(id: id, wsId: wsId, name: self.getName())
+        let method = Self.db.createRequestMethodData(id: id, wsId: wsId, name: self.getName(), ctx: ctx)
         method?.isCustom = self.isCustom
         method?.order = self.order
-        method?.project = toProj
+        method?.project = destProj
         return method
     }
 }

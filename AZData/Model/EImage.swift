@@ -92,12 +92,12 @@ public class EImage: NSManagedObject, Entity {
         return dict
     }
     
-    public func copyEntity(_ reqData: ERequestData) -> EImage? {
+    public func copyEntity(_ reqData: ERequestData, ctx: NSManagedObjectContext) -> EImage? {
         let id = Self.db.imageId()
         let wsId = reqData.getWsId()
         guard let data = self.data else { return nil }
         guard let type = self.type else { return nil }
-        guard let image = Self.db.createImage(imageId: id, data: data, wsId: wsId, name: self.getName(), type: type) else { return nil }
+        guard let image = Self.db.createImage(imageId: id, data: data, wsId: wsId, name: self.getName(), type: type, ctx: ctx) else { return nil }
         image.requestData = reqData
         return image
     }
