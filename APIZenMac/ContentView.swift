@@ -16,9 +16,9 @@ struct ContentView: View {
             // Left pane
             if showLeft {
                 LeftPane()
-                    .frame(minWidth: 180, idealWidth: 220, maxWidth: 350)
+                    .frame(minWidth: 180, idealWidth: 220, maxWidth: 400)
             }
-
+            
             // Center view
             VSplitView {
                 CenterTopPane()
@@ -33,7 +33,7 @@ struct ContentView: View {
             // Right pane
             if showRight {
                 RightPane()
-                    .frame(minWidth: 200, idealWidth: 260, maxWidth: 380)
+                    .frame(minWidth: 180, idealWidth: 220, maxWidth: 400)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
