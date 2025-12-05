@@ -6,6 +6,11 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		9E58C5232EE3556500A4F4CF /* AZData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9E58C5222EE3556500A4F4CF /* AZData.framework */; };
+		9E58C5242EE3556500A4F4CF /* AZData.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 9E58C5222EE3556500A4F4CF /* AZData.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		9E1297172EE2FAAE00053E53 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -23,10 +28,25 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		9E58C5252EE3556500A4F4CF /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				9E58C5242EE3556500A4F4CF /* AZData.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		9E1297092EE2FAA900053E53 /* APIZenMac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = APIZenMac.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9E1297162EE2FAAE00053E53 /* APIZenMacTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = APIZenMacTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9E1297202EE2FAAE00053E53 /* APIZenMacUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = APIZenMacUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		9E58C5222EE3556500A4F4CF /* AZData.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = AZData.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -52,6 +72,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9E58C5232EE3556500A4F4CF /* AZData.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,6 +99,7 @@
 				9E12970B2EE2FAA900053E53 /* APIZenMac */,
 				9E1297192EE2FAAE00053E53 /* APIZenMacTests */,
 				9E1297232EE2FAAE00053E53 /* APIZenMacUITests */,
+				9E58C5212EE3556500A4F4CF /* Frameworks */,
 				9E12970A2EE2FAA900053E53 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -92,6 +114,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		9E58C5212EE3556500A4F4CF /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				9E58C5222EE3556500A4F4CF /* AZData.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -102,6 +132,7 @@
 				9E1297052EE2FAA900053E53 /* Sources */,
 				9E1297062EE2FAA900053E53 /* Frameworks */,
 				9E1297072EE2FAA900053E53 /* Resources */,
+				9E58C5252EE3556500A4F4CF /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
