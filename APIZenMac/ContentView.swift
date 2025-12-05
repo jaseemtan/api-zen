@@ -100,15 +100,41 @@ struct CenterTopPane: View {
 struct CenterBottomPane: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            Text("Center Bottom")
-                .font(.headline)
-                .padding(6)
+            // Main content area
+            VStack(alignment: .leading, spacing: 4) {
+                Text("Center Bottom")
+                    .font(.headline)
 
+                Divider()
+
+                Text("Logs / console / secondary view")
+                    .frame(maxWidth: .infinity,
+                           maxHeight: .infinity,
+                           alignment: .topLeading)
+            }
+            .padding(6)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+
+            // Bottom bar
             Divider()
 
-            Text("Logs / console / secondary view")
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-                .padding(6)
+            HStack {
+                Spacer()
+
+                Button {
+                    print("Default Workspace tapped")
+                } label: {
+                    Text("Default Workspace")
+                        .font(.system(size: 13, weight: .medium))
+                        .foregroundColor(.blue)
+                        .underline(false)
+                }
+                .buttonStyle(.plain)
+
+                Spacer()
+            }
+            .padding(.vertical, 6)
+            .padding(.horizontal, 8)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
