@@ -28,11 +28,11 @@ struct WorkspaceWindowRoot: View {
     // --- Static (shared across all windows in this process) ---
 
     // Initial workspaces we want to open at launch.
-    private static var bootstrapWorkspaces: [String] = ["ws1", "ws2"]
+    private static var bootstrapWorkspaces: [WindowRegistry.Entry] = []
     private static var nextBootstrapIndex: Int = 0
 
-    // Counter to assign "Window #N"
-    private static var nextWindowIndex: Int = 1
+    // Counter to assign "Window #N". Starts with 0.
+    private static var nextWindowIndex: Int = 0
     
     private let windowRegistry = WindowRegistry.shared
     
@@ -56,7 +56,7 @@ struct WorkspaceWindowRoot: View {
             if !didAssignBootstrapWorkspace,
                Self.nextBootstrapIndex < Self.bootstrapWorkspaces.count {
 
-                workspaceId = Self.bootstrapWorkspaces[Self.nextBootstrapIndex]
+                workspaceId = Self.bootstrapWorkspaces[Self.nextBootstrapIndex].workspaceId  // todo: save ws type to set coredata store
                 didAssignBootstrapWorkspace = true
                 Self.nextBootstrapIndex += 1
 
@@ -68,8 +68,13 @@ struct WorkspaceWindowRoot: View {
             }
             self.windowRegistry.add(windowIndex: windowIndex, workspaceId: workspaceId)
         }
+        .onChange(of: workspaceId, { oldValue, newValue in
+            Log.debug("wsId changed - old: \(oldValue) - new: \(newValue)")
+            self.windowRegistry.add(windowIndex: windowIndex, workspaceId: newValue)
+        })
         .onAppear {
-            Log.debug("WorkspaceWindowRoot onAppear")
+            Log.debug("WorkspaceWindowRoot onAppear")            
+            Self.bootstrapWorkspaces = self.windowRegistry.restoreOpenWindows()
         }
         .onDisappear {
             Log.debug("WorkspaceWindowRoot onDisappear")
