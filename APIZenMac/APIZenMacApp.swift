@@ -6,12 +6,16 @@
 //
 
 import SwiftUI
+import AZData
 
 @main
 struct APIZenMacApp: App {
+    let db = CoreDataService.shared
+    
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            WorkspaceWindowRoot(db: self.db)
         }
     }
 }
+
