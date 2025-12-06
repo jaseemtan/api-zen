@@ -12,8 +12,8 @@ import AZData
 struct APIZenMacApp: App {
     var body: some Scene {
         // Single scene: each window represents one workspace
-        WindowGroup("Workspace", for: String.self) { $workspaceId in
-            WorkspaceWindowRoot(workspaceId: $workspaceId)
+        WindowGroup("Workspace", id: "workspace") {
+            WorkspaceWindowRoot()
         }
     }
 }
