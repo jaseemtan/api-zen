@@ -10,6 +10,9 @@ import AZData
 
 @main
 struct APIZenMacApp: App {
+    @NSApplicationDelegateAdaptor(AppDelegate.self)
+    var appDelegate
+    
     var body: some Scene {
         // Single scene: each window represents one workspace
         WindowGroup("Workspace", id: "workspace") {

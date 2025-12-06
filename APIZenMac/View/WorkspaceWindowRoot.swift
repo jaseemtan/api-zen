@@ -34,6 +34,8 @@ struct WorkspaceWindowRoot: View {
     // Counter to assign "Window #N"
     private static var nextWindowIndex: Int = 1
     
+    private let windowRegistry = WindowRegistry.shared
+    
     var body: some View {
         MainView(
             selectedWorkspaceId: Binding(
@@ -43,6 +45,7 @@ struct WorkspaceWindowRoot: View {
         )
         .padding()
         .task {
+            Log.debug("WorkspaceWindowRoot task")
             // 1. Assign a unique windowIndex per window
             if windowIndex == 0 {
                 windowIndex = Self.nextWindowIndex
@@ -63,6 +66,14 @@ struct WorkspaceWindowRoot: View {
                     openWindow(id: "workspace") // opens another WorkspaceWindowRoot
                 }
             }
+            self.windowRegistry.add(windowIndex: windowIndex, workspaceId: workspaceId)
+        }
+        .onAppear {
+            Log.debug("WorkspaceWindowRoot onAppear")
+        }
+        .onDisappear {
+            Log.debug("WorkspaceWindowRoot onDisappear")
+            self.windowRegistry.remove(windowIndex: windowIndex)
         }
     }
 }
