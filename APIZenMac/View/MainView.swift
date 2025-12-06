@@ -13,23 +13,24 @@ struct MainView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
-                Text("Workspace Id: ")
+                Text("Workspace Id:")
                 Text(selectedWorkspaceId)
+                    .font(.headline)
             }
-            
+
             Divider().padding(.vertical, 8)
 
-           // Update values — writes back into SceneStorage via binding
-           Button("Use Local Workspace") {
-               selectedWorkspaceId = "local-ws"
-           }
+            Button("Use Local Workspace") {
+                selectedWorkspaceId = "local-ws"
+            }
 
-           Button("Use iCloud Workspace") {
-               selectedWorkspaceId = "icloud-ws"
-               
-           }
+            Button("Use iCloud Workspace") {
+                selectedWorkspaceId = "icloud-ws"
+            }
 
-           Spacer()
+            Spacer()
         }
+        .frame(minWidth: 320, minHeight: 200)
+        .padding()
     }
 }

@@ -10,22 +10,34 @@ import AZData
 import AZCommon
 
 struct WorkspaceWindowRoot: View {
-    let db: CoreDataService
+    // This is the per-window value managed by the WindowGroup
+    @Binding var workspaceId: String?
     
-    // Per window persisted state. These values are automatically kept separate for each window.
-    @SceneStorage(AZConst.selectedWorkspaceIdKey)
-    private var selectedWorkspaceId: String = "default"
+    @Environment(\.openWindow) private var openWindow
     
-    // CoreDataContainer value for the selected workspace.
-    @SceneStorage(AZConst.selectedWorkspaceContainerKey)
-    private var selectedWorkspaceContainer: String = CoreDataContainer.local.rawValue
-    
+    // Global flag so we only bootstrap once on a fresh launch
+    private static var didInitWindows = false
+
     var body: some View {
         MainView(
-            selectedWorkspaceId: $selectedWorkspaceId
+            selectedWorkspaceId: Binding(
+                get: { workspaceId ?? "default" },
+                set: { workspaceId = $0 }
+            )
         )
-        .environment(\.managedObjectContext, self.db.getMainMOC(container: CoreDataContainer(rawValue: selectedWorkspaceContainer)!))
-    }
-    
-}
+        .padding()
+        .task {
+            // 1. Only run the bootstrap once per app launch
+            guard !Self.didInitWindows else { return }
+            // 2. Only bootstrap on a *blank* (nil) window — not restored ones
+            guard workspaceId == nil else { return }
+            
+            Self.didInitWindows = true
 
+            // First auto-created window becomes ws1
+            workspaceId = "ws1"
+            // Second window is explicitly opened as ws2
+            openWindow(value: "ws2")
+        }
+    }
+}

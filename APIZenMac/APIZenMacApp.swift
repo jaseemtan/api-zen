@@ -10,12 +10,10 @@ import AZData
 
 @main
 struct APIZenMacApp: App {
-    let db = CoreDataService.shared
-    
     var body: some Scene {
-        WindowGroup {
-            WorkspaceWindowRoot(db: self.db)
+        // Single scene: each window represents one workspace
+        WindowGroup("Workspace", for: String.self) { $workspaceId in
+            WorkspaceWindowRoot(workspaceId: $workspaceId)
         }
     }
 }
-
