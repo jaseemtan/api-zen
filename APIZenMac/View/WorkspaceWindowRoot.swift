@@ -47,17 +47,12 @@ struct WorkspaceWindowRoot: View {
     
     var body: some View {
         MainView(
-            selectedWorkspaceId: Binding(
-                get: { workspaceId },
-                set: { workspaceId = $0 }
-            ),
-            coreDataContainer: Binding(
-                get: { coreDataContainer },
-                set: { coreDataContainer = $0 }
-            ),
-            workspaceName: workspaceName,
+            selectedWorkspaceId: $workspaceId,
+            coreDataContainer: $coreDataContainer,
+            workspaceName: $workspaceName,
             windowIndex: windowIndex
         )
+        .environment(\.coreDataContainer, $coreDataContainer)
         .environment(\.managedObjectContext, coreDataContainer == .local ? self.db.localMainMOC : self.db.ckMainMOC)
         .task {
             Log.debug("WorkspaceWindowRoot task")
@@ -88,6 +83,8 @@ struct WorkspaceWindowRoot: View {
                 if let ws = self.db.getWorkspace(id: workspaceId, ctx: self.db.getMainMOC(container: coreDataContainer)) {
                     workspaceName = ws.getName()
                 }
+//                _ = self.db.createWorkspace(id: "test-ws", name: "Test workspace", desc: "", isSyncEnabled: false, ctx: self.db.localMainMOC)
+//                self.db.saveMainContext()
             }
             self.windowRegistry.add(windowIndex: windowIndex, workspaceId: workspaceId, coreDataContainer: coreDataContainer)
         }

@@ -13,11 +13,14 @@ import AZCommon
 struct MainView: View {
     @Binding var selectedWorkspaceId: String
     @Binding var coreDataContainer: CoreDataContainer
+    @Binding var workspaceName: String
+    
     @Environment(\.managedObjectContext) private var ctx
-    @State var workspaceName: String
+    
     @State private var showNavigator = true  // Left pane
     @State private var showInspector = true  // Right pane
     @State private var showRequestComposer = true  // The center pane
+    
     let windowIndex: Int
     private let db = CoreDataService.shared
 
@@ -34,7 +37,7 @@ struct MainView: View {
                 CenterTopPane()
                     .frame(minHeight: 150)
 
-                CenterBottomPane(workspaceName: workspaceName)
+                CenterBottomPane(workspaceName: $workspaceName, selectedWorkspaceId: $selectedWorkspaceId, coreDataContainer: $coreDataContainer)
                     .frame(minHeight: 150)
             }
             .frame(minWidth: 400, maxWidth: .infinity, maxHeight: .infinity)
@@ -109,7 +112,10 @@ struct CenterTopPane: View {
 }
 
 struct CenterBottomPane: View {
-    @State var workspaceName: String
+    @Binding var workspaceName: String
+    @Binding var selectedWorkspaceId: String
+    @Binding var coreDataContainer: CoreDataContainer
+    
     @State private var showWorkspacePopup = false
     
     var body: some View {
@@ -150,7 +156,7 @@ struct CenterBottomPane: View {
                     attachmentAnchor: .rect(.bounds),
                     arrowEdge: .bottom  // button at bottom of window and popover above it
                 ) {
-                    WorkspacesPopupView()
+                    WorkspacesPopupView(selectedWorkspaceId: $selectedWorkspaceId, workspaceName: $workspaceName, coreDataContainer: $coreDataContainer)
                         .frame(width: 320, height: 400)
                 }
                 Spacer()
@@ -178,80 +184,5 @@ struct InspectorView: View {
             .padding(6)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-    }
-}
-
-// Workspace list view
-
-struct WorkspacesPopupView: View {
-    @State private var showingAddForm = false
-    @State private var searchText = ""
-    @Environment(\.managedObjectContext) private var ctx
-    
-    @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \EWorkspace.name, ascending: true)],
-        animation: .default
-    )
-    private var workspaces: FetchedResults<EWorkspace>
-    
-    var body: some View {
-        NavigationStack {
-            VStack(alignment: .leading) {
-                HStack {
-                    ExpandingSearchField(text: $searchText) { query in
-                        // TODO: search impl
-                        Log.debug("Search for: \(query)")
-                    }
-                    Spacer()
-                }
-                .padding(.bottom, 4)
-                
-                Picker("", selection: .constant(0)) {
-                    Text("Local").tag(0)
-                    Text("iCloud").tag(1)
-                }
-                .pickerStyle(.segmented)
-                .padding(.vertical, 4)
-                
-                List(workspaces) { workspace in
-                    Text(workspace.getName())
-                        .padding(.vertical, 4)
-                }
-                
-                HStack {
-                    Spacer()
-                    
-                    Button {
-                        showingAddForm = true
-                    } label: {
-                        Image(systemName: "plus")
-                            .font(.system(size: 15, weight: .regular))
-                            .imageScale(.medium)
-                    }
-                    .buttonStyle(.borderless)
-                    .help("Add Workspace")
-                    .padding(.top, 4)
-                }
-            }
-            .padding()
-            .navigationDestination(isPresented: $showingAddForm) {
-                AddWorkspaceFormView()
-            }
-        }
-        .frame(width: 300, height: 400)
-    }
-}
-
-// TODO: fix UI
-struct AddWorkspaceFormView: View {
-    @Environment(\.dismiss) private var dismiss
-    
-    var body: some View {
-        Form {
-            TextField("Name", text: .constant(""))
-            Button("Save") { dismiss() }
-        }
-        .padding()
-        .navigationTitle("New Workspace")
     }
 }
