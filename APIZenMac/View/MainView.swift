@@ -107,6 +107,8 @@ struct CenterTopPane: View {
 }
 
 struct CenterBottomPane: View {
+    @State private var showWorkspacePopup = false
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             // Main content area
@@ -132,6 +134,7 @@ struct CenterBottomPane: View {
 
                 Button {
                     print("Default Workspace tapped")
+                    showWorkspacePopup.toggle()
                 } label: {
                     Text("Default Workspace")
                         .font(.system(size: 13, weight: .medium))
@@ -139,7 +142,14 @@ struct CenterBottomPane: View {
                         .underline(false)
                 }
                 .buttonStyle(.plain)
-
+                .popover(
+                    isPresented: $showWorkspacePopup,
+                    attachmentAnchor: .rect(.bounds),
+                    arrowEdge: .bottom  // button at bottom of window and popover above it
+                ) {
+                    WorkspacesPopupView()
+                        .frame(width: 320, height: 400)
+                }
                 Spacer()
             }
             .padding(.vertical, 6)
@@ -165,5 +175,62 @@ struct InspectorView: View {
             .padding(6)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+    }
+}
+
+// Workspace list view
+
+struct WorkspacesPopupView: View {
+    @State private var showingAddForm = false
+    
+    var body: some View {
+        NavigationStack {
+            VStack(alignment: .leading) {
+                TextField("Search", text: .constant(""))
+                
+                Picker("", selection: .constant(0)) {
+                    Text("Local").tag(0)
+                    Text("iCloud").tag(1)
+                }
+                .pickerStyle(.segmented)
+                
+                List(0..<10, id: \.self) { i in
+                    Text("Workspace \(i)")
+                }
+
+                HStack {
+                    Spacer()
+                    
+                    Button {
+                        showingAddForm = true
+                    } label: {
+                        Image(systemName: "plus")
+                            .font(.system(size: 15, weight: .bold))
+                            .imageScale(.medium)
+                    }
+                    .buttonStyle(.plain)
+                    .help("Add Workspace")
+                }
+            }
+            .padding()
+            .navigationDestination(isPresented: $showingAddForm) {
+                AddWorkspaceFormView()
+            }
+        }
+        .frame(width: 300, height: 400)
+    }
+}
+
+// TODO: fix UI
+struct AddWorkspaceFormView: View {
+    @Environment(\.dismiss) private var dismiss
+    
+    var body: some View {
+        Form {
+            TextField("Name", text: .constant(""))
+            Button("Save") { dismiss() }
+        }
+        .padding()
+        .navigationTitle("New Workspace")
     }
 }
