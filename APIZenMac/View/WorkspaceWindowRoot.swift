@@ -55,7 +55,6 @@ struct WorkspaceWindowRoot: View {
             windowIndex: windowIndex
         )
         .environment(\.managedObjectContext, coreDataContainer == .local ? self.db.localMainMOC : self.db.ckMainMOC)
-        .padding()
         .task {
             Log.debug("WorkspaceWindowRoot task")
             // Assign a unique windowIndex per window
