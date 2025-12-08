@@ -16,7 +16,7 @@ struct APIZenMacApp: App {
     var body: some Scene {
         // Single scene: each window represents one workspace
         WindowGroup("Workspace", id: "workspace") {
-            WorkspaceWindowRoot()
+            MainWindowRoot()
         }
     }
 }

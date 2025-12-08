@@ -1,5 +1,5 @@
 //
-//  WorkspaceWindowRoot.swift
+//  MainWindowRoot.swift
 //  APIZenMac
 //
 //  Created by Jaseem V V on 06/12/25.
@@ -10,7 +10,7 @@ import AZData
 import AZCommon
 
 /// The root window that instantiates the MainView window. This struct also saves open windows and restores it on re-launch. If there are no open windows during quit, the default workspace will be launched.
-struct WorkspaceWindowRoot: View {
+struct MainWindowRoot: View {
     @Environment(\.openWindow) private var openWindow
     
     // Per-window workspace id (each window has its own copy)
