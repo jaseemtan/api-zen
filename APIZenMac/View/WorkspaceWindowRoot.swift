@@ -22,7 +22,7 @@ struct WorkspaceWindowRoot: View {
     
     // Indicates if the workspace is local or cloud based.
     @SceneStorage("coreDataContainer")
-    private var coreDataContainer: String = CoreDataContainer.local.rawValue
+    private var coreDataContainer: CoreDataContainer = CoreDataContainer.local
     
     // Tracks whether this specific window has already been given one of the initial bootstrap workspaces.
     @SceneStorage("didAssignBootstrapWorkspace")
@@ -39,6 +39,8 @@ struct WorkspaceWindowRoot: View {
     
     private let windowRegistry = WindowRegistry.shared
     
+    private let db = CoreDataService.shared
+    
     var body: some View {
         MainView(
             selectedWorkspaceId: Binding(
@@ -46,11 +48,12 @@ struct WorkspaceWindowRoot: View {
                 set: { workspaceId = $0 }
             ),
             coreDataContainer: Binding(
-                get: { CoreDataContainer(rawValue: coreDataContainer) ?? .local },
-                set: { coreDataContainer = $0.rawValue }
+                get: { coreDataContainer },
+                set: { coreDataContainer = $0 }
             ),
             windowIndex: windowIndex
         )
+        .environment(\.managedObjectContext, coreDataContainer == .local ? self.db.localMainMOC : self.db.ckMainMOC)
         .padding()
         .task {
             Log.debug("WorkspaceWindowRoot task")

@@ -12,6 +12,7 @@ import AZData
 struct MainView: View {
     @Binding var selectedWorkspaceId: String
     @Binding var coreDataContainer: CoreDataContainer
+    @Environment(\.managedObjectContext) private var ctx
     let windowIndex: Int
     private let db = CoreDataService.shared
 
@@ -29,6 +30,12 @@ struct MainView: View {
             HStack {
                 Text("Container:")
                 Text(coreDataContainer.rawValue)
+                    .font(.headline)
+            }
+            
+            HStack {
+                Text("MOC:")
+                Text(self.db.getContainer(ctx).rawValue)
                     .font(.headline)
             }
 
