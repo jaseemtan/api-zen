@@ -9,6 +9,7 @@ import SwiftUI
 import AZData
 import AZCommon
 
+/// The root window that instantiates the MainView window. This struct also saves open windows and restores it on re-launch. If there are no open windows during quit, the default workspace will be launched.
 struct WorkspaceWindowRoot: View {
     @Environment(\.openWindow) private var openWindow
     
@@ -28,7 +29,7 @@ struct WorkspaceWindowRoot: View {
     @SceneStorage("didAssignBootstrapWorkspace")
     private var didAssignBootstrapWorkspace: Bool = false
 
-    // --- Static (shared across all windows in this process) ---
+    // Static vars shared across all windows in this process
 
     // Initial workspaces we want to open at launch.
     private static var bootstrapWorkspaces: [WindowRegistry.Entry] = []
@@ -57,13 +58,12 @@ struct WorkspaceWindowRoot: View {
         .padding()
         .task {
             Log.debug("WorkspaceWindowRoot task")
-            // 1. Assign a unique windowIndex per window
+            // Assign a unique windowIndex per window
             if windowIndex == 0 {
                 windowIndex = Self.nextWindowIndex
                 Self.nextWindowIndex += 1
             }
-            // 2. Bootstrap first two windows as ws1 / ws2.
-            //    Each window only participates in bootstrap once.
+            // Bootstrap windows if present after restoration during init. Each window only participates in bootstrap once.
             if !didAssignBootstrapWorkspace,
                Self.nextBootstrapIndex < Self.bootstrapWorkspaces.count {
                 let entry = Self.bootstrapWorkspaces[Self.nextBootstrapIndex]
@@ -71,9 +71,7 @@ struct WorkspaceWindowRoot: View {
                 coreDataContainer = entry.coreDataContainer
                 didAssignBootstrapWorkspace = true
                 Self.nextBootstrapIndex += 1
-
-                // If there's still another bootstrap workspace left,
-                // ask SwiftUI to open a new window for it.
+                // If there's still another bootstrap workspace left, ask SwiftUI to open a new window for it.
                 if Self.nextBootstrapIndex < Self.bootstrapWorkspaces.count {
                     openWindow(id: "workspace") // opens another WorkspaceWindowRoot
                 }
