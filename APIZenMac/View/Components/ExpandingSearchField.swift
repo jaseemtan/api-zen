@@ -63,7 +63,7 @@ struct ExpandingSearchField: View {
                     .imageScale(.medium)
             }
             .buttonStyle(.borderless)
-            .focusable(false)  // prevents default focus highlight on popup open
+//            .focusable(false)  // prevents default focus highlight on popup open
         }
         .frame(maxWidth: .infinity)  // field takes all available width
         .animation(.default, value: isExpanded)

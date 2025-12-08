@@ -220,7 +220,7 @@ struct WorkspacesPopupView: View {
                             .font(.system(size: 15, weight: .regular))
                             .imageScale(.medium)
                     }
-                    .buttonStyle(.plain)
+                    .buttonStyle(.borderless)
                     .help("Add Workspace")
                     .padding(.top, 4)
                 }
