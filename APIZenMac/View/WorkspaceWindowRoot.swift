@@ -16,12 +16,15 @@ struct WorkspaceWindowRoot: View {
     @SceneStorage("workspaceId")
     private var workspaceId: String = "default"
     
-    // Per-window index: Window #1, #2, ...
+    // Per-window index: Window #0, #1, etc.
     @SceneStorage("windowIndex")
     private var windowIndex: Int = 0
     
-    // Tracks whether this specific window has already been given
-    // one of the initial bootstrap workspaces.
+    // Indicates if the workspace is local or cloud based.
+    @SceneStorage("coreDataContainer")
+    private var coreDataContainer: String = CoreDataContainer.local.rawValue
+    
+    // Tracks whether this specific window has already been given one of the initial bootstrap workspaces.
     @SceneStorage("didAssignBootstrapWorkspace")
     private var didAssignBootstrapWorkspace: Bool = false
 
@@ -41,7 +44,12 @@ struct WorkspaceWindowRoot: View {
             selectedWorkspaceId: Binding(
                 get: { workspaceId },
                 set: { workspaceId = $0 }
-            ), windowIndex: windowIndex
+            ),
+            coreDataContainer: Binding(
+                get: { CoreDataContainer(rawValue: coreDataContainer) ?? .local },
+                set: { coreDataContainer = $0.rawValue }
+            ),
+            windowIndex: windowIndex
         )
         .padding()
         .task {
@@ -55,8 +63,9 @@ struct WorkspaceWindowRoot: View {
             //    Each window only participates in bootstrap once.
             if !didAssignBootstrapWorkspace,
                Self.nextBootstrapIndex < Self.bootstrapWorkspaces.count {
-
-                workspaceId = Self.bootstrapWorkspaces[Self.nextBootstrapIndex].workspaceId  // todo: save ws type to set coredata store
+                let entry = Self.bootstrapWorkspaces[Self.nextBootstrapIndex]
+                workspaceId = entry.workspaceId
+                coreDataContainer = entry.coreDataContainer
                 didAssignBootstrapWorkspace = true
                 Self.nextBootstrapIndex += 1
 
@@ -66,11 +75,11 @@ struct WorkspaceWindowRoot: View {
                     openWindow(id: "workspace") // opens another WorkspaceWindowRoot
                 }
             }
-            self.windowRegistry.add(windowIndex: windowIndex, workspaceId: workspaceId)
+            self.windowRegistry.add(windowIndex: windowIndex, workspaceId: workspaceId, coreDataContainer: coreDataContainer)
         }
         .onChange(of: workspaceId, { oldValue, newValue in
             Log.debug("wsId changed - old: \(oldValue) - new: \(newValue)")
-            self.windowRegistry.add(windowIndex: windowIndex, workspaceId: newValue)
+            self.windowRegistry.add(windowIndex: windowIndex, workspaceId: newValue, coreDataContainer: coreDataContainer)
         })
         .onAppear {
             Log.debug("WorkspaceWindowRoot onAppear")            
