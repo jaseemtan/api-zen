@@ -18,7 +18,7 @@ struct WorkspaceWindowRoot: View {
     private var workspaceId: String = CoreDataService.shared.defaultWorkspaceId
     
     @SceneStorage("workspaceName")
-    private var workspaceName: String = ""
+    private var workspaceName: String = ""  // Empty string to prevent displaying the default label while the state loads from user defaults and updates. Avoids flashing of default value.
     
     // Per-window index: Window #0, #1, etc.
     @SceneStorage("windowIndex")
