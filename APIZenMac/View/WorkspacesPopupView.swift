@@ -49,18 +49,18 @@ struct WorkspacesPopupView: View {
                 .pickerStyle(.segmented)
                 .padding(.vertical, 4)
                 
-                List(workspaces) { workspace in
-                    Button(action: {
-                        Log.debug("ws item clicked: \(workspace.getName())")
-                        coreDataContainer = pickerSelection == 0 ? .local : .cloud  // Keeping this order of container, name, id just in case. We are listening to id change only but accessing container to save in registry in root view. This makes sure that container has the new value.
-                        workspaceName = workspace.getName()
-                        selectedWorkspaceId = workspace.getId()
-                        dismiss()
-                    }, label: {
-                        Text(workspace.getName())
-                            .padding(.vertical, 4)
-                    })
-                    .buttonStyle(.plain)
+                Group {
+                    if pickerSelection == 0 {
+                        WorkspaceListView { workspace in
+                            handleWorkspaceSelect(workspace, container: .local)
+                        }
+                        .environment(\.managedObjectContext, self.db.localMainMOC)
+                    } else {
+                        WorkspaceListView { workspace in
+                            handleWorkspaceSelect(workspace, container: .cloud)
+                        }
+                        .environment(\.managedObjectContext, self.db.ckMainMOC)
+                    }
                 }
                 
                 HStack {
@@ -84,6 +84,14 @@ struct WorkspacesPopupView: View {
             }
         }
         .frame(width: 300, height: 400)
+    }
+    
+    private func handleWorkspaceSelect(_ workspace: EWorkspace, container: CoreDataContainer) {
+        Log.debug("ws item clicked: \(workspace.getName())")
+        coreDataContainer = pickerSelection == 0 ? .local : .cloud  // Keeping this order of container, name, id just in case. We are listening to id change only but accessing container to save in registry in root view. This makes sure that container has the new value.
+        workspaceName = workspace.getName()
+        selectedWorkspaceId = workspace.getId()
+        dismiss()
     }
 }
 
