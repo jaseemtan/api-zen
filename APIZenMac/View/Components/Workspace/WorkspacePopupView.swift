@@ -10,6 +10,7 @@ import CoreData
 import AZData
 import AZCommon
 
+/// View displayed when workspace name is clicked at the bottom of the main window. This shows workspace management view as a popup.
 struct WorkspacePopupView: View {
     @Binding var selectedWorkspaceId: String
     @Binding var workspaceName: String
@@ -18,17 +19,20 @@ struct WorkspacePopupView: View {
     @State private var showingAddForm = false
     @State private var searchText = ""
     @State private var pickerSelection: Int = 0  // 0 = local, 1 = iCloud
+    @State private var sortField: WorkspaceSortField = .name
+    @State private var sortAscending: Bool = true
     
     @Environment(\.managedObjectContext) private var ctx
     @Environment(\.dismiss) private var dismiss
     
     private let db = CoreDataService.shared
     
-    @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \EWorkspace.name, ascending: true)],
-        animation: .default
-    )
-    private var workspaces: FetchedResults<EWorkspace>
+    enum WorkspaceSortField: String, CaseIterable {
+        case name
+        case created
+    }
+    
+    let checkmarkWidth: CGFloat = 16
     
     var body: some View {
         NavigationStack {
@@ -64,6 +68,66 @@ struct WorkspacePopupView: View {
                 }
                 
                 HStack {
+                    // Sort button to the left
+                    Menu {  // Using toggle so that the alignment of text shows fixed center with space for checkmark left as a constant. Using Button with HStack with Image and Text doesn't align the text by leaving the checkmark space constant when not checked.
+                        // SECTION: Sort By
+                        Text("Sort By")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                            .disabled(true)
+
+                        Toggle(isOn: Binding(
+                            get: { sortField == .name },
+                            set: { isOn in
+                                if isOn { sortField = .name }
+                            }
+                        )) {
+                            Text("by Name")
+                        }
+
+                        Toggle(isOn: Binding(
+                            get: { sortField == .created },
+                            set: { isOn in
+                                if isOn { sortField = .created }
+                            }
+                        )) {
+                            Text("by Created")
+                        }
+
+                        Divider()
+
+                        // SECTION: Order
+                        Text("Order")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                            .disabled(true)
+
+                        Toggle(isOn: Binding(
+                            get: { sortAscending },
+                            set: { isOn in
+                                if isOn { sortAscending = true }
+                            }
+                        )) {
+                            Text("Ascending")
+                        }
+
+                        Toggle(isOn: Binding(
+                            get: { !sortAscending },
+                            set: { isOn in
+                                if isOn { sortAscending = false }
+                            }
+                        )) {
+                            Text("Descending")
+                        }
+
+                    } label: {
+                        Image(systemName: "line.3.horizontal.decrease.circle")
+                            .font(.system(size: 15, weight: .regular))
+                            .imageScale(.medium)
+                    }
+                    .buttonStyle(.borderless)
+                    .help("Sort Workspaces")
+                    
                     Spacer()
                     
                     Button {
@@ -77,6 +141,7 @@ struct WorkspacePopupView: View {
                     .help("Add Workspace")
                     .padding(.top, 4)
                 }
+                .padding(.top, 4)
             }
             .padding()
             .navigationDestination(isPresented: $showingAddForm) {
