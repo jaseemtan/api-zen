@@ -20,13 +20,13 @@ struct WorkspaceListView: View {
 
     var body: some View {
         List(workspaces) { workspace in
-            Button {
-                onSelect(workspace)
-            } label: {
-                Text(workspace.getName())
-                    .padding(.vertical, 4)
-            }
-            .buttonStyle(.plain)
+            Text(workspace.getName())
+                .padding(.vertical, 4)
+                .frame(maxWidth: .infinity, alignment: .leading)  // stretch across row
+                .contentShape(Rectangle())  // full row is hit-testable
+                .onTapGesture {
+                    onSelect(workspace)
+                }
         }
     }
 }

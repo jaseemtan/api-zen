@@ -18,7 +18,7 @@ struct WorkspaceWindowRoot: View {
     private var workspaceId: String = CoreDataService.shared.defaultWorkspaceId
     
     @SceneStorage("workspaceName")
-    private var workspaceName: String = CoreDataService.shared.defaultWorkspaceName
+    private var workspaceName: String = ""
     
     // Per-window index: Window #0, #1, etc.
     @SceneStorage("windowIndex")
