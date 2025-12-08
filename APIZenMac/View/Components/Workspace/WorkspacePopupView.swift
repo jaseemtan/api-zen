@@ -28,6 +28,7 @@ struct WorkspacePopupView: View {
     private let db = CoreDataService.shared
     
     enum WorkspaceSortField: String, CaseIterable {
+        case manual
         case name
         case created
     }
@@ -71,11 +72,20 @@ struct WorkspacePopupView: View {
                     // Sort button to the left
                     Menu {  // Using toggle so that the alignment of text shows fixed center with space for checkmark left as a constant. Using Button with HStack with Image and Text doesn't align the text by leaving the checkmark space constant when not checked.
                         // SECTION: Sort By
-                        Text("Sort By")
+                        Text("Sort")
                             .font(.caption)
                             .foregroundColor(.secondary)
                             .disabled(true)
 
+                        Toggle(isOn: Binding(
+                            get: { sortField == .manual },
+                            set: { isOn in
+                                if isOn { sortField = .manual }
+                            }
+                        )) {
+                            Text("manual")
+                        }
+                        
                         Toggle(isOn: Binding(
                             get: { sortField == .name },
                             set: { isOn in
