@@ -196,7 +196,9 @@ struct WorkspacesPopupView: View {
                 
                 List(0..<10, id: \.self) { i in
                     Text("Workspace \(i)")
+                        .padding(.vertical, 4)
                 }
+                
 
                 HStack {
                     Spacer()
