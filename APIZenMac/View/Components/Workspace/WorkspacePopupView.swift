@@ -1,5 +1,5 @@
 //
-//  WorkspacesPopupView.swift
+//  WorkspacePopupView.swift
 //  APIZenMac
 //
 //  Created by Jaseem V V on 08/12/25.
@@ -10,7 +10,7 @@ import CoreData
 import AZData
 import AZCommon
 
-struct WorkspacesPopupView: View {
+struct WorkspacePopupView: View {
     @Binding var selectedWorkspaceId: String
     @Binding var workspaceName: String
     @Binding var coreDataContainer: CoreDataContainer
