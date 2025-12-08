@@ -15,7 +15,10 @@ struct WorkspaceWindowRoot: View {
     
     // Per-window workspace id (each window has its own copy)
     @SceneStorage("workspaceId")
-    private var workspaceId: String = "default"
+    private var workspaceId: String = CoreDataService.shared.defaultWorkspaceId
+    
+    @SceneStorage("workspaceName")
+    private var workspaceName: String = CoreDataService.shared.defaultWorkspaceName
     
     // Per-window index: Window #0, #1, etc.
     @SceneStorage("windowIndex")
@@ -52,6 +55,7 @@ struct WorkspaceWindowRoot: View {
                 get: { coreDataContainer },
                 set: { coreDataContainer = $0 }
             ),
+            workspaceName: workspaceName,
             windowIndex: windowIndex
         )
         .environment(\.managedObjectContext, coreDataContainer == .local ? self.db.localMainMOC : self.db.ckMainMOC)
@@ -62,17 +66,27 @@ struct WorkspaceWindowRoot: View {
                 windowIndex = Self.nextWindowIndex
                 Self.nextWindowIndex += 1
             }
+            // Make sure default workspace is created in local CoreData container.
+            _ = self.db.getDefaultWorkspace(ctx: self.db.localMainMOC)
             // Bootstrap windows if present after restoration during init. Each window only participates in bootstrap once.
             if !didAssignBootstrapWorkspace,
                Self.nextBootstrapIndex < Self.bootstrapWorkspaces.count {
                 let entry = Self.bootstrapWorkspaces[Self.nextBootstrapIndex]
+                // set state
                 workspaceId = entry.workspaceId
                 coreDataContainer = entry.coreDataContainer
+                if let ws = self.db.getWorkspace(id: workspaceId, ctx: self.db.getMainMOC(container: coreDataContainer)) {
+                    workspaceName = ws.getName()
+                }
                 didAssignBootstrapWorkspace = true
                 Self.nextBootstrapIndex += 1
                 // If there's still another bootstrap workspace left, ask SwiftUI to open a new window for it.
                 if Self.nextBootstrapIndex < Self.bootstrapWorkspaces.count {
                     openWindow(id: "workspace") // opens another WorkspaceWindowRoot
+                }
+            } else {
+                if let ws = self.db.getWorkspace(id: workspaceId, ctx: self.db.getMainMOC(container: coreDataContainer)) {
+                    workspaceName = ws.getName()
                 }
             }
             self.windowRegistry.add(windowIndex: windowIndex, workspaceId: workspaceId, coreDataContainer: coreDataContainer)

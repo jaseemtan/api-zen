@@ -14,6 +14,7 @@ struct MainView: View {
     @Binding var selectedWorkspaceId: String
     @Binding var coreDataContainer: CoreDataContainer
     @Environment(\.managedObjectContext) private var ctx
+    @State var workspaceName: String
     @State private var showNavigator = true  // Left pane
     @State private var showInspector = true  // Right pane
     @State private var showRequestComposer = true  // The center pane
@@ -33,7 +34,7 @@ struct MainView: View {
                 CenterTopPane()
                     .frame(minHeight: 150)
 
-                CenterBottomPane()
+                CenterBottomPane(workspaceName: workspaceName)
                     .frame(minHeight: 150)
             }
             .frame(minWidth: 400, maxWidth: .infinity, maxHeight: .infinity)
@@ -108,6 +109,7 @@ struct CenterTopPane: View {
 }
 
 struct CenterBottomPane: View {
+    @State var workspaceName: String
     @State private var showWorkspacePopup = false
     
     var body: some View {
@@ -134,10 +136,10 @@ struct CenterBottomPane: View {
                 Spacer()
 
                 Button {
-                    print("Default Workspace tapped")
+                    Log.debug("workspace button tapped")
                     showWorkspacePopup.toggle()
                 } label: {
-                    Text("Default Workspace")
+                    Text(workspaceName)
                         .font(.system(size: 13, weight: .regular))
                         .foregroundColor(.blue)
                         .underline(false)
@@ -184,6 +186,13 @@ struct InspectorView: View {
 struct WorkspacesPopupView: View {
     @State private var showingAddForm = false
     @State private var searchText = ""
+    @Environment(\.managedObjectContext) private var ctx
+    
+    @FetchRequest(
+        sortDescriptors: [NSSortDescriptor(keyPath: \EWorkspace.name, ascending: true)],
+        animation: .default
+    )
+    private var workspaces: FetchedResults<EWorkspace>
     
     var body: some View {
         NavigationStack {
@@ -204,12 +213,11 @@ struct WorkspacesPopupView: View {
                 .pickerStyle(.segmented)
                 .padding(.vertical, 4)
                 
-                List(0..<10, id: \.self) { i in
-                    Text("Workspace long workspace name here \(i)")
+                List(workspaces) { workspace in
+                    Text(workspace.getName())
                         .padding(.vertical, 4)
                 }
                 
-
                 HStack {
                     Spacer()
                     
