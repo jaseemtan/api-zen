@@ -8,6 +8,7 @@
 import SwiftUI
 import CoreData
 import AZData
+import AZCommon
 
 struct MainView: View {
     @Binding var selectedWorkspaceId: String
@@ -75,7 +76,7 @@ struct NavigatorView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             Text("Left Pane")
-                .font(.headline)
+                .font(.body)
                 .padding(6)
 
             Divider()
@@ -93,7 +94,7 @@ struct CenterTopPane: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             Text("Center Top")
-                .font(.headline)
+                .font(.body)
                 .padding(6)
 
             Divider()
@@ -114,7 +115,7 @@ struct CenterBottomPane: View {
             // Main content area
             VStack(alignment: .leading, spacing: 4) {
                 Text("Center Bottom")
-                    .font(.headline)
+                    .font(.body)
 
                 Divider()
 
@@ -137,7 +138,7 @@ struct CenterBottomPane: View {
                     showWorkspacePopup.toggle()
                 } label: {
                     Text("Default Workspace")
-                        .font(.system(size: 13, weight: .medium))
+                        .font(.system(size: 13, weight: .regular))
                         .foregroundColor(.blue)
                         .underline(false)
                 }
@@ -163,7 +164,7 @@ struct InspectorView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             Text("Right Pane")
-                .font(.headline)
+                .font(.body)
                 .padding(6)
 
             Divider()
@@ -182,20 +183,29 @@ struct InspectorView: View {
 
 struct WorkspacesPopupView: View {
     @State private var showingAddForm = false
+    @State private var searchText = ""
     
     var body: some View {
         NavigationStack {
             VStack(alignment: .leading) {
-                TextField("Search", text: .constant(""))
+                HStack {
+                    ExpandingSearchField(text: $searchText) { query in
+                        // TODO: search impl
+                        Log.debug("Search for: \(query)")
+                    }
+                    Spacer()
+                }
+                .padding(.bottom, 4)
                 
                 Picker("", selection: .constant(0)) {
                     Text("Local").tag(0)
                     Text("iCloud").tag(1)
                 }
                 .pickerStyle(.segmented)
+                .padding(.vertical, 4)
                 
                 List(0..<10, id: \.self) { i in
-                    Text("Workspace \(i)")
+                    Text("Workspace long workspace name here \(i)")
                         .padding(.vertical, 4)
                 }
                 
@@ -207,11 +217,12 @@ struct WorkspacesPopupView: View {
                         showingAddForm = true
                     } label: {
                         Image(systemName: "plus")
-                            .font(.system(size: 15, weight: .bold))
+                            .font(.system(size: 15, weight: .regular))
                             .imageScale(.medium)
                     }
                     .buttonStyle(.plain)
                     .help("Add Workspace")
+                    .padding(.top, 4)
                 }
             }
             .padding()
