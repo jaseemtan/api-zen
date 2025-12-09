@@ -158,7 +158,6 @@ struct WorkspacePopupView: View {
                 AddWorkspaceFormView()
             }
         }
-        .frame(width: 300, height: 400)
     }
     
     private func handleWorkspaceSelect(_ workspace: EWorkspace, container: CoreDataContainer) {

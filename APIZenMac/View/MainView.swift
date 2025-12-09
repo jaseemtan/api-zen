@@ -157,7 +157,7 @@ struct CenterBottomPane: View {
                     arrowEdge: .bottom  // button at bottom of window and popover above it
                 ) {
                     WorkspacePopupView(selectedWorkspaceId: $selectedWorkspaceId, workspaceName: $workspaceName, coreDataContainer: $coreDataContainer)
-                        .frame(width: 320, height: 400)
+                        .frame(width: 600, height: 500)  // popup dimension
                 }
                 Spacer()
             }
