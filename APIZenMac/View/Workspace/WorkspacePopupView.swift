@@ -47,11 +47,17 @@ struct WorkspacePopupView: View {
                 }
                 .padding(.bottom, 4)
                 
-                Picker("", selection: $pickerSelection) {
-                    Text("Local").tag(0)
-                    Text("iCloud").tag(1)
+                HStack(spacing: 0) {  // Center aligned workspace container switcher
+                    Spacer()
+                    Picker("", selection: $pickerSelection) {
+                        Text("Local").tag(0)
+                        Text("iCloud").tag(1)
+                    }
+                    .pickerStyle(.segmented)
+                    .frame(width: 160)  // prevents expanding to the full width. Using fixedSize hugs the text closely without much padding.
+                    Spacer()
                 }
-                .pickerStyle(.segmented)
+                .frame(maxWidth: .none, alignment: .leading)
                 .padding(.vertical, 4)
                 
                 Group {
