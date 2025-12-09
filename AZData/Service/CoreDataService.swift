@@ -128,7 +128,7 @@ public enum SortOrder: String {
     case created = "created"
 }
 
-public enum CoreDataContainer: String {
+public enum CoreDataContainer: String, Codable, Equatable {
     case local = "local"
     case cloud = "cloud"
 }
@@ -309,6 +309,11 @@ public class CoreDataService {
             return CoreDataContainer.cloud
         }
         return CoreDataContainer.local
+    }
+    
+    /// Returns the manageed object context for the given container type
+    public func getMainMOC(container: CoreDataContainer) -> NSManagedObjectContext {
+        return container == CoreDataContainer.cloud ? self.ckMainMOC : self.localMainMOC
     }
     
     /// Generates a new workspace id
