@@ -20,7 +20,7 @@ struct WorkspaceListView: View {
 
     var body: some View {
         List(workspaces) { workspace in
-            Text(workspace.getName())
+            Text(workspace.getName() + " - \(workspace.order ?? 0)")
                 .padding(.vertical, 4)
                 .frame(maxWidth: .infinity, alignment: .leading)  // stretch across row
                 .contentShape(Rectangle())  // full row is hit-testable

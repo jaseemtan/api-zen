@@ -169,17 +169,3 @@ struct WorkspacePopupView: View {
         dismiss()
     }
 }
-
-// TODO: fix UI
-struct AddWorkspaceFormView: View {
-    @Environment(\.dismiss) private var dismiss
-    
-    var body: some View {
-        Form {
-            TextField("Name", text: .constant(""))
-            Button("Save") { dismiss() }
-        }
-        .padding()
-        .navigationTitle("New Workspace")
-    }
-}
