@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AZData
 
 /// Handles colours and themeing.
 class ThemeManager {
@@ -19,6 +20,11 @@ class ThemeManager {
     /// Foreground style for elements like images which returns the system accent colour.
     func getForegroundStyle() -> Color {
         return Color(nsColor: .controlAccentColor)
+    }
+    
+    /// Returns workspace type icon name which can be used in image view. Mac or iCloud.
+    func getWorkspaceTypeIconName(coreDataContainer: CoreDataContainer) -> String {
+        return coreDataContainer == .local ? "desktopcomputer" : "icloud"
     }
 }
 

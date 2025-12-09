@@ -118,6 +118,9 @@ struct CenterBottomPane: View {
     
     @State private var showWorkspacePopup = false
     
+    private let utils = AZUtils.shared
+    private let theme = ThemeManager.shared
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             // Main content area
@@ -139,23 +142,40 @@ struct CenterBottomPane: View {
             Divider()
 
             HStack {
+                // Code icon
+                Button {
+                    Log.debug("code button tapped")
+                } label: {
+                    Image(systemName: "curlybraces.square")  // curlybraces.square.fill
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 16, height: 16, alignment: .center)
+                }
+                .help("Code view")
+                .buttonStyle(.plain)
+                
                 Spacer()
 
+                // Workspace switcher button
                 Button {
                     Log.debug("workspace button tapped")
                     showWorkspacePopup.toggle()
                 } label: {
-                    Text(workspaceName)
-                        .font(.system(size: 13, weight: .regular))
-                        .foregroundColor(.accentColor)
-                        .underline(false)
-                        .padding(.horizontal, 10)  // Gives enough room for click by expanding the button area. It's not visible unless we apply a border to it.
-                        .padding(.vertical, 6)
-                        .contentShape(Rectangle())
-//                        .overlay(
-//                            RoundedRectangle(cornerRadius: 4)
-//                                .stroke(Color.red.opacity(0.5), style: StrokeStyle(lineWidth: 1, dash: [4]))
-//                        )
+                    HStack(spacing: 6) {
+                        Image(systemName: theme.getWorkspaceTypeIconName(coreDataContainer: coreDataContainer))
+                            .font(.system(size: 13))
+                        Text(utils.truncateText(workspaceName, len: 32))
+                            .font(.system(size: 13, weight: .regular))
+                    }
+                    .foregroundColor(.accentColor)
+                    .underline(false)
+                    .padding(.horizontal, 10)  // Gives enough room for click by expanding the button area. It's not visible unless we apply a border to it.
+                    .padding(.vertical, 6)
+                    .contentShape(Rectangle())
+//                    .overlay(
+//                        RoundedRectangle(cornerRadius: 4)
+//                            .stroke(Color.red.opacity(0.5), style: StrokeStyle(lineWidth: 1, dash: [4]))
+//                    )
                 }
                 .buttonStyle(.plain)
                 .popover(
