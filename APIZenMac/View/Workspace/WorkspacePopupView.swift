@@ -106,12 +106,12 @@ struct WorkspacePopupView: View {
                 
                 Group {
                     if pickerSelection == 0 {
-                        WorkspaceListView(selectedWorkspaceId: selectedWorkspaceId) { workspace in
+                        WorkspaceListView(selectedWorkspaceId: selectedWorkspaceId, sortField: sortField, sortAscending: sortAscending) { workspace in
                             handleWorkspaceSelect(workspace, container: .local)
                         }
                         .environment(\.managedObjectContext, self.db.localMainMOC)
                     } else {
-                        WorkspaceListView(selectedWorkspaceId: selectedWorkspaceId) { workspace in
+                        WorkspaceListView(selectedWorkspaceId: selectedWorkspaceId, sortField: sortField, sortAscending: sortAscending) { workspace in
                             handleWorkspaceSelect(workspace, container: .cloud)
                         }
                         .environment(\.managedObjectContext, self.db.ckMainMOC)
