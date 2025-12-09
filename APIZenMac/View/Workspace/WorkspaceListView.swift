@@ -10,6 +10,8 @@ import CoreData
 import AZData
 
 struct WorkspaceListView: View {
+    @State var selectedWorkspaceId: String
+    
     @FetchRequest(
         sortDescriptors: [NSSortDescriptor(keyPath: \EWorkspace.name, ascending: true)],
         animation: .default
@@ -20,10 +22,9 @@ struct WorkspaceListView: View {
 
     var body: some View {
         List(workspaces) { workspace in
-            Text(workspace.getName() + " - \(workspace.order ?? 0)")
+            NameDescView(imageName: "workspace", name: workspace.getName(), desc: workspace.desc, isDisplayCheckmark: workspace.getId() == selectedWorkspaceId)
                 .padding(.vertical, 4)
-                .frame(maxWidth: .infinity, alignment: .leading)  // stretch across row
-                .contentShape(Rectangle())  // full row is hit-testable
+                .contentShape(Rectangle())
                 .onTapGesture {
                     onSelect(workspace)
                 }
