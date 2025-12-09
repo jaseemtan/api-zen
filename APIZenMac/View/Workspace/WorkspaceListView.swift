@@ -49,7 +49,9 @@ struct WorkspaceListView: View {
                     .contentShape(Rectangle())
                     .tag(workspace.getId())
             }
+//            .onMove(perform: sortField == .manual ? reorderWorkspace : nil)
             .onMove { indexSet, order in
+                guard sortField == .manual else { return }
                 reorderWorkspace(from: indexSet, to: order)
             }
         }
@@ -64,7 +66,7 @@ struct WorkspaceListView: View {
     }
     
     func reorderWorkspace(from source: IndexSet, to destination: Int) {
-        guard let fromIndex = source.first else { return }
+        guard source.first != nil else { return }
         isProcessing = true
         var workspaces = workspaces.map { $0 }
         workspaces.move(fromOffsets: source, toOffset: destination)  // does the move operation inserting item to the correct order in the local workspace copy. After which we set the order for this list. Saving will update the store and redraw the UI.
