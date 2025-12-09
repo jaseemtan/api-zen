@@ -19,12 +19,13 @@ struct WorkspacePopupView: View {
     @State private var showingAddForm = false
     @State private var searchText = ""
     @State private var pickerSelection: Int = 0  // 0 = local, 1 = iCloud
-    @State private var sortField: WorkspaceSortField = .name
+    @State private var sortField: WorkspaceSortField = .manual
     @State private var sortAscending: Bool = true
     
     @Environment(\.dismiss) private var dismiss
     
     private let db = CoreDataService.shared
+    private let theme = ThemeManager.shared
     
     enum WorkspaceSortField: String, CaseIterable {
         case manual
@@ -137,9 +138,11 @@ struct WorkspacePopupView: View {
                         Image(systemName: "line.3.horizontal.decrease.circle")
                             .font(.system(size: 15, weight: .regular))
                             .imageScale(.medium)
+                            .symbolRenderingMode(.palette)
+                            .foregroundStyle(sortField == .manual ? .primary : theme.getForegroundStyle())
                     }
-                    .buttonStyle(.borderless)
                     .help("Sort Workspaces")
+                    .buttonStyle(.borderless)
                     
                     Spacer()
                     
