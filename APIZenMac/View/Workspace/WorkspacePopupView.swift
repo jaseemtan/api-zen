@@ -21,6 +21,8 @@ struct WorkspacePopupView: View {
     @State private var pickerSelection: Int = 0  // 0 = local, 1 = iCloud
     @State private var sortField: WorkspaceSortField = .manual
     @State private var sortAscending: Bool = true
+    /// Indicates if any list processing is happening. If child view is doing reordering, this will be set.
+    @State private var isProcessing: Bool = false
     
     @Environment(\.dismiss) private var dismiss
     
@@ -106,12 +108,12 @@ struct WorkspacePopupView: View {
                 
                 Group {
                     if pickerSelection == 0 {
-                        WorkspaceListView(selectedWorkspaceId: selectedWorkspaceId, sortField: sortField, sortAscending: sortAscending) { workspace in
+                        WorkspaceListView(isProcessing: $isProcessing, selectedWorkspaceId: selectedWorkspaceId, sortField: sortField, sortAscending: sortAscending) { workspace in
                             handleWorkspaceSelect(workspace, container: .local)
                         }
                         .environment(\.managedObjectContext, self.db.localMainMOC)
                     } else {
-                        WorkspaceListView(selectedWorkspaceId: selectedWorkspaceId, sortField: sortField, sortAscending: sortAscending) { workspace in
+                        WorkspaceListView(isProcessing: $isProcessing, selectedWorkspaceId: selectedWorkspaceId, sortField: sortField, sortAscending: sortAscending) { workspace in
                             handleWorkspaceSelect(workspace, container: .cloud)
                         }
                         .environment(\.managedObjectContext, self.db.ckMainMOC)
@@ -212,16 +214,21 @@ struct WorkspacePopupView: View {
                     
                     Spacer()
                     
-                    Button {
-                        showingAddForm = true
-                    } label: {
-                        Image(systemName: "plus")
-                            .font(.system(size: 15, weight: .regular))
-                            .imageScale(.medium)
+                    if !isProcessing {
+                        Button {
+                            showingAddForm = true
+                        } label: {
+                            Image(systemName: "plus")
+                                .font(.system(size: 15, weight: .regular))
+                                .imageScale(.medium)
+                        }
+                        .buttonStyle(.borderless)
+                        .help("Add Workspace")
+                        .padding(.top, 4)
+                    } else {
+                        ProgressView()
+                            .controlSize(.small)
                     }
-                    .buttonStyle(.borderless)
-                    .help("Add Workspace")
-                    .padding(.top, 4)
                 }
                 .padding(.top, 4)
             }
