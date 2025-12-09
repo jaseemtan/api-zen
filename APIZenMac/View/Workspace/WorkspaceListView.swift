@@ -19,6 +19,9 @@ struct WorkspaceListView: View {
     @FetchRequest private var workspaces: FetchedResults<EWorkspace>
     @Environment(\.coreDataContainer) private var coreDataContainer
     
+    @State private var workspacePendingDelete: EWorkspace?
+    @State private var showDeleteConfirmation = false
+    
     private var sortField: WorkspacePopupView.WorkspaceSortField
     private let db = CoreDataService.shared
 
@@ -56,7 +59,8 @@ struct WorkspaceListView: View {
 
                         Button("Delete", role: .destructive) {
                             Log.debug("delete on ws: \(workspace.getName())")
-                            deleteWorkspace(workspace: workspace)
+                            workspacePendingDelete = workspace
+                            showDeleteConfirmation = true
                         }
                     }
             }
@@ -71,6 +75,18 @@ struct WorkspaceListView: View {
                 if let ws = workspaces.first(where: { $0.getId() == newValue }) {
                     onSelect(ws)
                 }
+            }
+        }
+        .confirmationDialog("Are you sure you want to delete this workspace?", isPresented: $showDeleteConfirmation, titleVisibility: .visible) {
+            Button("Delete", role: .destructive) {
+                if let workspace = workspacePendingDelete {
+                    // onDeleteConfirmed(workspace)
+                }
+                workspacePendingDelete = nil
+            }
+
+            Button("Cancel", role: .cancel) {
+                workspacePendingDelete = nil
             }
         }
     }
