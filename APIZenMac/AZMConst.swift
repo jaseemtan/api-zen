@@ -6,8 +6,9 @@
 //
 
 /// Constants specific to macOS.
-public struct AZMConst {
+struct AZMConst {
     // MARK: - User default keys
     public static let openWindowsKey = "openWindows"
+    public static let workspacePopupWindowStateKey = "workspacePopupWindowState"
     // MARK: - Misc
 }

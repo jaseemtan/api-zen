@@ -26,12 +26,58 @@ struct WorkspacePopupView: View {
     
     private let db = CoreDataService.shared
     private let theme = ThemeManager.shared
+    private let utils = AZUtils.shared
     
-    enum WorkspaceSortField: String, CaseIterable {
+    enum WorkspaceSortField: String, CaseIterable, Codable, Equatable {
         case manual
         case name
         case created
     }
+    
+    /// For each workspace popup view part of the main view, it will have a user default state value.
+    /// This stores the user selected preferences and restores from it each time. This is per workspace. Means, if we have multiple windows of the same workspace, all will have one preference stored.
+    struct WorkspacePopupState: Identifiable, Codable {
+        var workspaceId: String = ""
+        var sortField: WorkspaceSortField = .manual
+        var sortAscending: Bool = true
+        
+        var id: String { workspaceId }
+        
+        func encode() -> Data? {
+            return try? JSONEncoder().encode(self)
+        }
+        
+        func decode(_ data: Data?) -> WorkspacePopupState? {
+            guard let data = data else { return nil }
+            return try? JSONDecoder().decode(WorkspacePopupState.self, from: data)
+        }
+        
+        /// Saves the state to user defaults.
+        func saveWorkspacePopupState() {
+            if let data = self.encode() {
+                AZUtils.shared.setValue(key: self.getUserDefaultsKey(), value: data)
+                Log.debug("saved state: sortField: \(sortField) - sortAsc: \(sortAscending) - wsId: \(workspaceId)")
+            }
+        }
+        
+        /// Restore the state from user defaults. Updates the current object. This should be invoked after setting the workspaceId.
+        mutating func restoreWorkspacePopupState() {
+            if workspaceId.isEmpty { return }
+            if let data = AZUtils.shared.getValue(self.getUserDefaultsKey()) as? Data {
+                if let state = self.decode(data) {
+                    Log.debug("restored: sortField: \(sortField) - sortAsc: \(sortAscending) - wsId: \(workspaceId)")
+                    self.sortField = state.sortField
+                    self.sortAscending = state.sortAscending
+                }
+            }
+        }
+        
+        private func getUserDefaultsKey() -> String {
+            return "\(AZMConst.workspacePopupWindowStateKey)-\(self.workspaceId)"
+        }
+    }
+    
+    @State private var state: WorkspacePopupState = WorkspacePopupState()
     
     var body: some View {
         NavigationStack {
@@ -84,7 +130,11 @@ struct WorkspacePopupView: View {
                         Toggle(isOn: Binding(
                             get: { sortField == .manual },
                             set: { isOn in
-                                if isOn { sortField = .manual }
+                                if isOn {
+                                    sortField = .manual
+                                    state.sortField = sortField
+                                    state.saveWorkspacePopupState()
+                                }
                             }
                         )) {
                             Text("manual")
@@ -93,7 +143,11 @@ struct WorkspacePopupView: View {
                         Toggle(isOn: Binding(
                             get: { sortField == .name },
                             set: { isOn in
-                                if isOn { sortField = .name }
+                                if isOn {
+                                    sortField = .name
+                                    state.sortField = sortField
+                                    state.saveWorkspacePopupState()
+                                }
                             }
                         )) {
                             Text("by Name")
@@ -102,7 +156,11 @@ struct WorkspacePopupView: View {
                         Toggle(isOn: Binding(
                             get: { sortField == .created },
                             set: { isOn in
-                                if isOn { sortField = .created }
+                                if isOn {
+                                    sortField = .created
+                                    state.sortField = sortField
+                                    state.saveWorkspacePopupState()
+                                }
                             }
                         )) {
                             Text("by Created")
@@ -119,7 +177,11 @@ struct WorkspacePopupView: View {
                         Toggle(isOn: Binding(
                             get: { sortAscending },
                             set: { isOn in
-                                if isOn { sortAscending = true }
+                                if isOn {
+                                    sortAscending = true
+                                    state.sortAscending = sortAscending
+                                    state.saveWorkspacePopupState()
+                                }
                             }
                         )) {
                             Text("Ascending")
@@ -128,7 +190,11 @@ struct WorkspacePopupView: View {
                         Toggle(isOn: Binding(
                             get: { !sortAscending },
                             set: { isOn in
-                                if isOn { sortAscending = false }
+                                if isOn {
+                                    sortAscending = false
+                                    state.sortAscending = sortAscending
+                                    state.saveWorkspacePopupState()
+                                }
                             }
                         )) {
                             Text("Descending")
@@ -163,8 +229,15 @@ struct WorkspacePopupView: View {
             .navigationDestination(isPresented: $showingAddForm) {
                 AddWorkspaceFormView()
             }
-        }.task {
+        }
+        .onAppear {
+            state.workspaceId = selectedWorkspaceId
+            state.restoreWorkspacePopupState()
+        }
+        .task {
             pickerSelection = coreDataContainer == .local ? 0 : 1
+            sortField = state.sortField
+            sortAscending = state.sortAscending
         }
     }
     
