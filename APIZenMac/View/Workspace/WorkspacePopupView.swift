@@ -22,7 +22,6 @@ struct WorkspacePopupView: View {
     @State private var sortField: WorkspaceSortField = .name
     @State private var sortAscending: Bool = true
     
-    @Environment(\.managedObjectContext) private var ctx
     @Environment(\.dismiss) private var dismiss
     
     private let db = CoreDataService.shared
@@ -32,8 +31,6 @@ struct WorkspacePopupView: View {
         case name
         case created
     }
-    
-    let checkmarkWidth: CGFloat = 16
     
     var body: some View {
         NavigationStack {
