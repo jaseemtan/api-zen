@@ -149,6 +149,13 @@ struct CenterBottomPane: View {
                         .font(.system(size: 13, weight: .regular))
                         .foregroundColor(.accentColor)
                         .underline(false)
+                        .padding(.horizontal, 10)  // Gives enough room for click by expanding the button area. It's not visible unless we apply a border to it.
+                        .padding(.vertical, 6)
+                        .contentShape(Rectangle())
+//                        .overlay(
+//                            RoundedRectangle(cornerRadius: 4)
+//                                .stroke(Color.red.opacity(0.5), style: StrokeStyle(lineWidth: 1, dash: [4]))
+//                        )
                 }
                 .buttonStyle(.plain)
                 .popover(
