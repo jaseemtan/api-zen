@@ -17,7 +17,7 @@ import AZData
 class App: NSObject {
     @objc static let shared: App = App()
     var popupBottomContraints: NSLayoutConstraint?
-    private lazy var localdb = { CoreDataService.shared }()
+    private lazy var db = { CoreDataService.shared }()
     private let utils = AZUtils.shared
     private let nc = NotificationCenter.default
     private var appLaunched = false
@@ -116,7 +116,7 @@ class App: NSObject {
     
     /// Invoked before application termination to perform save state, clean up.
     func saveState() {
-        self.localdb.saveMainContext()
+        self.db.saveMainContext()
     }
 
     func addWorkspace(_ ws: EWorkspace) {
@@ -264,22 +264,22 @@ class App: NSObject {
         let wsId = self.utils.getValue(AZConst.selectedWorkspaceIdKey) as? String ?? ""
         let container = self.utils.getValue(AZConst.selectedWorkspaceContainerKey) as? String ?? CoreDataContainer.cloud.rawValue
         Log.debug("ws: selected container: \(container)")
-        if !wsId.isEmpty, let ws = self.localdb.getWorkspace(id: wsId, ctx: container == CoreDataContainer.cloud.rawValue ? self.localdb.ckMainMOC : self.localdb.localMainMOC) {
+        if !wsId.isEmpty, let ws = self.db.getWorkspace(id: wsId, ctx: self.db.getMainMOC(container: CoreDataContainer(rawValue: container)!)) {
             AppState.currentWorkspace = ws
             return ws
         }
-        let ws = self.localdb.getDefaultWorkspace()
+        let ws = self.db.getDefaultWorkspace()
         Log.debug("ws: \(ws)")
-        AZCoreDataUtils.shared.saveSelectedWorkspaceId(ws.getId())
-        AZCoreDataUtils.shared.saveSelectedWorkspaceContainer(self.localdb.getContainer(ws.managedObjectContext!))
+        AZDataUtils.shared.saveSelectedWorkspaceId(ws.getId())
+        AZDataUtils.shared.saveSelectedWorkspaceContainer(self.db.getContainer(ws.managedObjectContext!))
         return ws
     }
     
     func setSelectedWorkspace(_ ws: EWorkspace) {
         AppState.currentWorkspace = ws
         if let wsId = ws.id {
-            AZCoreDataUtils.shared.saveSelectedWorkspaceId(wsId)
-            AZCoreDataUtils.shared.saveSelectedWorkspaceContainer(self.localdb.getContainer(ws.managedObjectContext!))
+            AZDataUtils.shared.saveSelectedWorkspaceId(wsId)
+            AZDataUtils.shared.saveSelectedWorkspaceContainer(self.db.getContainer(ws.managedObjectContext!))
         }
     }
     
@@ -325,7 +325,7 @@ class App: NSObject {
     }
     
     func getWorkspaceTypeString(_ ws: EWorkspace) -> String {
-        let container = self.localdb.getContainer(ws.managedObjectContext!)
+        let container = self.db.getContainer(ws.managedObjectContext!)
         if (container == .cloud) { return "iCloud" }
         return "Local"
     }
