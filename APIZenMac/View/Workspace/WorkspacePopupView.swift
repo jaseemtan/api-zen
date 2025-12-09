@@ -160,6 +160,8 @@ struct WorkspacePopupView: View {
             .navigationDestination(isPresented: $showingAddForm) {
                 AddWorkspaceFormView()
             }
+        }.task {
+            pickerSelection = coreDataContainer == .local ? 0 : 1
         }
     }
     
