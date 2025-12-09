@@ -1,5 +1,5 @@
 //
-//  AZCoreDataUtils.swift
+//  AZDataUtils.swift
 //  APIZen
 //
 //  Created by Jaseem V V on 27/01/24.
@@ -11,8 +11,8 @@ import CoreData
 import AZCommon
 
 /// Helper methods to work with CoreData 
-public class AZCoreDataUtils {
-    public static let shared = AZCoreDataUtils()
+public class AZDataUtils {
+    public static let shared = AZDataUtils()
     private let utils = AZUtils.shared
     
     /// Copies all attribute values from the source object to destination object for the attributes in destination object

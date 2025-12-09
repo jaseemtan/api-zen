@@ -11,8 +11,8 @@ import CoreData
 import AZCommon
 
 class APITesterProModel2WorkspaceMigration: NSEntityMigrationPolicy {
-    private let cdUtils = AZCoreDataUtils.shared
-    private lazy var localdb = { CoreDataService.shared }()
+    private let dataUtils = AZDataUtils.shared
+    private lazy var db = { CoreDataService.shared }()
     private let nc = NotificationCenter.default
     
     override func createDestinationInstances(forSource sInstance: NSManagedObject, in mapping: NSEntityMapping, manager: NSMigrationManager) throws {
@@ -24,13 +24,13 @@ class APITesterProModel2WorkspaceMigration: NSEntityMigrationPolicy {
             if sInstance.value(forKey: "syncDisabled") == nil {
                 sInstance.setValue(Date(), forKey: "syncDisabled")
             }
-            dInstance = cdUtils.copyAttributeValues(src: sInstance, dest: dInstance)
+            dInstance = dataUtils.copyAttributeValues(src: sInstance, dest: dInstance)
             // migrating this to value set as false
             dInstance.setValue(false, forKey: "isSyncEnabled")
             Log.debug("cd: model migration workspace: set isSyncEnabled to false for \(String(describing: sInstance.value(forKey: "name")))")
             self.nc.post(name: .clearCurrentWorkspace, object: self)
-            self.cdUtils.saveSelectedWorkspaceId(self.localdb.defaultWorkspaceId)
-            self.cdUtils.saveSelectedWorkspaceContainer(.local)
+            self.dataUtils.saveSelectedWorkspaceId(self.db.defaultWorkspaceId)
+            self.dataUtils.saveSelectedWorkspaceContainer(.local)
             self.nc.post(name: .workspaceDidSync, object: self)
             manager.associate(sourceInstance: sInstance, withDestinationInstance: dInstance, for: mapping)
         } else {
