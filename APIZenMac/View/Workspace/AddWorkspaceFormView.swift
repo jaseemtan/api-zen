@@ -28,6 +28,7 @@ struct AddWorkspaceFormView: View {
             Button("Save") {
                 saveWorkspace()
             }
+            .buttonStyle(.borderedProminent)  // makes it respect system accent colour
             .disabled(name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
             Spacer()
         }

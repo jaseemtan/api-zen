@@ -147,7 +147,7 @@ struct CenterBottomPane: View {
                 } label: {
                     Text(workspaceName)
                         .font(.system(size: 13, weight: .regular))
-                        .foregroundColor(.blue)
+                        .foregroundColor(.accentColor)
                         .underline(false)
                 }
                 .buttonStyle(.plain)
