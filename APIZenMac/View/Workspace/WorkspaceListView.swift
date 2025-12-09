@@ -48,8 +48,18 @@ struct WorkspaceListView: View {
                     .padding(.vertical, 4)
                     .contentShape(Rectangle())
                     .tag(workspace.getId())
+                    .contextMenu {
+                        Button("Edit") {
+                            Log.debug("edit on ws: \(workspace.getName())")
+                            editWorkspace(workspace: workspace)
+                        }
+
+                        Button("Delete", role: .destructive) {
+                            Log.debug("delete on ws: \(workspace.getName())")
+                            deleteWorkspace(workspace: workspace)
+                        }
+                    }
             }
-//            .onMove(perform: sortField == .manual ? reorderWorkspace : nil)
             .onMove { indexSet, order in
                 guard sortField == .manual else { return }
                 reorderWorkspace(from: indexSet, to: order)
@@ -63,6 +73,14 @@ struct WorkspaceListView: View {
                 }
             }
         }
+    }
+    
+    func editWorkspace(workspace: EWorkspace) {
+        
+    }
+    
+    func deleteWorkspace(workspace: EWorkspace) {
+        
     }
     
     func reorderWorkspace(from source: IndexSet, to destination: Int) {
