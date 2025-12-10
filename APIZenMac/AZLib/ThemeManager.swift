@@ -12,6 +12,11 @@ import AZData
 class ThemeManager {
     static let shared = ThemeManager()
     
+    /// Returns the system accent colour.
+    func getAccentColor() -> Color {
+        return Color.accentColor
+    }
+    
     /// The description text colour.
     func getDescriptionColor(_ scheme: ColorScheme) -> Color {
         scheme == .dark ? .darkGrey4 : .lightGrey4

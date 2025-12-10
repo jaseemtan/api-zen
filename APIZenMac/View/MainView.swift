@@ -167,7 +167,7 @@ struct CenterBottomPane: View {
                         Text(utils.truncateText(workspaceName, len: 32))
                             .font(.system(size: 13, weight: .regular))
                     }
-                    .foregroundColor(.accentColor)
+                    .foregroundColor(theme.getAccentColor())
                     .underline(false)
                     .padding(.horizontal, 10)  // Gives enough room for click by expanding the button area. It's not visible unless we apply a border to it.
                     .padding(.vertical, 6)
