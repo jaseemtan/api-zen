@@ -110,14 +110,14 @@ struct WorkspacePopupView: View {
                 
                 Group {
                     if pickerSelection == 0 {
-                        WorkspaceListView(isProcessing: $isProcessing, selectedWorkspaceId: selectedWorkspaceId, sortField: sortField, sortAscending: sortAscending) { workspace, coreDataContainer in
+                        WorkspaceListView(isProcessing: $isProcessing, selectedWorkspaceId: selectedWorkspaceId, sortField: sortField, sortAscending: sortAscending, searchText: searchText) { workspace, coreDataContainer in
                             handleWorkspaceSelect(workspace, container: coreDataContainer)
                         } onEdit: { workspace, coreDataContainer in
                             handleWorkspaceEdit(workspace, coreDataContainer)
                         }
                         .environment(\.managedObjectContext, self.db.localMainMOC)
                     } else {
-                        WorkspaceListView(isProcessing: $isProcessing, selectedWorkspaceId: selectedWorkspaceId, sortField: sortField, sortAscending: sortAscending) { workspace, coreDataContainer in
+                        WorkspaceListView(isProcessing: $isProcessing, selectedWorkspaceId: selectedWorkspaceId, sortField: sortField, sortAscending: sortAscending, searchText: searchText) { workspace, coreDataContainer in
                             handleWorkspaceSelect(workspace, container: coreDataContainer)
                         } onEdit: { workspace, coreDataContainer in
                             handleWorkspaceEdit(workspace, coreDataContainer)

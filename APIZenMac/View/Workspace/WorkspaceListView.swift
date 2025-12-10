@@ -16,33 +16,30 @@ struct WorkspaceListView: View {
     /// This is a binding because we need to update the state in parent view when change happens in this view.
     @Binding var isProcessing: Bool
     @State var selectedWorkspaceId: String
-    @FetchRequest private var workspaces: FetchedResults<EWorkspace>
     
+    @State private var workspaces: [EWorkspace] = []
+    @State private var dataManager: CoreDataManager<EWorkspace>?
     @State private var workspacePendingDelete: EWorkspace?
     @State private var showDeleteConfirmation = false
     
+    @Environment(\.managedObjectContext) private var moc
+    
     private var sortField: WorkspacePopupView.WorkspaceSortField
+    private var sortAscending: Bool
+    private var searchText: String
     private let db = CoreDataService.shared
 
     let onSelect: (EWorkspace, CoreDataContainer) -> Void
     let onEdit: (EWorkspace, CoreDataContainer) -> Void  // Add form nav view needs to be shown which is in parent view. So we call the parent view function.
 
-    init(isProcessing: Binding<Bool>, selectedWorkspaceId: String, sortField: WorkspacePopupView.WorkspaceSortField, sortAscending: Bool, onSelect: @escaping (EWorkspace, CoreDataContainer) -> Void, onEdit: @escaping (EWorkspace, CoreDataContainer) -> Void) {
+    init(isProcessing: Binding<Bool>, selectedWorkspaceId: String, sortField: WorkspacePopupView.WorkspaceSortField, sortAscending: Bool, searchText: String, onSelect: @escaping (EWorkspace, CoreDataContainer) -> Void, onEdit: @escaping (EWorkspace, CoreDataContainer) -> Void) {
         _isProcessing = isProcessing
         self.selectedWorkspaceId = selectedWorkspaceId
         self.onSelect = onSelect
         self.onEdit = onEdit
         self.sortField = sortField
-        let sortDescriptor: NSSortDescriptor
-        switch sortField {
-        case .manual:
-            sortDescriptor = NSSortDescriptor(keyPath: \EWorkspace.order, ascending: sortAscending)
-        case .name:
-            sortDescriptor = NSSortDescriptor(keyPath: \EWorkspace.name, ascending: sortAscending)
-        case .created:
-            sortDescriptor = NSSortDescriptor(keyPath: \EWorkspace.created, ascending: sortAscending)
-        }
-        _workspaces = FetchRequest(sortDescriptors: [sortDescriptor], animation: .default)
+        self.sortAscending = sortAscending
+        self.searchText = searchText
     }
     
     var body: some View {
@@ -70,6 +67,9 @@ struct WorkspaceListView: View {
                 reorderWorkspace(from: indexSet, to: order)
             }
         }
+        .onAppear(perform: {
+            self.initDataManager()
+        })
         .onChange(of: selectedWorkspaceId) { oldValue, newValue in
             if oldValue != newValue {
                 Log.debug("Selected workspace id: \(newValue)")
@@ -78,6 +78,12 @@ struct WorkspaceListView: View {
                 }
             }
         }
+        .onChange(of: sortField, { _, _ in
+            self.initDataManager()  // re-init data manager with new sort descriptor to update the list ordering
+        })
+        .onChange(of: sortAscending, { _, _ in
+            self.initDataManager()  // re-init data manager with new sort descriptor to update the list ordering
+        })
         .confirmationDialog("Are you sure you want to delete this workspace?", isPresented: $showDeleteConfirmation, titleVisibility: .visible) {
             Button("Delete", role: .destructive) {
                 if let workspace = workspacePendingDelete {
@@ -89,6 +95,19 @@ struct WorkspaceListView: View {
             Button("Cancel", role: .cancel) {
                 workspacePendingDelete = nil
             }
+        }
+    }
+    
+    func initDataManager() {
+        Log.debug("ws view: init data manager")
+        let fr = NSFetchRequest<EWorkspace>(entityName: "EWorkspace")
+        fr.sortDescriptors = self.getSortDescriptors()
+        fr.fetchBatchSize = 50
+        dataManager = CoreDataManager(fetchRequest: fr, ctx: moc, onChange: { workspaces in
+            self.workspaces = workspaces
+        })
+        if searchText.isNotEmpty {
+            // TODO: apply search
         }
     }
     
@@ -124,5 +143,18 @@ struct WorkspaceListView: View {
             self.db.saveMainContext()
             isProcessing = false
         }
+    }
+    
+    private func getSortDescriptors() -> [NSSortDescriptor] {
+        let sortDescriptor: NSSortDescriptor
+        switch sortField {
+        case .manual:
+            sortDescriptor = NSSortDescriptor(keyPath: \EWorkspace.order, ascending: sortAscending)
+        case .name:
+            sortDescriptor = NSSortDescriptor(keyPath: \EWorkspace.name, ascending: sortAscending)
+        case .created:
+            sortDescriptor = NSSortDescriptor(keyPath: \EWorkspace.created, ascending: sortAscending)
+        }
+        return [sortDescriptor]
     }
 }
