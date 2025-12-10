@@ -16,16 +16,18 @@ struct WorkspacePopupView: View {
     @Binding var workspaceName: String
     @Binding var coreDataContainer: CoreDataContainer
     
-    @State private var showingAddForm = false
+    @State private var showAddForm = false
     @State private var searchText = ""
     @State private var pickerSelection: Int = 0  // 0 = local, 1 = iCloud
     @State private var sortField: WorkspaceSortField = .manual
     @State private var sortAscending: Bool = true
     /// Indicates if any list processing is happening. If child view is doing reordering, this will be set.
     @State private var isProcessing: Bool = false
+    /// Holds the workspace that needs to be edited.
+    @State private var editWorkspace: EWorkspace?
     
     @Environment(\.dismiss) private var dismiss
-    
+
     private let db = CoreDataService.shared
     private let theme = ThemeManager.shared
     private let utils = AZUtils.shared
@@ -110,11 +112,15 @@ struct WorkspacePopupView: View {
                     if pickerSelection == 0 {
                         WorkspaceListView(isProcessing: $isProcessing, selectedWorkspaceId: selectedWorkspaceId, sortField: sortField, sortAscending: sortAscending) { workspace in
                             handleWorkspaceSelect(workspace, container: .local)
+                        } onEdit: { workspace, coreDataContainer in
+                            handleWorkspaceEdit(workspace, coreDataContainer)
                         }
                         .environment(\.managedObjectContext, self.db.localMainMOC)
                     } else {
                         WorkspaceListView(isProcessing: $isProcessing, selectedWorkspaceId: selectedWorkspaceId, sortField: sortField, sortAscending: sortAscending) { workspace in
                             handleWorkspaceSelect(workspace, container: .cloud)
+                        } onEdit: { workspace, coreDataContainer in
+                            handleWorkspaceEdit(workspace, coreDataContainer)
                         }
                         .environment(\.managedObjectContext, self.db.ckMainMOC)
                     }
@@ -216,7 +222,8 @@ struct WorkspacePopupView: View {
                     
                     if !isProcessing {
                         Button {
-                            showingAddForm = true
+                            editWorkspace = nil
+                            showAddForm = true
                         } label: {
                             Image(systemName: "plus")
                                 .font(.system(size: 15, weight: .regular))
@@ -233,8 +240,12 @@ struct WorkspacePopupView: View {
                 .padding(.top, 4)
             }
             .padding()
-            .navigationDestination(isPresented: $showingAddForm) {
-                AddWorkspaceFormView()
+            .navigationDestination(isPresented: $showAddForm) {
+                if let ws = editWorkspace {  // edit
+                    AddWorkspaceFormView(name: ws.getName(), desc: ws.desc ?? "", isSyncEnabled: ws.isSyncEnabled, isEdit: true, workspace: ws)
+                } else {  // add
+                    AddWorkspaceFormView()
+                }
             }
         }
         .onAppear {
@@ -254,5 +265,11 @@ struct WorkspacePopupView: View {
         workspaceName = workspace.getName()
         selectedWorkspaceId = workspace.getId()
         dismiss()
+    }
+    
+    private func handleWorkspaceEdit(_ workspace: EWorkspace, _ container: CoreDataContainer) {
+        Log.debug("handle edit")
+        editWorkspace = workspace
+        showAddForm = true
     }
 }

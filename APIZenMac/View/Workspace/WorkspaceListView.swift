@@ -26,11 +26,13 @@ struct WorkspaceListView: View {
     private let db = CoreDataService.shared
 
     let onSelect: (EWorkspace) -> Void
+    let onEdit: (EWorkspace, CoreDataContainer) -> Void  // Add form nav view needs to be shown which is in parent view. So we call the parent view function.
 
-    init(isProcessing: Binding<Bool>, selectedWorkspaceId: String, sortField: WorkspacePopupView.WorkspaceSortField, sortAscending: Bool, onSelect: @escaping (EWorkspace) -> Void) {
+    init(isProcessing: Binding<Bool>, selectedWorkspaceId: String, sortField: WorkspacePopupView.WorkspaceSortField, sortAscending: Bool, onSelect: @escaping (EWorkspace) -> Void, onEdit: @escaping (EWorkspace, CoreDataContainer) -> Void) {
         _isProcessing = isProcessing
         self.selectedWorkspaceId = selectedWorkspaceId
         self.onSelect = onSelect
+        self.onEdit = onEdit
         self.sortField = sortField
         let sortDescriptor: NSSortDescriptor
         switch sortField {
@@ -92,7 +94,7 @@ struct WorkspaceListView: View {
     }
     
     func editWorkspace(workspace: EWorkspace) {
-        
+        onEdit(workspace, coreDataContainer.wrappedValue)
     }
     
     func deleteWorkspace(workspace: EWorkspace) {
