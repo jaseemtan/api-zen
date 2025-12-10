@@ -33,6 +33,10 @@ class WindowRegistry {
         let id: Int  // Is the identifier by default
         var workspaceId: String
         var coreDataContainer: CoreDataContainer
+        var showNavigator: Bool  // Left pane
+        var showInspector: Bool  // Right pane
+        var showRequestComposer: Bool  // The center pane
+        var showCodeView: Bool  // Center bottom pane
     }
     
     /// Reading windows is allowed from everywhere. Writing is allowed only within this file.
@@ -40,9 +44,9 @@ class WindowRegistry {
     
     
     /// Adds the given index and workspaceId to the window registry. The window index will be unique. So there won't be a case of getting the same index in one app lifecycle.
-    func add(windowIndex: Int, workspaceId: String, coreDataContainer: CoreDataContainer) {
+    func add(windowIndex: Int, workspaceId: String, coreDataContainer: CoreDataContainer, showNavigator: Bool, showInspector: Bool, showRequestComposer: Bool, showCodeView: Bool) {
         Log.debug("adding window index: \(windowIndex) with wsId: \(workspaceId) to window registry with container: \(coreDataContainer)")
-        self.windows[windowIndex] = Entry(id: windowIndex, workspaceId: workspaceId, coreDataContainer: coreDataContainer)
+        self.windows[windowIndex] = Entry(id: windowIndex, workspaceId: workspaceId, coreDataContainer: coreDataContainer, showNavigator: showNavigator, showInspector: showInspector, showRequestComposer: showRequestComposer, showCodeView: showCodeView)
     }
     
     /// Removes the given window index from the window registry.

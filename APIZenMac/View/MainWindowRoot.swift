@@ -28,6 +28,18 @@ struct MainWindowRoot: View {
     @SceneStorage("coreDataContainer")
     private var coreDataContainer: CoreDataContainer = CoreDataContainer.local
     
+    @SceneStorage("showNavigator")
+    private var showNavigator: Bool = true  // Left pane
+
+    @SceneStorage("showInspector")
+    private var showInspector: Bool = true // Right pane
+
+    @SceneStorage("showRequestComposer")
+    private var showRequestComposer: Bool = true // The center pane
+
+    @SceneStorage("showCodeView")
+    private var showCodeView: Bool = true // Center bottom pane
+    
     // Tracks whether this specific window has already been given one of the initial bootstrap workspaces.
     @SceneStorage("didAssignBootstrapWorkspace")
     private var didAssignBootstrapWorkspace: Bool = false
@@ -50,7 +62,11 @@ struct MainWindowRoot: View {
             selectedWorkspaceId: $workspaceId,
             coreDataContainer: $coreDataContainer,
             workspaceName: $workspaceName,
-            windowIndex: windowIndex
+            windowIndex: windowIndex,
+            showNavigator: $showNavigator,
+            showInspector: $showInspector,
+            showRequestComposer: $showRequestComposer,
+            showCodeView: $showCodeView
         )
         .environment(\.coreDataContainer, $coreDataContainer)
         .environment(\.managedObjectContext, coreDataContainer == .local ? self.db.localMainMOC : self.db.ckMainMOC)
@@ -67,9 +83,13 @@ struct MainWindowRoot: View {
             if !didAssignBootstrapWorkspace,
                Self.nextBootstrapIndex < Self.bootstrapWorkspaces.count {
                 let entry = Self.bootstrapWorkspaces[Self.nextBootstrapIndex]
-                // set state
+                // Restore state from registry
                 workspaceId = entry.workspaceId
                 coreDataContainer = entry.coreDataContainer
+                showNavigator = entry.showNavigator
+                showInspector = entry.showInspector
+                showRequestComposer = entry.showRequestComposer
+                showCodeView = entry.showCodeView
                 if let ws = self.db.getWorkspace(id: workspaceId, ctx: self.db.getMainMOC(container: coreDataContainer)) {
                     workspaceName = ws.getName()
                 }
@@ -86,11 +106,23 @@ struct MainWindowRoot: View {
 //                _ = self.db.createWorkspace(id: "test-ws", name: "Test workspace", desc: "", isSyncEnabled: false, ctx: self.db.localMainMOC)
 //                self.db.saveMainContext()
             }
-            self.windowRegistry.add(windowIndex: windowIndex, workspaceId: workspaceId, coreDataContainer: coreDataContainer)
+            self.windowRegistry.add(windowIndex: windowIndex, workspaceId: workspaceId, coreDataContainer: coreDataContainer, showNavigator: showNavigator, showInspector: showInspector, showRequestComposer: showRequestComposer, showCodeView: showCodeView)
         }
         .onChange(of: workspaceId, { oldValue, newValue in
             Log.debug("wsId changed - old: \(oldValue) - new: \(newValue)")
-            self.windowRegistry.add(windowIndex: windowIndex, workspaceId: newValue, coreDataContainer: coreDataContainer)
+            self.windowRegistry.add(windowIndex: windowIndex, workspaceId: newValue, coreDataContainer: coreDataContainer, showNavigator: showNavigator, showInspector: showInspector, showRequestComposer: showRequestComposer, showCodeView: showCodeView)
+        })
+        .onChange(of: showNavigator, { oldValue, newValue in
+            self.windowRegistry.add(windowIndex: windowIndex, workspaceId: workspaceId, coreDataContainer: coreDataContainer, showNavigator: newValue, showInspector: showInspector, showRequestComposer: showRequestComposer, showCodeView: showCodeView)
+        })
+        .onChange(of: showInspector, { oldValue, newValue in
+            self.windowRegistry.add(windowIndex: windowIndex, workspaceId: workspaceId, coreDataContainer: coreDataContainer, showNavigator: showNavigator, showInspector: newValue, showRequestComposer: showRequestComposer, showCodeView: showCodeView)
+        })
+        .onChange(of: showRequestComposer, { oldValue, newValue in
+            self.windowRegistry.add(windowIndex: windowIndex, workspaceId: workspaceId, coreDataContainer: coreDataContainer, showNavigator: showNavigator, showInspector: showInspector, showRequestComposer: newValue, showCodeView: showCodeView)
+        })
+        .onChange(of: showCodeView, { oldValue, newValue in
+            self.windowRegistry.add(windowIndex: windowIndex, workspaceId: workspaceId, coreDataContainer: coreDataContainer, showNavigator: showNavigator, showInspector: showInspector, showRequestComposer: showRequestComposer, showCodeView: newValue)
         })
         .onAppear {
             Log.debug("WorkspaceWindowRoot onAppear")            
