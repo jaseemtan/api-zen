@@ -53,7 +53,7 @@ struct MainView: View {
                             }
                         }
                         Divider()
-                        StatusBarView(workspaceName: $workspaceName, selectedWorkspaceId: $selectedWorkspaceId, coreDataContainer: $coreDataContainer, showCodeView: $showCodeView)
+                        MainToolbarView(workspaceName: $workspaceName, selectedWorkspaceId: $selectedWorkspaceId, coreDataContainer: $coreDataContainer, showCodeView: $showCodeView)
                             .frame(height: 24)  // fixed height for status bar
                             .padding(.horizontal, 8)
                     }
@@ -98,6 +98,7 @@ struct MainView: View {
 
 // MARK: - Panes
 
+/// Request composer view displayed in the center pane at the top half.
 struct RequestComposerView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -115,6 +116,7 @@ struct RequestComposerView: View {
     }
 }
 
+/// Code view displayed at the lower half of the center pane after the request composer view.
 struct CodeView: View {
     @Binding var workspaceName: String
     @Binding var selectedWorkspaceId: String
@@ -140,7 +142,8 @@ struct CodeView: View {
     }
 }
 
-struct StatusBarView: View {
+/// Toolbar view displayed at the bottom of the request composer (center) pane.
+struct MainToolbarView: View {
     @Binding var workspaceName: String
     @Binding var selectedWorkspaceId: String
     @Binding var coreDataContainer: CoreDataContainer
