@@ -84,6 +84,9 @@ struct WorkspaceListView: View {
         .onChange(of: sortAscending, { _, _ in
             self.initDataManager()  // re-init data manager with new sort descriptor to update the list ordering
         })
+        .onChange(of: searchText, { _, _ in
+            self.initDataManager()
+        })
         .confirmationDialog("Are you sure you want to delete this workspace?", isPresented: $showDeleteConfirmation, titleVisibility: .visible) {
             Button("Delete", role: .destructive) {
                 if let workspace = workspacePendingDelete {
@@ -98,17 +101,20 @@ struct WorkspaceListView: View {
         }
     }
     
+    /// The query is cached. So multiple searches of the same parameters would not be that costly.
     func initDataManager() {
         Log.debug("ws view: init data manager")
         let fr = NSFetchRequest<EWorkspace>(entityName: "EWorkspace")
         fr.sortDescriptors = self.getSortDescriptors()
+        if searchText.isNotEmpty {
+            fr.predicate = NSPredicate(format: "(name CONTAINS[cd] %@) OR (desc CONTAINS[cd] %@)", searchText, searchText)  // c: case-insensitive; d: diacritic-insensitive
+        } else {
+            fr.predicate = nil
+        }
         fr.fetchBatchSize = 50
         dataManager = CoreDataManager(fetchRequest: fr, ctx: moc, onChange: { workspaces in
             self.workspaces = workspaces
         })
-        if searchText.isNotEmpty {
-            // TODO: apply search
-        }
     }
     
     func editWorkspace(workspace: EWorkspace) {

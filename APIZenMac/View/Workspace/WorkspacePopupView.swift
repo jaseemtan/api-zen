@@ -87,9 +87,10 @@ struct WorkspacePopupView: View {
         NavigationStack {
             VStack(alignment: .leading) {
                 HStack {
-                    ExpandingSearchField(text: $searchText) { query in
-                        // TODO: search impl
+                    ExpandingSearchField() { query in
+                        let text = query.trim()
                         Log.debug("Search for: \(query)")
+                        searchText = text
                     }
                     Spacer()
                 }

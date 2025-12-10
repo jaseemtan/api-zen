@@ -10,7 +10,7 @@ import SwiftUI
 /// A search icon on the right. Clicking on it will display a text field on the left of it. Entering text in search field will show a clear icon on the right.
 /// Pressing enter or clicking search again when there is text content will perform a search. Clicking search icon again when there is not content will hide the text field and show just the icon.
 struct ExpandingSearchField: View {
-    @Binding var text: String
+    @State var text: String = ""  // Using this as a @Binding will allow search to be performed as typed, because the change is trigged on each char change. Here we are using a @State because we perform search on pressing enter or button click. This is better for performance.
     var onSearch: (String) -> Void = { _ in }
 
     @State private var isExpanded = false
@@ -93,11 +93,5 @@ struct ExpandingSearchField: View {
 
     private func runSearchIfNeeded() {
         onSearch(text)
-//        if !text.isEmpty {
-//            onSearch(text)
-//        } else {
-//            // Optional: default pattern search
-//            // onSearch("*")
-//        }
     }
 }

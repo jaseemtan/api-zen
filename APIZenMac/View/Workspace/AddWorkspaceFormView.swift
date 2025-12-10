@@ -43,7 +43,7 @@ struct AddWorkspaceFormView: View {
     
     private func isSaveButtonDisabled() -> Bool {
         if !isEdit {
-            return name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+            return name.trim().isEmpty
         }
         guard let ws = workspace else { return false }
         return !(ws.getName() != name || (ws.desc != nil && ws.desc! != desc))
