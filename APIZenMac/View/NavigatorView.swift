@@ -174,8 +174,8 @@ private struct MacScrollViewOffsetSetter: NSViewRepresentable {
             var v: NSView? = nsView
             while let current = v {
                 if let scroll = current as? NSScrollView {
-                    // Allow rubber-banding at both ends
-                    scroll.verticalScrollElasticity = .allowed
+                    scroll.verticalScrollElasticity = .allowed  // Allow bounce at top and bottom
+                    scroll.horizontalScrollElasticity = .none  // Without this, if we navigate to requests list and back to projects list, horizontal list bounce appears. We should have top and bottom boucing only for the project list.
                     scroll.contentInsets = NSEdgeInsetsZero
 
                     // Now set the content origin (treat offset as distance from top)
@@ -206,30 +206,34 @@ struct ProjectsListView: View {
 
     var body: some View {
         ScrollView {
-            // NOTE: no top padding here — avoid adding .padding() that affects top
-            LazyVStack(alignment: .leading, spacing: 6) {
-                ForEach(projects) { project in
-                    // List style does not show separator. This could be a distinction between projects and requests.
-                    Button {
-                        // allow preference system to settle then navigate
-                        DispatchQueue.main.async {
-                            onSelect(project)
+            VStack(spacing: 0) {
+                // Safe top padding that doesn't affect scroll offset calculation
+                Color.clear.frame(height: 12)
+                // NOTE: No top padding here — avoid adding .padding() that affects top
+                LazyVStack(alignment: .leading, spacing: 6) {
+                    ForEach(projects) { project in
+                        // List style does not show separator. This could be a distinction between projects and requests.
+                        Button {
+                            // allow preference system to settle then navigate
+                            DispatchQueue.main.async {
+                                onSelect(project)
+                            }
+                        } label: {
+                            NameDescView(imageName: "project", name: project.getName(), desc: project.desc)
+                                .padding(.vertical, 6)
+                                .padding(.leading, 4)
+                                .frame(maxWidth: .infinity, alignment: .leading)
                         }
-                    } label: {
-                        NameDescView(imageName: "project", name: project.getName(), desc: project.desc)
-                            .padding(.vertical, 6)
-                            .padding(.leading, 4)
-                            .frame(maxWidth: .infinity, alignment: .leading)
+                        .buttonStyle(.plain)
+                        .id(project.objectID)
                     }
-                    .buttonStyle(.plain)
-                    .id(project.objectID)
                 }
+                // horizontal padding only if you want — no top padding
+                .padding(.horizontal, 8)
+                // Safe bottom padding that doesn't affect scroll offset calculation
+                Color.clear.frame(height: 12)
             }
-            // Make sure the content does not expand to a large minimum height
-            .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0)
-            // horizontal padding only if you want — no top padding
-            .padding(.horizontal, 8)
-            // Overlay GeometryReader at top to read offset without taking layout space
+            // Overlay GeometryReader at top to read offset without taking layout space - to the outside padding.
             .overlay(
                 GeometryReader { proxy in
                     Color.clear
@@ -240,7 +244,7 @@ struct ProjectsListView: View {
                 , alignment: .top
             )
         }
-        .coordinateSpace(name: "scroll")
+        .coordinateSpace(.named("scroll"))
         .onPreferenceChange(ScrollOffsetKey.self) { value in
             // clamp to >= 0 if you treat offset as distance from top
             let newValue = max(0, value)
