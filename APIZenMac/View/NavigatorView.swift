@@ -388,7 +388,41 @@ struct ProjectsListView: View {
                 // Safe bottom padding that doesn't affect scroll offset calculation
                 Color.clear.frame(height: 12)
             }
-            // Overlay GeometryReader at top to read offset without taking layout space - to the outside padding.
+            /*
+             Overlay GeometryReader at top to read offset without taking layout space - to the outside padding.
+             
+             overlay lets us put a GeometryReader on top of the scroll content so it can measure the scroll position without affecting layout.
+             - It is not for drawing.
+             - It is not for adding UI.
+             - It is simply a way to attach an invisible measuring tool to the scrolling content.
+             
+             We need a place to attach a GeometryReader that:
+             1. Moves together with the scroll content,
+             2. Does NOT take up space,
+             3. Does NOT interfere with layout,
+             4. Can read its position inside the scrolling coordinate space.
+             
+             A normal child view always takes up space and changes the layout.
+             A background view measures layout before scroll metrics are updated.
+             
+             But an overlay sits on top. It doesn’t push content, doesn’t shift anything, and scrolls with the content.
+             
+             GeometryReader gives us the position of the overlay view inside the scroll's coordinate space. Because the overlay moves exactly with the scrolling content, its minY becomes the perfect representation of the scroll offset.
+             
+             Example:
+             
+             At top of the list → minY == 0
+             Scrolled down 100 px → minY == -100
+             
+             So we invert it: `value: -geo.frame(...).minY`
+             
+             Now offset = 100 means “scrolled down 100 points”.
+             
+             .preference(key:value:) - sends the number up to the parent safely.
+             
+             .allowsHitTesting(false) - So the overlay doesn’t block clicks on your list rows.
+             
+             */
             .overlay(alignment: .top, content: {
                 GeometryReader { proxy in
                     Color.clear
@@ -399,16 +433,17 @@ struct ProjectsListView: View {
             })
         }
         .coordinateSpace(.named("scroll"))
+        // Here we get the offset set by the child view which is the VStack. And saves it in the `savedOffset` variable.
         .onPreferenceChange(ScrollOffsetKey.self) { value in
-            // clamp to >= 0 if you treat offset as distance from top
+            // Clamp to >= 0 if we treat offset as distance from top
             let newValue = max(0, value)
             
-            // don't spam state updates for tiny changes (and avoid "multiple updates per frame")
+            // Don't spam state updates for tiny changes (and avoid "multiple updates per frame")
             if let prev = savedOffset, abs(prev - newValue) < offsetEpsilon {
                 return
             }
 
-            // schedule the state write to next runloop tick to avoid same-frame multi-updates
+            // Schedule the state write to next runloop tick to avoid same-frame multi-updates
             DispatchQueue.main.async {
                 savedOffset = newValue
             }
@@ -416,6 +451,8 @@ struct ProjectsListView: View {
         .overlay(content: {
             Group {
                 if shouldRestore, let offset = savedOffset {
+                    // This view is inserted in the overlay when shouldRestore is set and has an offset. Once this view is inserted, the updateNSView lifecycle method is invoked by SwiftUI which will make the list to scroll.
+                    // When shouldRestore or this condition is false, we should not add this. So if it is already added, SwiftUI removes it. This happens after a scroll where we reset the flag.
                     MacScrollViewOffsetSetter(offsetToSet: offset).frame(width: 0, height: 0)
                 }
             }
@@ -423,8 +460,8 @@ struct ProjectsListView: View {
         .onAppear {
             guard let _ = savedOffset, !shouldRestore else { return }
             DispatchQueue.main.async {
-                shouldRestore = true
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) { shouldRestore = false }
+                shouldRestore = true  // Scroll the list if needed on appear.
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) { shouldRestore = false }  // This should have scrolled. Disable the flag.
             }
         }
     }
