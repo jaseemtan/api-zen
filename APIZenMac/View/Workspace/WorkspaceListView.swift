@@ -70,10 +70,10 @@ struct WorkspaceListView: View {
         .onAppear(perform: {
             self.initDataManager()
         })
-        .onChange(of: selectedWorkspaceId) { oldValue, newValue in
-            if oldValue != newValue {
-                Log.debug("Selected workspace id: \(newValue)")
-                if let ws = workspaces.first(where: { $0.getId() == newValue }), let moc = ws.managedObjectContext {
+        .onChange(of: selectedWorkspaceId) { oldId, newId in
+            if oldId != newId {
+                Log.debug("Selected workspace id: \(newId)")
+                if let ws = workspaces.first(where: { $0.getId() == newId }), let moc = ws.managedObjectContext {
                     onSelect(ws, self.db.getContainer(moc))
                 }
             }

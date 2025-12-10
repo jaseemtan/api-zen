@@ -38,8 +38,8 @@ struct MainView: View {
                 HSplitView {
                     // Left pane
                     if showNavigator {
-                        NavigatorView()
-                            .frame(minWidth: 180, idealWidth: 220, maxWidth: 400)
+                        NavigatorView(workspaceId: selectedWorkspaceId)
+                            .frame(minWidth: 180, idealWidth: 300, maxWidth: 400)
                     }
     
                     // Center pane
@@ -58,7 +58,6 @@ struct MainView: View {
                             .padding(.horizontal, 8)
                     }
                     .frame(minWidth: 400, maxWidth: .infinity, maxHeight: .infinity)
-                    .layoutPriority(1)   // middle gets priority
     
                     // Right pane
                     if showInspector {
@@ -98,24 +97,6 @@ struct MainView: View {
 }
 
 // MARK: - Panes
-
-struct NavigatorView: View {
-    var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            Text("Left Pane")
-                .font(.body)
-                .padding(6)
-
-            Divider()
-
-            List(0..<10, id: \.self) { i in
-                Text("Item \(i)")
-            }
-            .scrollContentBackground(.hidden)  // List background shows in a dark colour and the window has a different colour make it appear in a box. Removing the background make it cohesive with the window. Like the list starts from the edge.
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-    }
-}
 
 struct RequestComposerView: View {
     var body: some View {
