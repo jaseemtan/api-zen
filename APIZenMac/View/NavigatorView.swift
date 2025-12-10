@@ -146,7 +146,9 @@ struct NavigatorView: View {
     }
 }
 
-// PreferenceKey to pass each row's top position up the view tree
+// PreferenceKey to pass each row's top position up the view tree.
+// RowTopPreference is a PreferenceKey implementation that we can use together with GeometryReader to report per-row geometry (for example, each row’s minY) up the SwiftUI view tree so a parent view can decide which row is at the top.
+// PreferenceKey is a SwiftUI primitive to pass values up the view tree from children to ancestors. Children write into a preference (via .preference(...)) and ancestors read them with .onPreferenceChange or .background(GeometryReader...) — it’s the opposite direction of normal @State/@Binding.
 struct RowTopPreference: PreferenceKey {
     typealias Value = [NSManagedObjectID: CGFloat]
     static var defaultValue: Value = [:]
@@ -162,6 +164,9 @@ private struct ScrollOffsetKey: PreferenceKey {
 }
 
 /// Helper NSViewRepresentable to set NSScrollView's content offset
+/// MacScrollViewOffsetSetter is an NSViewRepresentable helper whose job is to find the underlying AppKit NSScrollView SwiftUI created and set its content origin (i.e. programmatically scroll to a pixel offset) and tweak properties (elasticity, insets).
+/// Use it when you need pixel-perfect programmatic scrolling or need to fix AppKit behaviour that SwiftUI doesn’t expose.
+/// NSViewRepresentable lets us drop a tiny NSView inside the hierarchy and traverse the superview chain to find the NSScrollView SwiftUI created. Returns a zero sized NSView.
 private struct MacScrollViewOffsetSetter: NSViewRepresentable {
     let offsetToSet: CGFloat?
 
@@ -173,14 +178,14 @@ private struct MacScrollViewOffsetSetter: NSViewRepresentable {
         DispatchQueue.main.async {
             var v: NSView? = nsView
             while let current = v {
-                if let scroll = current as? NSScrollView {
+                if let scroll = current as? NSScrollView {  // Walks up the `nsView.superview` chain until it finds an `NSScrollView`.
                     scroll.verticalScrollElasticity = .allowed  // Allow bounce at top and bottom
                     scroll.horizontalScrollElasticity = .none  // Without this, if we navigate to requests list and back to projects list, horizontal list bounce appears. We should have top and bottom boucing only for the project list.
                     scroll.contentInsets = NSEdgeInsetsZero
 
                     // Now set the content origin (treat offset as distance from top)
                     let newOrigin = NSPoint(x: 0, y: offset)
-                    scroll.contentView.scroll(to: newOrigin)
+                    scroll.contentView.scroll(to: newOrigin)  // set the scroll origin
                     scroll.reflectScrolledClipView(scroll.contentView)
                     break
                 }
@@ -234,15 +239,14 @@ struct ProjectsListView: View {
                 Color.clear.frame(height: 12)
             }
             // Overlay GeometryReader at top to read offset without taking layout space - to the outside padding.
-            .overlay(
+            .overlay(alignment: .top, content: {
                 GeometryReader { proxy in
                     Color.clear
                         .preference(key: ScrollOffsetKey.self,
                                     value: -proxy.frame(in: .named("scroll")).minY)
                 }
                 .allowsHitTesting(false) // don't block clicks
-                , alignment: .top
-            )
+            })
         }
         .coordinateSpace(.named("scroll"))
         .onPreferenceChange(ScrollOffsetKey.self) { value in
@@ -259,13 +263,13 @@ struct ProjectsListView: View {
                 savedOffset = newValue
             }
         }
-        .overlay(
+        .overlay(content: {
             Group {
                 if shouldRestore, let offset = savedOffset {
                     MacScrollViewOffsetSetter(offsetToSet: offset).frame(width: 0, height: 0)
                 }
             }
-        )
+        })
         .onAppear {
             guard let _ = savedOffset, !shouldRestore else { return }
             DispatchQueue.main.async {
