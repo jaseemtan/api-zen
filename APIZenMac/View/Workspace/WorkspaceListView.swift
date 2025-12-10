@@ -17,7 +17,6 @@ struct WorkspaceListView: View {
     @Binding var isProcessing: Bool
     @State var selectedWorkspaceId: String
     @FetchRequest private var workspaces: FetchedResults<EWorkspace>
-    @Environment(\.coreDataContainer) private var coreDataContainer
     
     @State private var workspacePendingDelete: EWorkspace?
     @State private var showDeleteConfirmation = false
@@ -25,10 +24,10 @@ struct WorkspaceListView: View {
     private var sortField: WorkspacePopupView.WorkspaceSortField
     private let db = CoreDataService.shared
 
-    let onSelect: (EWorkspace) -> Void
+    let onSelect: (EWorkspace, CoreDataContainer) -> Void
     let onEdit: (EWorkspace, CoreDataContainer) -> Void  // Add form nav view needs to be shown which is in parent view. So we call the parent view function.
 
-    init(isProcessing: Binding<Bool>, selectedWorkspaceId: String, sortField: WorkspacePopupView.WorkspaceSortField, sortAscending: Bool, onSelect: @escaping (EWorkspace) -> Void, onEdit: @escaping (EWorkspace, CoreDataContainer) -> Void) {
+    init(isProcessing: Binding<Bool>, selectedWorkspaceId: String, sortField: WorkspacePopupView.WorkspaceSortField, sortAscending: Bool, onSelect: @escaping (EWorkspace, CoreDataContainer) -> Void, onEdit: @escaping (EWorkspace, CoreDataContainer) -> Void) {
         _isProcessing = isProcessing
         self.selectedWorkspaceId = selectedWorkspaceId
         self.onSelect = onSelect
@@ -62,7 +61,7 @@ struct WorkspaceListView: View {
                         Button("Delete", role: .destructive) {
                             Log.debug("delete on ws: \(workspace.getName())")
                             workspacePendingDelete = workspace
-                            showDeleteConfirmation = true
+                            showDeleteConfirmation = true  // Display delete confirmation dialog
                         }
                     }
             }
@@ -74,15 +73,15 @@ struct WorkspaceListView: View {
         .onChange(of: selectedWorkspaceId) { oldValue, newValue in
             if oldValue != newValue {
                 Log.debug("Selected workspace id: \(newValue)")
-                if let ws = workspaces.first(where: { $0.getId() == newValue }) {
-                    onSelect(ws)
+                if let ws = workspaces.first(where: { $0.getId() == newValue }), let moc = ws.managedObjectContext {
+                    onSelect(ws, self.db.getContainer(moc))
                 }
             }
         }
         .confirmationDialog("Are you sure you want to delete this workspace?", isPresented: $showDeleteConfirmation, titleVisibility: .visible) {
             Button("Delete", role: .destructive) {
                 if let workspace = workspacePendingDelete {
-                    // onDeleteConfirmed(workspace)
+                    deleteWorkspace(workspace: workspace)
                 }
                 workspacePendingDelete = nil
             }
@@ -94,11 +93,23 @@ struct WorkspaceListView: View {
     }
     
     func editWorkspace(workspace: EWorkspace) {
-        onEdit(workspace, coreDataContainer.wrappedValue)
+        if let moc = workspace.managedObjectContext {
+            onEdit(workspace, self.db.getContainer(moc))
+        }
     }
     
+    /// Delete the workspace. If user deletes the existing workspace which is in the main window, the selection goes to default local workspace. If it's not present it will be created.
+    /// The order of the default workspace while other workspaces are present in local will be count + 1. If no workspaces are present in local, the order will be 0.
     func deleteWorkspace(workspace: EWorkspace) {
-        
+        isProcessing = true
+        let isDeletingSelectedWs: Bool = workspace.getId() == selectedWorkspaceId
+        self.db.deleteEntity(workspace, ctx: workspace.managedObjectContext)
+        self.db.saveMainContext()
+        if isDeletingSelectedWs {  // Deleting selected workspace. Change selection to default workspace.
+            let ws = self.db.getDefaultWorkspace()
+            onSelect(ws, .local)
+        }
+        isProcessing = false
     }
     
     func reorderWorkspace(from source: IndexSet, to destination: Int) {

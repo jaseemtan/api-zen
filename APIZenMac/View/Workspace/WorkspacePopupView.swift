@@ -110,15 +110,15 @@ struct WorkspacePopupView: View {
                 
                 Group {
                     if pickerSelection == 0 {
-                        WorkspaceListView(isProcessing: $isProcessing, selectedWorkspaceId: selectedWorkspaceId, sortField: sortField, sortAscending: sortAscending) { workspace in
-                            handleWorkspaceSelect(workspace, container: .local)
+                        WorkspaceListView(isProcessing: $isProcessing, selectedWorkspaceId: selectedWorkspaceId, sortField: sortField, sortAscending: sortAscending) { workspace, coreDataContainer in
+                            handleWorkspaceSelect(workspace, container: coreDataContainer)
                         } onEdit: { workspace, coreDataContainer in
                             handleWorkspaceEdit(workspace, coreDataContainer)
                         }
                         .environment(\.managedObjectContext, self.db.localMainMOC)
                     } else {
-                        WorkspaceListView(isProcessing: $isProcessing, selectedWorkspaceId: selectedWorkspaceId, sortField: sortField, sortAscending: sortAscending) { workspace in
-                            handleWorkspaceSelect(workspace, container: .cloud)
+                        WorkspaceListView(isProcessing: $isProcessing, selectedWorkspaceId: selectedWorkspaceId, sortField: sortField, sortAscending: sortAscending) { workspace, coreDataContainer in
+                            handleWorkspaceSelect(workspace, container: coreDataContainer)
                         } onEdit: { workspace, coreDataContainer in
                             handleWorkspaceEdit(workspace, coreDataContainer)
                         }
@@ -261,7 +261,7 @@ struct WorkspacePopupView: View {
     
     private func handleWorkspaceSelect(_ workspace: EWorkspace, container: CoreDataContainer) {
         Log.debug("ws item clicked: \(workspace.getName())")
-        coreDataContainer = pickerSelection == 0 ? .local : .cloud  // Keeping this order of container, name, id just in case. We are listening to id change only but accessing container to save in registry in root view. This makes sure that container has the new value.
+        coreDataContainer = container  // Keeping this order of container, name, id just in case. We are listening to id change only but accessing container to save in registry in root view. This makes sure that container has the new value.
         workspaceName = workspace.getName()
         selectedWorkspaceId = workspace.getId()
         dismiss()
