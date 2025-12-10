@@ -638,15 +638,18 @@ public class CoreDataService {
     }
     
     /// Default entities will have the id `default`. Default workspaces are local to the device to prevent duplicate workspace sync issue with iCloud.
+    /// If all workspaces are deleted, then default workspace will have order 0. If there are workspaces present and default workspace is deleted, it will get removed.
+    /// If used selects a workspace and deletes the selected workspace, then the selection goes to the default workspace. If it's not present one will be created. During this time, if there are other workspaces, the order will be the count + 1.
     public func getDefaultWorkspace(ctx: NSManagedObjectContext? = CoreDataService.shared.localMainMOC) -> EWorkspace {
         var x: EWorkspace!
         let moc = self.getMainMOC(ctx: ctx)
+        let order = self.getOrderOfLastWorkspace(ctx: ctx).inc()
         moc.performAndWait {
             if let ws = self.getWorkspace(id: self.defaultWorkspaceId, ctx: moc) {
                 x = ws
             } else {
                 let ws: EWorkspace! = self.createWorkspace(id: self.defaultWorkspaceId, name: self.defaultWorkspaceName, desc: self.defaultWorkspaceDesc, isSyncEnabled: false, isActive: true, ctx: moc)
-                ws.order = 0
+                ws.order = order
                 self.saveMainContext()
                 x = ws
             }
@@ -654,7 +657,7 @@ public class CoreDataService {
         return x
     }
     
-    /// Get the order of the last workspace. The default value is 0 as there will be the default workspace all the time.
+    /// Get the order of the last workspace. If no workspace is present, it will return -1. This helps with ordering during default workspace creation.
     /// - Parameter ctx: The managed object context
     /// - Returns: The order
     public func getOrderOfLastWorkspace(ctx: NSManagedObjectContext? = CoreDataService.shared.ckMainMOC) -> NSDecimalNumber {
@@ -665,7 +668,7 @@ public class CoreDataService {
             fr.sortDescriptors = [NSSortDescriptor(key: SortOrder.order.rawValue, ascending: false)]
             fr.fetchLimit = 1
             do {
-                order = try moc.fetch(fr).first?.order ?? 0
+                order = try moc.fetch(fr).first?.order ?? -1
             } catch let error {
                 Log.error("Error getting last workspace order: \(error)")
             }
