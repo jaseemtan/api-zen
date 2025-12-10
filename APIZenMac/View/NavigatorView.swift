@@ -10,6 +10,8 @@ import CoreData
 import AZData
 import AZCommon
 
+private let offsetEpsilon: CGFloat = 0.5
+
 /// Left pane of the main window. Displays projects list for the selected workspace. Displays requests for if a project is selected.
 struct NavigatorView: View {
     let workspaceId: String
@@ -144,30 +146,128 @@ struct NavigatorView: View {
     }
 }
 
+// PreferenceKey to pass each row's top position up the view tree
+struct RowTopPreference: PreferenceKey {
+    typealias Value = [NSManagedObjectID: CGFloat]
+    static var defaultValue: Value = [:]
+
+    static func reduce(value: inout Value, nextValue: () -> Value) {
+        value.merge(nextValue(), uniquingKeysWith: { $1 })
+    }
+}
+
+private struct ScrollOffsetKey: PreferenceKey {
+    static var defaultValue: CGFloat = 0
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) { value = nextValue() }
+}
+
+/// Helper NSViewRepresentable to set NSScrollView's content offset
+private struct MacScrollViewOffsetSetter: NSViewRepresentable {
+    let offsetToSet: CGFloat?
+
+    func makeNSView(context: Context) -> NSView { NSView() }
+
+    func updateNSView(_ nsView: NSView, context: Context) {
+        guard let offset = offsetToSet else { return }
+
+        DispatchQueue.main.async {
+            var v: NSView? = nsView
+            while let current = v {
+                if let scroll = current as? NSScrollView {
+                    // Allow rubber-banding at both ends
+                    scroll.verticalScrollElasticity = .allowed
+                    scroll.contentInsets = NSEdgeInsetsZero
+
+                    // Now set the content origin (treat offset as distance from top)
+                    let newOrigin = NSPoint(x: 0, y: offset)
+                    scroll.contentView.scroll(to: newOrigin)
+                    scroll.reflectScrolledClipView(scroll.contentView)
+                    break
+                }
+                v = current.superview
+            }
+        }
+    }
+}
 
 // MARK: - Project List View
 struct ProjectsListView: View {
     let projects: [EProject]
     let onSelect: (EProject) -> Void
     @Binding var selectedProject: EProject?
+    
+    @State private var savedTopId: NSManagedObjectID? = nil
+    @State private var topPositions: [NSManagedObjectID: CGFloat] = [:]
+    @Environment(\.scenePhase) private var scenePhase
+    
+    // Local state used by the example
+    @State private var savedOffset: CGFloat? = nil
+    @State private var shouldRestore: Bool = false
 
     var body: some View {
-        VStack {
-            // We can't use selection based list like in workspace listing because we don't want project list to get selection highlight once selected before and navigated back.
-            // For workspace we are displaying a checkmark. So this is fine. Here we don't use that pattern.
-            List {
-                ForEach(projects, id: \.objectID) { project in
+        ScrollView {
+            // NOTE: no top padding here — avoid adding .padding() that affects top
+            LazyVStack(alignment: .leading, spacing: 6) {
+                ForEach(projects) { project in
+                    // List style does not show separator. This could be a distinction between projects and requests.
                     Button {
-                        onSelect(project)
+                        // allow preference system to settle then navigate
+                        DispatchQueue.main.async {
+                            onSelect(project)
+                        }
                     } label: {
                         NameDescView(imageName: "project", name: project.getName(), desc: project.desc)
                             .padding(.vertical, 6)
+                            .padding(.leading, 4)
                             .frame(maxWidth: .infinity, alignment: .leading)
                     }
                     .buttonStyle(.plain)
+                    .id(project.objectID)
                 }
             }
-            .listStyle(SidebarListStyle())  // Sidebar list style does not show separator. This could be a distinction between projects and requests.
+            // Make sure the content does not expand to a large minimum height
+            .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0)
+            // horizontal padding only if you want — no top padding
+            .padding(.horizontal, 8)
+            // Overlay GeometryReader at top to read offset without taking layout space
+            .overlay(
+                GeometryReader { proxy in
+                    Color.clear
+                        .preference(key: ScrollOffsetKey.self,
+                                    value: -proxy.frame(in: .named("scroll")).minY)
+                }
+                .allowsHitTesting(false) // don't block clicks
+                , alignment: .top
+            )
+        }
+        .coordinateSpace(name: "scroll")
+        .onPreferenceChange(ScrollOffsetKey.self) { value in
+            // clamp to >= 0 if you treat offset as distance from top
+            let newValue = max(0, value)
+            
+            // don't spam state updates for tiny changes (and avoid "multiple updates per frame")
+            if let prev = savedOffset, abs(prev - newValue) < offsetEpsilon {
+                return
+            }
+
+            // schedule the state write to next runloop tick to avoid same-frame multi-updates
+            DispatchQueue.main.async {
+                savedOffset = newValue
+            }
+        }
+        .overlay(
+            Group {
+                if shouldRestore, let offset = savedOffset {
+                    MacScrollViewOffsetSetter(offsetToSet: offset).frame(width: 0, height: 0)
+                }
+            }
+        )
+        .onAppear {
+            guard let _ = savedOffset, !shouldRestore else { return }
+            DispatchQueue.main.async {
+                shouldRestore = true
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) { shouldRestore = false }
+            }
         }
     }
 }
