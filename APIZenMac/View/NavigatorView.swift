@@ -171,6 +171,8 @@ struct RowTopPreference: PreferenceKey {
 ///   - many children to send values,
 ///   - the ancestor to receive a single merged value,
 ///   - the system to schedule delivery at a safe time in the render/layout cycle.
+///
+/// Using @State might "work" but it fires many times during a scroll and can cause multiple updates per frame. It will spam state updates and slow the UI. It will cause jitter. PreferenceKey does the same reporting but in a controlled, aggregated way.
 private struct ScrollOffsetKey: PreferenceKey {
     static var defaultValue: CGFloat = 0
     static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) { value = nextValue() }
