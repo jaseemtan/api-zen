@@ -80,10 +80,10 @@ struct WorkspaceListView: View {
             }
         }
         .onChange(of: sortField, { _, _ in
-            self.initDataManager()  // re-init data manager with new sort descriptor to update the list ordering
+            self.initDataManager()  // reinit data manager with new sort descriptor to update the list ordering
         })
         .onChange(of: sortAscending, { _, _ in
-            self.initDataManager()  // re-init data manager with new sort descriptor to update the list ordering
+            self.initDataManager()  // reinit data manager with new sort descriptor to update the list ordering
         })
         .onChange(of: searchText, { _, _ in
             self.initDataManager()

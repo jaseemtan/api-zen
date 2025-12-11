@@ -173,6 +173,7 @@ struct ProjectsListView: View {
     private var sortAscending: Bool = true
     private let db = CoreDataService.shared
     private let projectsCacheName: String = "projects-cache"
+    private let toolbarHeight: CGFloat = 32.0
     
     enum ProjectSortField: String, CaseIterable, Codable, Equatable {
         case manual
@@ -190,126 +191,164 @@ struct ProjectsListView: View {
     }
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: 0) {
-                // Safe top padding that doesn't affect scroll offset calculation
-                Color.clear.frame(height: 12)
-                // NOTE: No top padding here — avoid adding .padding() that affects top
-                LazyVStack(alignment: .leading, spacing: 6) {
-                    ForEach(projects) { project in
-                        // List style does not show separator. This could be a distinction between projects and requests.
-                        Button {
-                            // allow preference system to settle then navigate
-                            DispatchQueue.main.async {
-                                onSelect(project)
+        ZStack {
+            ScrollView {
+                VStack(spacing: 0) {
+                    // Safe top padding that doesn't affect scroll offset calculation
+                    Color.clear.frame(height: 12)
+                    // NOTE: No top padding here — avoid adding .padding() that affects top
+                    LazyVStack(alignment: .leading, spacing: 6) {
+                        ForEach(projects) { project in
+                            // List style does not show separator. This could be a distinction between projects and requests.
+                            Button {
+                                // allow preference system to settle then navigate
+                                DispatchQueue.main.async {
+                                    onSelect(project)
+                                }
+                            } label: {
+                                NameDescView(imageName: "project", name: project.getName(), desc: project.desc)
+                                    .padding(.vertical, 6)
+                                    .padding(.leading, 4)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
                             }
-                        } label: {
-                            NameDescView(imageName: "project", name: project.getName(), desc: project.desc)
-                                .padding(.vertical, 6)
-                                .padding(.leading, 4)
-                                .frame(maxWidth: .infinity, alignment: .leading)
+                            .buttonStyle(.plain)
+                            .id(project.objectID)
                         }
-                        .buttonStyle(.plain)
-                        .id(project.objectID)
+                    }
+                    // horizontal padding only if you want — no top padding
+                    .padding(.horizontal, 8)
+                    // Safe bottom padding that doesn't affect scroll offset calculation
+                    Color.clear.frame(height: 12 + toolbarHeight)  // Bottom list padding + toolbar height offset.
+                }
+                /*
+                 Overlay GeometryReader at top to read offset without taking layout space - to the outside padding.
+                 
+                 overlay lets us put a GeometryReader on top of the scroll content so it can measure the scroll position without affecting layout.
+                 - It is not for drawing.
+                 - It is not for adding UI.
+                 - It is simply a way to attach an invisible measuring tool to the scrolling content.
+                 
+                 We need a place to attach a GeometryReader that:
+                 1. Moves together with the scroll content,
+                 2. Does NOT take up space,
+                 3. Does NOT interfere with layout,
+                 4. Can read its position inside the scrolling coordinate space.
+                 
+                 A normal child view always takes up space and changes the layout.
+                 A background view measures layout before scroll metrics are updated.
+                 
+                 But an overlay sits on top. It doesn’t push content, doesn’t shift anything, and scrolls with the content.
+                 
+                 GeometryReader gives us the position of the overlay view inside the scroll's coordinate space. Because the overlay moves exactly with the scrolling content, its minY becomes the perfect representation of the scroll offset.
+                 
+                 Example:
+                 
+                 At top of the list → minY == 0
+                 Scrolled down 100 px → minY == -100
+                 
+                 So we invert it: `value: -geo.frame(...).minY`
+                 
+                 Now offset = 100 means “scrolled down 100 points”.
+                 
+                 .preference(key:value:) - sends the number up to the parent safely.
+                 
+                 .allowsHitTesting(false) - So the overlay doesn’t block clicks on your list rows.
+                 
+                 */
+                .overlay(alignment: .top, content: {
+                    GeometryReader { proxy in
+                        Color.clear
+                            .preference(key: ScrollOffsetKey.self,
+                                        value: -proxy.frame(in: .named("scroll")).minY)
+                    }
+                    .allowsHitTesting(false) // don't block clicks
+                })
+            }
+            .coordinateSpace(.named("scroll"))
+            // Here we get the offset set by the child view which is the VStack. And saves it in the `savedOffset` variable.
+            .onPreferenceChange(ScrollOffsetKey.self) { value in
+                // Clamp to >= 0 if we treat offset as distance from top
+                let newValue = max(0, value)
+                
+                // Don't spam state updates for tiny changes (and avoid "multiple updates per frame")
+                if let prev = savedOffset, abs(prev - newValue) < offsetEpsilon {
+                    return
+                }
+                
+                // Schedule the state write to next runloop tick to avoid same-frame multi-updates
+                DispatchQueue.main.async {
+                    savedOffset = newValue
+                }
+            }
+            .overlay(content: {
+                Group {
+                    if shouldRestore, let offset = savedOffset {
+                        // This view is inserted in the overlay when shouldRestore is set and has an offset. Once this view is inserted, the updateNSView lifecycle method is invoked by SwiftUI which will make the list to scroll.
+                        // When shouldRestore or this condition is false, we should not add this. So if it is already added, SwiftUI removes it. This happens after a scroll where we reset the flag.
+                        MacScrollViewOffsetSetter(offsetToSet: offset).frame(width: 0, height: 0)
                     }
                 }
-                // horizontal padding only if you want — no top padding
-                .padding(.horizontal, 8)
-                // Safe bottom padding that doesn't affect scroll offset calculation
-                Color.clear.frame(height: 12)
-            }
-            /*
-             Overlay GeometryReader at top to read offset without taking layout space - to the outside padding.
-             
-             overlay lets us put a GeometryReader on top of the scroll content so it can measure the scroll position without affecting layout.
-             - It is not for drawing.
-             - It is not for adding UI.
-             - It is simply a way to attach an invisible measuring tool to the scrolling content.
-             
-             We need a place to attach a GeometryReader that:
-             1. Moves together with the scroll content,
-             2. Does NOT take up space,
-             3. Does NOT interfere with layout,
-             4. Can read its position inside the scrolling coordinate space.
-             
-             A normal child view always takes up space and changes the layout.
-             A background view measures layout before scroll metrics are updated.
-             
-             But an overlay sits on top. It doesn’t push content, doesn’t shift anything, and scrolls with the content.
-             
-             GeometryReader gives us the position of the overlay view inside the scroll's coordinate space. Because the overlay moves exactly with the scrolling content, its minY becomes the perfect representation of the scroll offset.
-             
-             Example:
-             
-             At top of the list → minY == 0
-             Scrolled down 100 px → minY == -100
-             
-             So we invert it: `value: -geo.frame(...).minY`
-             
-             Now offset = 100 means “scrolled down 100 points”.
-             
-             .preference(key:value:) - sends the number up to the parent safely.
-             
-             .allowsHitTesting(false) - So the overlay doesn’t block clicks on your list rows.
-             
-             */
-            .overlay(alignment: .top, content: {
-                GeometryReader { proxy in
-                    Color.clear
-                        .preference(key: ScrollOffsetKey.self,
-                                    value: -proxy.frame(in: .named("scroll")).minY)
-                }
-                .allowsHitTesting(false) // don't block clicks
             })
-        }
-        .coordinateSpace(.named("scroll"))
-        // Here we get the offset set by the child view which is the VStack. And saves it in the `savedOffset` variable.
-        .onPreferenceChange(ScrollOffsetKey.self) { value in
-            // Clamp to >= 0 if we treat offset as distance from top
-            let newValue = max(0, value)
-            
-            // Don't spam state updates for tiny changes (and avoid "multiple updates per frame")
-            if let prev = savedOffset, abs(prev - newValue) < offsetEpsilon {
-                return
-            }
-
-            // Schedule the state write to next runloop tick to avoid same-frame multi-updates
-            DispatchQueue.main.async {
-                savedOffset = newValue
-            }
-        }
-        .overlay(content: {
-            Group {
-                if shouldRestore, let offset = savedOffset {
-                    // This view is inserted in the overlay when shouldRestore is set and has an offset. Once this view is inserted, the updateNSView lifecycle method is invoked by SwiftUI which will make the list to scroll.
-                    // When shouldRestore or this condition is false, we should not add this. So if it is already added, SwiftUI removes it. This happens after a scroll where we reset the flag.
-                    MacScrollViewOffsetSetter(offsetToSet: offset).frame(width: 0, height: 0)
+            .onAppear {
+                self.initDataManager()
+                guard let _ = savedOffset, !shouldRestore else { return }
+                DispatchQueue.main.async {
+                    shouldRestore = true  // Scroll the list if needed on appear.
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) { shouldRestore = false }  // This should have scrolled. Disable the flag.
                 }
             }
-        })
-        .onAppear {
-            self.initDataManager()
-            guard let _ = savedOffset, !shouldRestore else { return }
-            DispatchQueue.main.async {
-                shouldRestore = true  // Scroll the list if needed on appear.
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) { shouldRestore = false }  // This should have scrolled. Disable the flag.
+            .onChange(of: workspaceId) { oldId, newId in
+                if oldId != newId {
+                    Log.debug("proj list: workspace id changed: \(newId)")
+                    self.initDataManager()  // reinit data maanger with new predicate for workspaceId to update project listing
+                }
             }
-        }
-        .onChange(of: workspaceId) { oldId, newId in
-            if oldId != newId {
-                Log.debug("proj list: workspace id changed: \(newId)")
-                self.initDataManager()  // re-init data maanger with new predicate for workspaceId to update project listing
+            .onChange(of: sortField, { _, _ in
+                self.initDataManager()  // reinit data manager with new sort descriptor to update the list ordering
+            })
+            .onChange(of: sortAscending, { _, _ in
+                self.initDataManager()  // reinit data manager with new sort descriptor to update the list ordering
+            })
+            .onChange(of: searchText, { _, _ in
+                self.initDataManager()
+            })
+            
+            // --- Fixed bottom toolbar overlay ---
+            VStack(spacing: 0) {
+                Spacer() // push toolbar to bottom
+                Divider()
+                HStack {
+                    // Sort button on left
+                    Button(action: {
+                        // toggle sort UI
+                        // showSortSheet.toggle()
+                    }) {
+                        Label("Sort", systemImage: "arrow.up.arrow.down")
+                    }
+                    .buttonStyle(.plain)
+
+                    Spacer()
+
+                    // Add button on right
+                    Button(action: {
+                        // add new project
+                        // onAddProject()
+                    }) {
+                        Image(systemName: "plus")
+                            .font(.title2)
+                            .frame(width: 44, height: 44)
+                    }
+                    .buttonStyle(.plain)
+                }
+                .padding(.horizontal, 12)
+                .frame(height: toolbarHeight)
+                .background(.ultraThinMaterial) // subtle translucent background (iOS/macOS)
+                .ignoresSafeArea(edges: .bottom) // let the background extend into safe area if needed
             }
+            // ensure the overlay doesn't intercept touch events except the toolbar
+            .allowsHitTesting(true)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
         }
-        .onChange(of: sortField, { _, _ in
-            self.initDataManager()  // re-init data manager with new sort descriptor to update the list ordering
-        })
-        .onChange(of: sortAscending, { _, _ in
-            self.initDataManager()  // re-init data manager with new sort descriptor to update the list ordering
-        })
-        .onChange(of: searchText, { _, _ in
-            self.initDataManager()
-        })
     }
     
     /// The query is cached. So multiple searches of the same parameters would not be that costly.
