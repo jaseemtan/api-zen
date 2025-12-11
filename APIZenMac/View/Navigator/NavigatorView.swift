@@ -191,6 +191,7 @@ struct AddProjectView: View {
     
     var project: EProject?  // Holds the project if edit mode
     
+    @Environment(\.managedObjectContext) private var moc
     @Environment(\.dismiss) private var dismiss
     
     private let db = CoreDataService.shared
@@ -223,7 +224,10 @@ struct AddProjectView: View {
     }
     
     private func saveProject() {
-        Log.debug("add: save project")
+        Log.debug("add project")
+        if let ws = self.db.getWorkspace(id: workspaceId, ctx: moc) {
+            self.dbSvc.createProject(workspace: ws, name: name, desc: desc)
+        }
         name = ""
         desc = ""
         dismiss()
