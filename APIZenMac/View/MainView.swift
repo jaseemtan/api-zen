@@ -9,6 +9,7 @@ import SwiftUI
 import CoreData
 import AZData
 import AZCommon
+import AppKit
 
 /// The main view shows the panes. Each pane state is stored in the window registry and restore on launch. Since the changing of pane display from view to hide makes UI to change, it looks like a flicker.
 /// So a progress indicator is displayed until the view loads fully.
@@ -35,15 +36,9 @@ struct MainView: View {
                 ProgressView()
                     .controlSize(.small)
             } else {
-                HSplitView {
-                    // Left pane
-                    if showNavigator {
-                        NavigatorView(workspaceId: selectedWorkspaceId)
-                            .frame(minWidth: 180, idealWidth: 300, maxWidth: 400)
-                    }
-    
-                    // Center pane
-                    VStack {
+                ThreeColumnSplitView(
+                    left: NavigatorView(workspaceId: selectedWorkspaceId),
+                    center: VStack {
                         VSplitView {
                             RequestComposerView()
                                 .frame(minHeight: 150)
@@ -56,15 +51,38 @@ struct MainView: View {
                         MainToolbarView(workspaceName: $workspaceName, selectedWorkspaceId: $selectedWorkspaceId, coreDataContainer: $coreDataContainer, showCodeView: $showCodeView)
                             .frame(height: 24)  // fixed height for status bar
                             .padding(.horizontal, 8)
-                    }
-                    .frame(minWidth: 400, maxWidth: .infinity, maxHeight: .infinity)
-    
-                    // Right pane
-                    if showInspector {
-                        InspectorView()
-                            .frame(minWidth: 180, idealWidth: 220, maxWidth: 400)
-                    }
-                }
+                    },
+                    right: InspectorView())
+//                HSplitView {
+//                    // Left pane
+//                    if showNavigator {
+//                        NavigatorView(workspaceId: selectedWorkspaceId)
+//                            .frame(minWidth: 180, idealWidth: 300, maxWidth: 400)
+//                    }
+//    
+//                    // Center pane
+//                    VStack {
+//                        VSplitView {
+//                            RequestComposerView()
+//                                .frame(minHeight: 150)
+//                            if showCodeView {
+//                                CodeView(workspaceName: $workspaceName, selectedWorkspaceId: $selectedWorkspaceId, coreDataContainer: $coreDataContainer)
+//                                    .frame(minHeight: 80)
+//                            }
+//                        }
+//                        Divider()
+//                        MainToolbarView(workspaceName: $workspaceName, selectedWorkspaceId: $selectedWorkspaceId, coreDataContainer: $coreDataContainer, showCodeView: $showCodeView)
+//                            .frame(height: 24)  // fixed height for status bar
+//                            .padding(.horizontal, 8)
+//                    }
+//                    .frame(minWidth: 400, maxWidth: .infinity, maxHeight: .infinity)
+//    
+//                    // Right pane
+//                    if showInspector {
+//                        InspectorView()
+//                            .frame(minWidth: 180, idealWidth: 220, maxWidth: 400)
+//                    }
+//                }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .toolbar {
                     ToolbarItemGroup {
@@ -223,5 +241,41 @@ struct InspectorView: View {
             .padding(6)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+    }
+}
+
+struct ThreeColumnSplitView<Left: View, Center: View, Right: View>: NSViewControllerRepresentable {
+    let left: Left
+    let center: Center
+    let right: Right
+
+    func makeNSViewController(context: Context) -> NSSplitViewController {
+        let splitVC = NSSplitViewController()
+        
+        let leftHosting = NSHostingController(rootView: left)
+        let leftItem = NSSplitViewItem(viewController: leftHosting)
+        leftItem.minimumThickness = 180
+        leftItem.maximumThickness = 400
+        
+        let centerHosting = NSHostingController(rootView: center)
+        let centerItem = NSSplitViewItem(viewController: centerHosting)
+        
+        let rightHosting = NSHostingController(rootView: right)
+        let rightItem = NSSplitViewItem(viewController: rightHosting)
+        rightItem.minimumThickness = 180
+        rightItem.maximumThickness = 400
+        
+        splitVC.addSplitViewItem(leftItem)
+        splitVC.addSplitViewItem(centerItem)
+        splitVC.addSplitViewItem(rightItem)
+        
+        splitVC.splitView.isVertical = true
+        splitVC.splitView.autosaveName = "az-three-colum-split-view"
+        
+        return splitVC
+    }
+    
+    func updateNSViewController(_ nsViewController: NSSplitViewController, context: Context) {
+        Log.debug("update ns view controller - splitvc")
     }
 }
