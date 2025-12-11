@@ -76,6 +76,11 @@ struct WorkspacePopupView: View {
             }
         }
         
+        /// Workspace delete is done in the list view.
+        static func deleteWorkspacePopupState(_ workspaceId: String) {
+            AZUtils.shared.removeValue("\(AZMConst.workspacePopupWindowStateKey)-\(workspaceId)")
+        }
+        
         private func getUserDefaultsKey() -> String {
             return "\(AZMConst.workspacePopupWindowStateKey)-\(self.workspaceId)"
         }

@@ -129,9 +129,11 @@ struct WorkspaceListView: View {
     /// The order of the default workspace while other workspaces are present in local will be count + 1. If no workspaces are present in local, the order will be 0.
     func deleteWorkspace(workspace: EWorkspace) {
         isProcessing = true
-        let isDeletingSelectedWs: Bool = workspace.getId() == selectedWorkspaceId
+        let wsId = workspace.getId()
+        let isDeletingSelectedWs: Bool = wsId == selectedWorkspaceId
         self.db.deleteEntity(workspace, ctx: workspace.managedObjectContext)
         self.db.saveMainContext()
+        WorkspacePopupView.WorkspacePopupState.deleteWorkspacePopupState(wsId)  // Delete any associated popup state stored in user defaults.
         if isDeletingSelectedWs {  // Deleting selected workspace. Change selection to default workspace.
             let ws = self.db.getDefaultWorkspace()
             onSelect(ws, .local)
