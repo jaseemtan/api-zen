@@ -52,37 +52,10 @@ struct MainView: View {
                             .frame(height: 24)  // fixed height for status bar
                             .padding(.horizontal, 8)
                     },
-                    right: InspectorView())
-//                HSplitView {
-//                    // Left pane
-//                    if showNavigator {
-//                        NavigatorView(workspaceId: selectedWorkspaceId)
-//                            .frame(minWidth: 180, idealWidth: 300, maxWidth: 400)
-//                    }
-//    
-//                    // Center pane
-//                    VStack {
-//                        VSplitView {
-//                            RequestComposerView()
-//                                .frame(minHeight: 150)
-//                            if showCodeView {
-//                                CodeView(workspaceName: $workspaceName, selectedWorkspaceId: $selectedWorkspaceId, coreDataContainer: $coreDataContainer)
-//                                    .frame(minHeight: 80)
-//                            }
-//                        }
-//                        Divider()
-//                        MainToolbarView(workspaceName: $workspaceName, selectedWorkspaceId: $selectedWorkspaceId, coreDataContainer: $coreDataContainer, showCodeView: $showCodeView)
-//                            .frame(height: 24)  // fixed height for status bar
-//                            .padding(.horizontal, 8)
-//                    }
-//                    .frame(minWidth: 400, maxWidth: .infinity, maxHeight: .infinity)
-//    
-//                    // Right pane
-//                    if showInspector {
-//                        InspectorView()
-//                            .frame(minWidth: 180, idealWidth: 220, maxWidth: 400)
-//                    }
-//                }
+                    right: InspectorView(),
+                    showNavigator: $showNavigator,
+                    showInspector: $showInspector
+                )
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .toolbar {
                     ToolbarItemGroup {
@@ -248,7 +221,20 @@ struct ThreeColumnSplitView<Left: View, Center: View, Right: View>: NSViewContro
     let left: Left
     let center: Center
     let right: Right
+    
+    @Binding var showNavigator: Bool
+    @Binding var showInspector: Bool
 
+    class Coordinator {
+        var leftHost: NSHostingController<Left>?
+        var centerHost: NSHostingController<Center>?
+        var rightHost: NSHostingController<Right>?
+        
+        init() {}
+    }
+    
+    func makeCoordinator() -> Coordinator { Coordinator() }
+    
     func makeNSViewController(context: Context) -> NSSplitViewController {
         let splitVC = NSSplitViewController()
         
@@ -256,14 +242,17 @@ struct ThreeColumnSplitView<Left: View, Center: View, Right: View>: NSViewContro
         let leftItem = NSSplitViewItem(viewController: leftHosting)
         leftItem.minimumThickness = 180
         leftItem.maximumThickness = 400
+        context.coordinator.leftHost = leftHosting
         
         let centerHosting = NSHostingController(rootView: center)
         let centerItem = NSSplitViewItem(viewController: centerHosting)
+        context.coordinator.centerHost = centerHosting
         
         let rightHosting = NSHostingController(rootView: right)
         let rightItem = NSSplitViewItem(viewController: rightHosting)
         rightItem.minimumThickness = 180
         rightItem.maximumThickness = 400
+        context.coordinator.rightHost = rightHosting
         
         splitVC.addSplitViewItem(leftItem)
         splitVC.addSplitViewItem(centerItem)
@@ -276,6 +265,28 @@ struct ThreeColumnSplitView<Left: View, Center: View, Right: View>: NSViewContro
     }
     
     func updateNSViewController(_ nsViewController: NSSplitViewController, context: Context) {
-        Log.debug("update ns view controller - splitvc")
+        Log.debug("update ns view controller - split vc")
+        DispatchQueue.main.async {
+            // Update the rootView of hosting controllers so SwiftUI body gets refreshed
+            if let leftHost = context.coordinator.leftHost {
+                leftHost.rootView = self.left
+            }
+            if let centerHost = context.coordinator.centerHost {
+                centerHost.rootView = self.center
+            }
+            if let rightHost = context.coordinator.rightHost {
+                rightHost.rootView = self.right
+            }
+            // Should hide navigator?
+            let hideNav = !self.showNavigator
+            if let leftItem = nsViewController.splitViewItems.first, leftItem.isCollapsed != hideNav {
+                leftItem.isCollapsed = hideNav
+            }
+            // Should hide inspector?
+            let hideInspector = !self.showInspector
+            if let rightItem = nsViewController.splitViewItems.last, rightItem.isCollapsed != hideInspector {
+                rightItem.isCollapsed = hideInspector
+            }
+        }
     }
 }
