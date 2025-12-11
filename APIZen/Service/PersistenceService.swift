@@ -28,8 +28,7 @@ class PersistenceService {
     
     // MARK: - Delete entities
     
-    // These methods are called when delete operation is performed from the listing screens
-    // TODO: currently entity is directly deleted. With CloudKit sync, first mark it a deleted, save context and add it to cloudkit delete queue. And on cloudkit delete, delete from core data.
+    // These methods are called when delete operation is performed from the listing screens.
     
     /// Delete workspace
     func deleteEntity(ws: EWorkspace) {
