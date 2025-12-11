@@ -244,13 +244,12 @@ struct ProjectsListView: View {
 
                     Spacer()
 
-                    // Add button on right
+                    // Search button on right
                     Button(action: {
-                        // add new project
-                        // onAddProject()
+                        Log.debug("Project search clicked")
                     }) {
-                        Image(systemName: "plus")
-                            .font(.title2)
+                        Image(systemName: "magnifyingglass")
+                            .font(.body)
                             .frame(width: 44, height: 44)
                     }
                     .buttonStyle(.plain)

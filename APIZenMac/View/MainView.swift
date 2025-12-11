@@ -155,6 +155,7 @@ struct MainToolbarView: View {
                 Image(systemName: "curlybraces.square")  // curlybraces.square.fill
                     .resizable()
                     .aspectRatio(contentMode: .fit)
+                    .font(.body)
                     .frame(width: 16, height: 16, alignment: .center)
             }
             .help("Code view")
@@ -187,7 +188,7 @@ struct MainToolbarView: View {
             .popover(
                 isPresented: $showWorkspacePopup,
                 attachmentAnchor: .rect(.bounds),
-                arrowEdge: .bottom  // button at bottom of window and popover above it
+                arrowEdge: .top  // opens popup to the top of the button
             ) {
                 WorkspacePopupView(selectedWorkspaceId: $selectedWorkspaceId, workspaceName: $workspaceName, coreDataContainer: $coreDataContainer)
                     .frame(width: 600, height: 500)  // popup dimension

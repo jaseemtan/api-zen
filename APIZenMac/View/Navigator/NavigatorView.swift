@@ -23,6 +23,10 @@ struct NavigatorView: View {
     @State private var pane: Pane = .project
     @State private var selectedProject: EProject? = nil
     @State private var isPushing: Bool = true
+    @State private var showAddProjectPopup = false
+    
+    @State private var newProjectName = ""
+    @State private var newProjectDesc = ""
 
     enum Pane {
         case project
@@ -101,10 +105,26 @@ struct NavigatorView: View {
 //                        .stroke(Color.red.opacity(0.5), style: StrokeStyle(lineWidth: 1, dash: [4]))
 //                )
             } else {
-                Text(headerTitle)
-                    .font(.headline)
-                    .lineLimit(1)
-                    .padding(.leading, 4)
+                HStack {
+                    Text(headerTitle)
+                        .font(.headline)
+                        .lineLimit(1)
+                        .padding(.leading, 4)
+                    Spacer()
+                    // Add project button
+                    AddButton(onTap: {
+                        Log.debug("add project clicked")
+                        showAddProjectPopup.toggle()
+                    }, helpText: "Add Project")
+                    .popover(
+                        isPresented: $showAddProjectPopup,
+                        attachmentAnchor: .rect(.bounds),
+                        arrowEdge: .bottom  // opens popup to the bottom of the button
+                    ) {
+                        AddProjectView(workspaceId: workspaceId, name: $newProjectName, desc: $newProjectDesc)
+                            .frame(width: 400, height: 240)  // popup dimension
+                    }
+                }
             }
             
             Spacer()
@@ -160,5 +180,52 @@ struct RequestsListView: View {
             }
         }
         .listStyle(SidebarListStyle())
+    }
+}
+
+struct AddProjectView: View {
+    var workspaceId: String
+    @Binding var name: String
+    @Binding var desc: String
+    var isEdit: Bool = false
+    
+    var project: EProject?  // Holds the project if edit mode
+    
+    @Environment(\.dismiss) private var dismiss
+    
+    private let db = CoreDataService.shared
+    private let dbSvc = PersistenceService.shared
+    
+    var body: some View {
+        ScrollView {
+            Form {
+                TextField("Name", text: $name)
+                TextField("Description", text: $desc)
+            }
+            .formStyle(.grouped)
+            Button("Save") {
+                saveProject()
+            }
+            .buttonStyle(.borderedProminent)  // makes it respect system accent colour
+            .disabled(isSaveButtonDisabled())
+            Spacer()
+        }
+        .navigationTitle(isEdit ? "Edit Workspace" : "New Workspace")
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+    }
+    
+    private func isSaveButtonDisabled() -> Bool {
+        if !isEdit {
+            return name.trim().isEmpty
+        }
+        guard let project = project else { return false }
+        return !(project.getName() != name || (project.desc != nil && project.desc! != desc))
+    }
+    
+    private func saveProject() {
+        Log.debug("add: save project")
+        name = ""
+        desc = ""
+        dismiss()
     }
 }

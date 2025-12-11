@@ -227,16 +227,10 @@ struct WorkspacePopupView: View {
                     Spacer()
                     
                     if !isProcessing {
-                        Button {
+                        AddButton(onTap: {
                             editWorkspace = nil
                             showAddForm = true
-                        } label: {
-                            Image(systemName: "plus")
-                                .font(.system(size: 15, weight: .regular))
-                                .imageScale(.medium)
-                        }
-                        .buttonStyle(.borderless)
-                        .help("Add Workspace")
+                        }, helpText: "Add Workspace")
                         .padding(.top, 4)
                     } else {
                         ProgressView()
