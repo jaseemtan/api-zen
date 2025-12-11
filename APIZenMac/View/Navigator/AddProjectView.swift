@@ -1,0 +1,63 @@
+//
+//  AddProjectView.swift
+//  APIZenMac
+//
+//  Created by Jaseem V V on 11/12/25.
+//
+
+import SwiftUI
+import CoreData
+import AZData
+import AZCommon
+
+/// Add project form view displayed as a popup. Self contained. Save a new project.
+struct AddProjectView: View {
+    var workspaceId: String
+    @Binding var name: String  // This is a binding so that if the popup gets closed, open it again preserves the typed value. Because the parent holds the state and it's live.
+    @Binding var desc: String
+    var isEdit: Bool = false
+    
+    var project: EProject?  // Holds the project if edit mode
+    
+    @Environment(\.managedObjectContext) private var moc
+    @Environment(\.dismiss) private var dismiss
+    
+    private let db = CoreDataService.shared
+    private let dbSvc = PersistenceService.shared
+    
+    var body: some View {
+        ScrollView {
+            Form {
+                TextField("Name", text: $name)
+                TextField("Description", text: $desc)
+            }
+            .formStyle(.grouped)
+            Button("Save") {
+                saveProject()
+            }
+            .buttonStyle(.borderedProminent)  // makes it respect system accent colour
+            .disabled(isSaveButtonDisabled())
+            Spacer()
+        }
+        .navigationTitle(isEdit ? "Edit Workspace" : "New Workspace")
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+    }
+    
+    private func isSaveButtonDisabled() -> Bool {
+        if !isEdit {
+            return name.trim().isEmpty
+        }
+        guard let project = project else { return false }
+        return !(project.getName() != name || (project.desc != nil && project.desc! != desc))
+    }
+    
+    private func saveProject() {
+        Log.debug("add project")
+        if let ws = self.db.getWorkspace(id: workspaceId, ctx: moc) {
+            self.dbSvc.createProject(workspace: ws, name: name, desc: desc)
+        }
+        name = ""
+        desc = ""
+        dismiss()
+    }
+}
