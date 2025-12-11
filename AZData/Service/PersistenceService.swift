@@ -22,4 +22,16 @@ public class PersistenceService {
             self.db.saveMainContext()
         }
     }
+    
+    /// Add new project in the given workspace.
+    public func createProject(workspace: EWorkspace, name: String, desc: String) {
+        guard let ctx = workspace.managedObjectContext else { return }
+        let wsId = workspace.getId()
+        let order = self.db.getOrderOfLastProject(wsId: wsId, ctx: ctx).inc()
+        if let proj = self.db.createProject(id: self.db.projectId(), wsId: wsId, name: name, desc: desc, ws: workspace, ctx: ctx) {
+            proj.order = order
+            proj.workspace = workspace
+            self.db.saveMainContext()
+        }
+    }
 }
