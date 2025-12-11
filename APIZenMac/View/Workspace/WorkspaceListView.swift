@@ -134,6 +134,7 @@ struct WorkspaceListView: View {
         self.db.deleteEntity(workspace, ctx: workspace.managedObjectContext)
         self.db.saveMainContext()
         WorkspacePopupView.WorkspacePopupState.deleteWorkspacePopupState(wsId)  // Delete any associated popup state stored in user defaults.
+        ProjectsListView.ProjectsListState.deleteProjectsListState(wsId)  // Delete project list state stored in user defaults for this workspace.
         if isDeletingSelectedWs {  // Deleting selected workspace. Change selection to default workspace.
             let ws = self.db.getDefaultWorkspace()
             onSelect(ws, .local)

@@ -76,7 +76,7 @@ struct WorkspacePopupView: View {
             }
         }
         
-        /// Workspace delete is done in the list view.
+        /// Workspace delete is done in the list view. So keeping this static.
         static func deleteWorkspacePopupState(_ workspaceId: String) {
             AZUtils.shared.removeValue("\(AZMConst.workspacePopupWindowStateKey)-\(workspaceId)")
         }
@@ -219,7 +219,7 @@ struct WorkspacePopupView: View {
                             .font(.system(size: 15, weight: .regular))
                             .imageScale(.medium)
                             .symbolRenderingMode(.palette)
-                            .foregroundStyle(sortField == .manual ? .primary : theme.getForegroundStyle())
+                            .foregroundStyle(sortField == .manual && sortAscending ? .primary : theme.getForegroundStyle())
                     }
                     .help("Sort Workspaces")
                     .buttonStyle(.borderless)

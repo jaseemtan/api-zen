@@ -10,5 +10,6 @@ struct AZMConst {
     // MARK: - User default keys
     public static let openWindowsKey = "openWindows"
     public static let workspacePopupWindowStateKey = "workspacePopupWindowState"
+    public static let projectsListStateKey = "projectsListState"
     // MARK: - Misc
 }

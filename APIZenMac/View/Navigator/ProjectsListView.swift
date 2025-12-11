@@ -37,6 +37,55 @@ struct ProjectsListView: View {
         case created
     }
     
+    /// This is projects list state which is one per workspace. So it is identified using workspace id.
+    struct ProjectsListState: Identifiable, Codable {
+        var workspaceId: String = ""
+        var sortField: ProjectSortField = .manual
+        var sortAscending: Bool = true
+        
+        var id: String { workspaceId }
+        
+        func encode() -> Data? {
+            return try? JSONEncoder().encode(self)
+        }
+        
+        func decode(_ data: Data?) -> ProjectsListState? {
+            guard let data = data else { return nil }
+            return try? JSONDecoder().decode(ProjectsListState.self, from: data)
+        }
+        
+        /// Saves the state to user defaults.
+        func saveProjectPopupState() {
+            if let data = self.encode() {
+                AZUtils.shared.setValue(key: self.getUserDefaultsKey(), value: data)
+                Log.debug("saved proj state: sortField: \(sortField) - sortAsc: \(sortAscending) - wsId: \(workspaceId)")
+            }
+        }
+        
+        /// Restore the state from user defaults. Updates the current object. This should be invoked after setting the workspaceId.
+        mutating func restoreProjectsListState() {
+            if workspaceId.isEmpty { return }
+            if let data = AZUtils.shared.getValue(self.getUserDefaultsKey()) as? Data {
+                if let state = self.decode(data) {
+                    Log.debug("restored proj state: sortField: \(sortField) - sortAsc: \(sortAscending) - wsId: \(workspaceId)")
+                    self.sortField = state.sortField
+                    self.sortAscending = state.sortAscending
+                }
+            }
+        }
+        
+        /// Workspace delete is done in the list view. So keeping this static.
+        static func deleteProjectsListState(_ workspaceId: String) {
+            AZUtils.shared.removeValue("\(AZMConst.projectsListStateKey)-\(workspaceId)")
+        }
+        
+        private func getUserDefaultsKey() -> String {
+            return "\(AZMConst.projectsListStateKey)-\(self.workspaceId)"
+        }
+    }
+    
+    @State private var state: ProjectsListState = ProjectsListState()
+    
     // Explicit init with only the required params is required because we have many properties and default init becomes internal.
     init(workspaceId: String, onSelect: @escaping (EProject) -> Void, selectedProject: Binding<EProject?>, searchText: String) {
         Log.debug("proj list view: ws id: \(workspaceId)")
@@ -114,8 +163,8 @@ struct ProjectsListView: View {
                             set: { isOn in
                                 if isOn {
                                     sortField = .manual
-                                    // state.sortField = sortField
-                                    // state.saveWorkspacePopupState()
+                                     state.sortField = sortField
+                                     state.saveProjectPopupState()
                                 }
                             }
                         )) {
@@ -127,8 +176,8 @@ struct ProjectsListView: View {
                             set: { isOn in
                                 if isOn {
                                     sortField = .name
-                                    // state.sortField = sortField
-                                    // state.saveWorkspacePopupState()
+                                    state.sortField = sortField
+                                    state.saveProjectPopupState()
                                 }
                             }
                         )) {
@@ -140,8 +189,8 @@ struct ProjectsListView: View {
                             set: { isOn in
                                 if isOn {
                                     sortField = .created
-                                    // state.sortField = sortField
-                                    // state.saveWorkspacePopupState()
+                                    state.sortField = sortField
+                                    state.saveProjectPopupState()
                                 }
                             }
                         )) {
@@ -161,8 +210,8 @@ struct ProjectsListView: View {
                             set: { isOn in
                                 if isOn {
                                     sortAscending = true
-                                    // state.sortAscending = sortAscending
-                                    // state.saveWorkspacePopupState()
+                                    state.sortAscending = sortAscending
+                                    state.saveProjectPopupState()
                                 }
                             }
                         )) {
@@ -174,8 +223,8 @@ struct ProjectsListView: View {
                             set: { isOn in
                                 if isOn {
                                     sortAscending = false
-                                    // state.sortAscending = sortAscending
-                                    // state.saveWorkspacePopupState()
+                                    state.sortAscending = sortAscending
+                                    state.saveProjectPopupState()
                                 }
                             }
                         )) {
@@ -187,9 +236,9 @@ struct ProjectsListView: View {
                             .font(.system(size: 15, weight: .regular))
                             .imageScale(.medium)
                             .symbolRenderingMode(.palette)
-                            .foregroundStyle(sortField == .manual ? .primary : theme.getForegroundStyle())
+                            .foregroundStyle(sortField == .manual && sortAscending ? .primary : theme.getForegroundStyle())
                     }
-                    .help("Sort Workspaces")
+                    .help("Sort Projects")
                     .buttonStyle(.borderless)
                     .padding(.leading, 8)
 
@@ -214,6 +263,18 @@ struct ProjectsListView: View {
             .allowsHitTesting(true)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
         }
+        .onAppear {
+            Log.debug("proj list onAppear: wsId: \(workspaceId)")
+            state.workspaceId = workspaceId
+            state.restoreProjectsListState()
+        }
+        .task {
+            sortField = state.sortField
+            sortAscending = state.sortAscending
+        }
+        .onChange(of: workspaceId) { _, wsId in
+            self.updateState(wsId)  // clear project list state and restore state if present for the given workspace.
+        }
     }
     
     /// The query is cached. So multiple searches of the same parameters would not be that costly.
@@ -233,6 +294,14 @@ struct ProjectsListView: View {
                 self.projects = projects
             }
         })
+    }
+    
+    /// Update user preference state
+    func updateState(_ wsId: String) {
+        state = ProjectsListState(workspaceId: wsId)
+        state.restoreProjectsListState()
+        sortField = state.sortField
+        sortAscending = state.sortAscending
     }
     
     private func getSortDescriptors() -> [NSSortDescriptor] {
