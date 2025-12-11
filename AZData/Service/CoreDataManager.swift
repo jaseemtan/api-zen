@@ -13,6 +13,21 @@ public class CoreDataManager<T: NSManagedObject>: NSObject, NSFetchedResultsCont
     private let frc: NSFetchedResultsController<T>
     private let onChange: ([T]) -> Void
     
+    /// - Parameters:
+    ///   - fetchRequest:
+    ///     The `NSFetchRequest` for Core Data entity of type `T`, with predicates, sort descriptors, and batch size.
+    ///
+    ///   - ctx:
+    ///     The `NSManagedObjectContext` to pick the right container.
+    ///
+    ///   - sectionNameKeyPath:
+    ///     An optional key path used to group the fetched objects into sections. Pass `nil` if no sectioning is required.
+    ///
+    ///   - cacheName:
+    ///     The name of the cache used by the fetched results controller to improve performance. Pass `nil` to disable caching (recommended when data changes frequently).
+    ///
+    ///   - onChange:
+    ///     A closure that is invoked whenever the fetched results controller detects changes. The closure receives the updated array of fetched objects of type `T`.
     public init(fetchRequest: NSFetchRequest<T>, ctx: NSManagedObjectContext, sectionNameKeyPath: String? = nil, cacheName: String? = nil, onChange: @escaping ([T]) -> Void) {
         self.frc = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: ctx, sectionNameKeyPath: sectionNameKeyPath, cacheName: cacheName)
         self.onChange = onChange
@@ -26,9 +41,7 @@ public class CoreDataManager<T: NSManagedObject>: NSObject, NSFetchedResultsCont
         let fr = frc.fetchRequest
         fr.predicate = predicate
         fr.sortDescriptors = sortDescriptors
-        if let cache = frc.cacheName {  // Clear cache
-            NSFetchedResultsController<T>.deleteCache(withName: cache)
-        }
+        self.clearCache()
         self.performFetch()
     }
     
@@ -40,8 +53,15 @@ public class CoreDataManager<T: NSManagedObject>: NSObject, NSFetchedResultsCont
     }
     
     /// Returns the index path if present for the object.
-    func indexPath(for object: T) -> IndexPath? {
+    public func indexPath(for object: T) -> IndexPath? {
         return frc.indexPath(forObject: object)
+    }
+    
+    /// Clear cache if present.
+    public func clearCache() {
+        if let cache = frc.cacheName {
+            NSFetchedResultsController<T>.deleteCache(withName: cache)
+        }
     }
     
     // MARK: - Delegates
