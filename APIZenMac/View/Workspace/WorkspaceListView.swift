@@ -28,6 +28,7 @@ struct WorkspaceListView: View {
     private var sortAscending: Bool
     private var searchText: String
     private let db = CoreDataService.shared
+    private let workspacesCacheName: String = "workspaces-cache"
 
     let onSelect: (EWorkspace, CoreDataContainer) -> Void
     let onEdit: (EWorkspace, CoreDataContainer) -> Void  // Add form nav view needs to be shown which is in parent view. So we call the parent view function.
@@ -104,7 +105,7 @@ struct WorkspaceListView: View {
     /// The query is cached. So multiple searches of the same parameters would not be that costly.
     func initDataManager() {
         Log.debug("ws view: init data manager")
-        let fr = NSFetchRequest<EWorkspace>(entityName: "EWorkspace")
+        let fr = EWorkspace.fetchRequest()
         fr.sortDescriptors = self.getSortDescriptors()
         if searchText.isNotEmpty {
             fr.predicate = NSPredicate(format: "(name CONTAINS[cd] %@) OR (desc CONTAINS[cd] %@)", searchText, searchText)  // c: case-insensitive; d: diacritic-insensitive
@@ -112,7 +113,8 @@ struct WorkspaceListView: View {
             fr.predicate = nil
         }
         fr.fetchBatchSize = 50
-        dataManager = CoreDataManager(fetchRequest: fr, ctx: moc, onChange: { workspaces in
+        if let dm = self.dataManager { dm.clearCache() }  // clear previous cache if already initialized before.
+        dataManager = CoreDataManager(fetchRequest: fr, ctx: moc, cacheName: self.workspacesCacheName, onChange: { workspaces in
             self.workspaces = workspaces
         })
     }
