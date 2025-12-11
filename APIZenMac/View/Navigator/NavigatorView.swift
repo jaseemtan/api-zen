@@ -100,10 +100,7 @@ struct NavigatorView: View {
                 }
                 .buttonStyle(.plain)
                 .help("Back")
-//                .overlay(
-//                    RoundedRectangle(cornerRadius: 4)
-//                        .stroke(Color.red.opacity(0.5), style: StrokeStyle(lineWidth: 1, dash: [4]))
-//                )
+//                .debugOverlay()
             } else {
                 HStack {
                     Text(headerTitle)
