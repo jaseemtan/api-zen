@@ -210,7 +210,7 @@ struct WorkspacePopupView: View {
                         }
 
                     } label: {
-                        Image(systemName: "line.3.horizontal.decrease.circle")
+                        Image(systemName: theme.getSortIconName())
                             .font(.system(size: 15, weight: .regular))
                             .imageScale(.medium)
                             .symbolRenderingMode(.palette)

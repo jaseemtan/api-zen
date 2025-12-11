@@ -28,6 +28,8 @@ struct MainWindowRoot: View {
     @SceneStorage("coreDataContainer")
     private var coreDataContainer: CoreDataContainer = CoreDataContainer.local
     
+    // Pane preference is saved in the window registry because it's window specific. If I have same workspace in two different window and if I save workspace specific preference, then I can't have per window pane display. Hiding navigator will hide in all windows with the same workspace.
+    // And this is saved for the open windows. If we close a window, these settings are cleared. The preference for the last window is saved.
     @SceneStorage("showNavigator")
     private var showNavigator: Bool = true  // Left pane
 

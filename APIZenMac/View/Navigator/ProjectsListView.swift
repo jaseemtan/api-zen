@@ -157,6 +157,7 @@ struct ProjectsListView: View {
     @State private var projects: [EProject] = []
     @State private var dataManager: CoreDataManager<EProject>?
     @State private var sortField: ProjectSortField = .manual
+    @State private var sortAscending: Bool = true
     
     // Maintain scroll offset
     @State private var savedTopId: NSManagedObjectID? = nil
@@ -170,10 +171,10 @@ struct ProjectsListView: View {
     
     // Ignore tiny delta changes in scroll offset to avoid per-frame churn.
     private let offsetEpsilon: CGFloat = 0.5
-    private var sortAscending: Bool = true
-    private let db = CoreDataService.shared
     private let projectsCacheName: String = "projects-cache"
     private let toolbarHeight: CGFloat = 32.0
+    private let db = CoreDataService.shared
+    private let theme = ThemeManager.shared
     
     enum ProjectSortField: String, CaseIterable, Codable, Equatable {
         case manual
@@ -318,14 +319,96 @@ struct ProjectsListView: View {
                 Spacer() // push toolbar to bottom
                 Divider()
                 HStack {
-                    // Sort button on left
-                    Button(action: {
-                        // toggle sort UI
-                        // showSortSheet.toggle()
-                    }) {
-                        Label("Sort", systemImage: "arrow.up.arrow.down")
+                    Menu {  // Using toggle so that the alignment of text shows fixed center with space for checkmark left as a constant. Using Button with HStack with Image and Text doesn't align the text by leaving the checkmark space constant when not checked.
+                        // SECTION: Sort By
+                        Text("Sort")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                            .disabled(true)
+
+                        Toggle(isOn: Binding(
+                            get: { sortField == .manual },
+                            set: { isOn in
+                                if isOn {
+                                    sortField = .manual
+                                    // state.sortField = sortField
+                                    // state.saveWorkspacePopupState()
+                                }
+                            }
+                        )) {
+                            Text("manual")
+                        }
+                        
+                        Toggle(isOn: Binding(
+                            get: { sortField == .name },
+                            set: { isOn in
+                                if isOn {
+                                    sortField = .name
+                                    // state.sortField = sortField
+                                    // state.saveWorkspacePopupState()
+                                }
+                            }
+                        )) {
+                            Text("by Name")
+                        }
+
+                        Toggle(isOn: Binding(
+                            get: { sortField == .created },
+                            set: { isOn in
+                                if isOn {
+                                    sortField = .created
+                                    // state.sortField = sortField
+                                    // state.saveWorkspacePopupState()
+                                }
+                            }
+                        )) {
+                            Text("by Created")
+                        }
+
+                        Divider()
+
+                        // SECTION: Order
+                        Text("Order")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                            .disabled(true)
+
+                        Toggle(isOn: Binding(
+                            get: { sortAscending },
+                            set: { isOn in
+                                if isOn {
+                                    sortAscending = true
+                                    // state.sortAscending = sortAscending
+                                    // state.saveWorkspacePopupState()
+                                }
+                            }
+                        )) {
+                            Text("Ascending")
+                        }
+
+                        Toggle(isOn: Binding(
+                            get: { !sortAscending },
+                            set: { isOn in
+                                if isOn {
+                                    sortAscending = false
+                                    // state.sortAscending = sortAscending
+                                    // state.saveWorkspacePopupState()
+                                }
+                            }
+                        )) {
+                            Text("Descending")
+                        }
+
+                    } label: {
+                        Image(systemName: theme.getSortIconName())
+                            .font(.system(size: 15, weight: .regular))
+                            .imageScale(.medium)
+                            .symbolRenderingMode(.palette)
+                            .foregroundStyle(sortField == .manual ? .primary : theme.getForegroundStyle())
                     }
-                    .buttonStyle(.plain)
+                    .help("Sort Workspaces")
+                    .buttonStyle(.borderless)
+                    .padding(.leading, 8)
 
                     Spacer()
 
@@ -340,7 +423,6 @@ struct ProjectsListView: View {
                     }
                     .buttonStyle(.plain)
                 }
-                .padding(.horizontal, 12)
                 .frame(height: toolbarHeight)
                 .background(.ultraThinMaterial) // subtle translucent background (iOS/macOS)
                 .ignoresSafeArea(edges: .bottom) // let the background extend into safe area if needed

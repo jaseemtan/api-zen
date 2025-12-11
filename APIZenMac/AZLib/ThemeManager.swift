@@ -31,6 +31,10 @@ class ThemeManager {
     func getWorkspaceTypeIconName(coreDataContainer: CoreDataContainer) -> String {
         return coreDataContainer == .local ? "desktopcomputer" : "icloud"
     }
+    
+    func getSortIconName() -> String {
+        return "line.3.horizontal.decrease.circle"
+    }
 }
 
 /// API Zen color values for macOS
