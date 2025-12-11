@@ -1,214 +1,14 @@
 //
-//  NavigatorView.swift
+//  ProjectsListView.swift
 //  APIZenMac
 //
-//  Created by Jaseem V V on 10/12/25.
+//  Created by Jaseem V V on 11/12/25.
 //
 
 import SwiftUI
 import CoreData
 import AZData
 import AZCommon
-
-// Ignore tiny delta changes to avoid per-frame churn.
-private let offsetEpsilon: CGFloat = 0.5
-
-/// Left pane of the main window. Displays projects list for the selected workspace. Displays requests for if a project is selected.
-struct NavigatorView: View {
-    let workspaceId: String
-    private let db: CoreDataService = CoreDataService.shared
-
-    @Environment(\.managedObjectContext) private var moc
-
-    @State private var projects: [EProject] = []
-    @State private var requests: [ERequest] = []
-
-    @State private var pane: Pane = .project
-    @State private var selectedProject: EProject? = nil
-    @State private var isPushing: Bool = true
-
-    enum Pane {
-        case project
-        case request
-    }
-
-    var onSelectRequest: ((ERequest) -> Void)?
-
-    var body: some View {
-        VStack(spacing: 0) {
-            header
-                .padding(.horizontal, 8)
-                .frame(height: 44)
-                .background(.ultraThinMaterial)
-                .overlay(Divider(), alignment: .bottom)
-
-            ZStack {
-                if pane == .project {
-                    ProjectsListView(projects: projects, onSelect: { proj in
-                        // prepare data, then push
-                        selectedProject = proj
-                        loadRequests(for: proj)
-                        isPushing = true
-                        withAnimation {
-                            pane = .request
-                        }
-                    }, selectedProject: $selectedProject)
-                    .transition(listTransition)
-                }
-
-                if pane == .request, let sel = selectedProject {
-                    RequestsListView(project: sel, requests: requests, onSelect: { req in
-                        onSelectRequest?(req)
-                    })
-                    .transition(listTransition)
-                }
-            }
-            .animation(.default, value: pane)  // When pane changes, animate with the transition associated with the view.
-            .animation(.default, value: isPushing)  // When isPushing changes, animate with the transition associated with the view.
-        }
-        .onAppear {
-            loadProjects()
-        }
-    }
-
-    private var listTransition: AnyTransition {
-        if isPushing {
-            // When pushing, projects is removed to the left (and requests will insert from right)
-            // List moves from right to left.
-            return .asymmetric(
-                insertion: .move(edge: .trailing).combined(with: .opacity),
-                removal:   .move(edge: .leading).combined(with: .opacity)
-            )
-        } else {
-            // When popping, projects is inserted from the left.
-            // List moves from left to right. Back button press animation.
-            return .asymmetric(
-                insertion: .move(edge: .leading).combined(with: .opacity),
-                removal:   .move(edge: .trailing).combined(with: .opacity)
-            )
-        }
-    }
-    
-    // MARK: - Header
-    /// List header which shows Projects or project name with a back button.
-    private var header: some View {
-        HStack {
-            if pane == .request {
-                Button {
-                    isPushing = false
-                    withAnimation {
-                        pane = .project
-                    }
-                } label: {
-                    HStack(spacing: 6) {
-                        Image(systemName: "chevron.left")
-                        Text(headerTitle)
-                    }
-                    .padding(.horizontal, 4)  // Gives enough room for click by expanding the button area. It's not visible unless we apply a border to it.
-                    .padding(.vertical, 6)
-                    .contentShape(Rectangle())
-                }
-                .buttonStyle(.plain)
-                .help("Back")
-//                .overlay(
-//                    RoundedRectangle(cornerRadius: 4)
-//                        .stroke(Color.red.opacity(0.5), style: StrokeStyle(lineWidth: 1, dash: [4]))
-//                )
-            } else {
-                Text(headerTitle)
-                    .font(.headline)
-                    .lineLimit(1)
-                    .padding(.leading, 4)
-            }
-            
-            Spacer()
-        }
-    }
-
-    private var headerTitle: String {
-        switch pane {
-        case .project:
-            return "Projects"
-        case .request:
-            if let p = selectedProject {
-                return p.getName()
-            }
-            return "Requests"
-        }
-    }
-
-    // MARK: - Data loading
-    private func loadProjects() {  // TODO: use FRC. This can be moved to ProjectsListView with workspace id.
-        projects = self.db.getProjects(wsId: workspaceId, ctx: moc)
-    }
-
-    private func loadRequests(for project: EProject) {
-        requests = db.getRequests(projectId: project.getId(), ctx: moc)
-    }
-}
-
-/// PreferenceKey to pass each row's top position up the view tree.
-///
-/// RowTopPreference is a PreferenceKey implementation that we can use together with GeometryReader to report per-row geometry (for example, each row’s minY) up the SwiftUI view tree so a parent view can decide which row is at the top.
-///
-/// PreferenceKey is a SwiftUI primitive to pass values up the view tree from children to ancestors. Children write into a preference (via .preference(...)) and ancestors read them with .onPreferenceChange or .background(GeometryReader...) — it’s the opposite direction of normal @State/@Binding.
-struct RowTopPreference: PreferenceKey {
-    typealias Value = [NSManagedObjectID: CGFloat]
-    static var defaultValue: Value = [:]
-
-    static func reduce(value: inout Value, nextValue: () -> Value) {
-        value.merge(nextValue(), uniquingKeysWith: { $1 })
-    }
-}
-
-/// We use a PreferenceKey because SwiftUI’s layout system only provides a reliable, well-defined way for child views to send geometry information up to their ancestors. Children (like the GeometryReader inside the list) shouldn’t directly mutate parent state during layout — doing that leads to reentrancy bugs, multiple updates per frame, and broken layout.
-///
-/// PreferenceKey is the safe, built-in mechanism for “child → parent” communication during layout.
-///
-/// PreferenceKey makes this safe: children publish values while layout is happening; SwiftUI collects/merges them and then delivers a single aggregated value to the parent (via .onPreferenceChange) at the right time.
-///
-/// It allows:
-///   - many children to send values,
-///   - the ancestor to receive a single merged value,
-///   - the system to schedule delivery at a safe time in the render/layout cycle.
-///
-/// Using @State might "work" but it fires many times during a scroll and can cause multiple updates per frame. It will spam state updates and slow the UI. It will cause jitter. PreferenceKey does the same reporting but in a controlled, aggregated way.
-private struct ScrollOffsetKey: PreferenceKey {
-    static var defaultValue: CGFloat = 0
-    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) { value = nextValue() }
-}
-
-/// Helper NSViewRepresentable to set NSScrollView's content offset
-/// MacScrollViewOffsetSetter is an NSViewRepresentable helper whose job is to find the underlying AppKit NSScrollView SwiftUI created and set its content origin (i.e. programmatically scroll to a pixel offset) and tweak properties (elasticity, insets).
-/// Use it when you need pixel-perfect programmatic scrolling or need to fix AppKit behaviour that SwiftUI doesn’t expose.
-/// NSViewRepresentable lets us drop a tiny NSView inside the hierarchy and traverse the superview chain to find the NSScrollView SwiftUI created. Returns a zero sized NSView.
-private struct MacScrollViewOffsetSetter: NSViewRepresentable {
-    let offsetToSet: CGFloat?
-
-    func makeNSView(context: Context) -> NSView { NSView() }
-
-    func updateNSView(_ nsView: NSView, context: Context) {
-        guard let offset = offsetToSet else { return }
-
-        DispatchQueue.main.async {
-            var v: NSView? = nsView
-            while let current = v {
-                if let scroll = current as? NSScrollView {  // Walks up the `nsView.superview` chain until it finds an `NSScrollView`.
-                    scroll.verticalScrollElasticity = .allowed  // Allow bounce at top and bottom
-                    scroll.horizontalScrollElasticity = .none  // Without this, if we navigate to requests list and back to projects list, horizontal list bounce appears. We should have top and bottom boucing only for the project list.
-                    scroll.contentInsets = NSEdgeInsetsZero
-
-                    // Now set the content origin (treat offset as distance from top)
-                    let newOrigin = NSPoint(x: 0, y: offset)
-                    scroll.contentView.scroll(to: newOrigin)  // set the scroll origin
-                    scroll.reflectScrolledClipView(scroll.contentView)
-                    break
-                }
-                v = current.superview
-            }
-        }
-    }
-}
 
 /**
  
@@ -347,17 +147,47 @@ private struct MacScrollViewOffsetSetter: NSViewRepresentable {
 
  */
 struct ProjectsListView: View {
-    let projects: [EProject]
+    /// Selected workspace id
+    let workspaceId: String
+    /// We need to invoke the parent view function so that the navigator can navigate to request view on selecting a project.
     let onSelect: (EProject) -> Void
     @Binding var selectedProject: EProject?
+    var searchText: String = ""
     
+    @State private var projects: [EProject] = []
+    @State private var dataManager: CoreDataManager<EProject>?
+    @State private var sortField: ProjectSortField = .manual
+    
+    // Maintain scroll offset
     @State private var savedTopId: NSManagedObjectID? = nil
     @State private var topPositions: [NSManagedObjectID: CGFloat] = [:]
-    @Environment(\.scenePhase) private var scenePhase
     
     /// The scroll offset
     @State private var savedOffset: CGFloat? = nil
     @State private var shouldRestore: Bool = false
+    
+    @Environment(\.managedObjectContext) private var moc
+    
+    // Ignore tiny delta changes in scroll offset to avoid per-frame churn.
+    private let offsetEpsilon: CGFloat = 0.5
+    private var sortAscending: Bool = true
+    private let db = CoreDataService.shared
+    private let projectsCacheName: String = "projects-cache"
+    
+    enum ProjectSortField: String, CaseIterable, Codable, Equatable {
+        case manual
+        case name
+        case created
+    }
+    
+    // Explicit init with only the required params is required because we have many properties and default init becomes internal.
+    init(workspaceId: String, onSelect: @escaping (EProject) -> Void, selectedProject: Binding<EProject?>, searchText: String) {
+        Log.debug("proj list view: ws id: \(workspaceId)")
+        self.workspaceId = workspaceId
+        self.onSelect = onSelect
+        self._selectedProject = selectedProject
+        self.searchText = searchText
+    }
 
     var body: some View {
         ScrollView {
@@ -458,37 +288,124 @@ struct ProjectsListView: View {
             }
         })
         .onAppear {
+            self.initDataManager()
             guard let _ = savedOffset, !shouldRestore else { return }
             DispatchQueue.main.async {
                 shouldRestore = true  // Scroll the list if needed on appear.
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) { shouldRestore = false }  // This should have scrolled. Disable the flag.
             }
         }
+        .onChange(of: workspaceId) { oldId, newId in
+            if oldId != newId {
+                Log.debug("proj list: workspace id changed: \(newId)")
+                self.initDataManager()  // re-init data maanger with new predicate for workspaceId to update project listing
+            }
+        }
+        .onChange(of: sortField, { _, _ in
+            self.initDataManager()  // re-init data manager with new sort descriptor to update the list ordering
+        })
+        .onChange(of: sortAscending, { _, _ in
+            self.initDataManager()  // re-init data manager with new sort descriptor to update the list ordering
+        })
+        .onChange(of: searchText, { _, _ in
+            self.initDataManager()
+        })
+    }
+    
+    /// The query is cached. So multiple searches of the same parameters would not be that costly.
+    func initDataManager() {
+        Log.debug("proj list view: init data manager")
+        let fr = EProject.fetchRequest()
+        fr.sortDescriptors = self.getSortDescriptors()
+        if searchText.isNotEmpty {
+            // fr.predicate = NSPredicate(format: "(name CONTAINS[cd] %@) OR (desc CONTAINS[cd] %@)", searchText, searchText)  // c: case-insensitive; d: diacritic-insensitive
+        } else {
+            fr.predicate = NSPredicate(format: "workspace.id == %@ AND name != %@ AND markForDelete == %hdd", workspaceId, "", false)
+        }
+        fr.fetchBatchSize = 50
+        if let dm = self.dataManager { dm.clearCache() }  // clear previous cache if already initialized before.
+        dataManager = CoreDataManager(fetchRequest: fr, ctx: moc, cacheName: self.projectsCacheName, onChange: { projects in
+            withAnimation {
+                self.projects = projects
+            }
+        })
+    }
+    
+    private func getSortDescriptors() -> [NSSortDescriptor] {
+        let sortDescriptor: NSSortDescriptor
+        switch sortField {
+        case .manual:
+            sortDescriptor = NSSortDescriptor(keyPath: \EProject.order, ascending: sortAscending)
+        case .name:
+            sortDescriptor = NSSortDescriptor(keyPath: \EProject.name, ascending: sortAscending)
+        case .created:
+            sortDescriptor = NSSortDescriptor(keyPath: \EProject.created, ascending: sortAscending)
+        }
+        return [sortDescriptor]
     }
 }
 
+// MARK: - Scroll offset helpers
 
-// MARK: - Request List View
-struct RequestsListView: View {
-    let project: EProject
-    let requests: [ERequest]
-    let onSelect: (ERequest) -> Void
+/// PreferenceKey to pass each row's top position up the view tree.
+///
+/// RowTopPreference is a PreferenceKey implementation that we can use together with GeometryReader to report per-row geometry (for example, each row’s minY) up the SwiftUI view tree so a parent view can decide which row is at the top.
+///
+/// PreferenceKey is a SwiftUI primitive to pass values up the view tree from children to ancestors. Children write into a preference (via .preference(...)) and ancestors read them with .onPreferenceChange or .background(GeometryReader...) — it’s the opposite direction of normal @State/@Binding.
+struct RowTopPreference: PreferenceKey {  // This should not be private. Preserving scroll offset is not working when private.
+    typealias Value = [NSManagedObjectID: CGFloat]
+    static var defaultValue: Value = [:]
 
-    var body: some View {
-        List {
-            ForEach(requests, id: \.objectID) { req in
-                HStack {
-                    Image(systemName: "doc.text")
-                    Text(req.name ?? "No name")
-                    Spacer()
+    static func reduce(value: inout Value, nextValue: () -> Value) {
+        value.merge(nextValue(), uniquingKeysWith: { $1 })
+    }
+}
+
+/// We use a PreferenceKey because SwiftUI’s layout system only provides a reliable, well-defined way for child views to send geometry information up to their ancestors. Children (like the GeometryReader inside the list) shouldn’t directly mutate parent state during layout — doing that leads to reentrancy bugs, multiple updates per frame, and broken layout.
+///
+/// PreferenceKey is the safe, built-in mechanism for “child → parent” communication during layout.
+///
+/// PreferenceKey makes this safe: children publish values while layout is happening; SwiftUI collects/merges them and then delivers a single aggregated value to the parent (via .onPreferenceChange) at the right time.
+///
+/// It allows:
+///   - many children to send values,
+///   - the ancestor to receive a single merged value,
+///   - the system to schedule delivery at a safe time in the render/layout cycle.
+///
+/// Using @State might "work" but it fires many times during a scroll and can cause multiple updates per frame. It will spam state updates and slow the UI. It will cause jitter. PreferenceKey does the same reporting but in a controlled, aggregated way.
+private struct ScrollOffsetKey: PreferenceKey {
+    static var defaultValue: CGFloat = 0
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) { value = nextValue() }
+}
+
+/// Helper NSViewRepresentable to set NSScrollView's content offset
+/// MacScrollViewOffsetSetter is an NSViewRepresentable helper whose job is to find the underlying AppKit NSScrollView SwiftUI created and set its content origin (i.e. programmatically scroll to a pixel offset) and tweak properties (elasticity, insets).
+/// Use it when you need pixel-perfect programmatic scrolling or need to fix AppKit behaviour that SwiftUI doesn’t expose.
+/// NSViewRepresentable lets us drop a tiny NSView inside the hierarchy and traverse the superview chain to find the NSScrollView SwiftUI created. Returns a zero sized NSView.
+private struct MacScrollViewOffsetSetter: NSViewRepresentable {
+    let offsetToSet: CGFloat?
+
+    func makeNSView(context: Context) -> NSView { NSView() }
+
+    func updateNSView(_ nsView: NSView, context: Context) {
+        guard let offset = offsetToSet else { return }
+
+        DispatchQueue.main.async {
+            var v: NSView? = nsView
+            while let current = v {
+                if let scroll = current as? NSScrollView {  // Walks up the `nsView.superview` chain until it finds an `NSScrollView`.
+                    scroll.verticalScrollElasticity = .allowed  // Allow bounce at top and bottom
+                    scroll.horizontalScrollElasticity = .none  // Without this, if we navigate to requests list and back to projects list, horizontal list bounce appears. We should have top and bottom boucing only for the project list.
+                    scroll.contentInsets = NSEdgeInsetsZero
+
+                    // Now set the content origin (treat offset as distance from top)
+                    let newOrigin = NSPoint(x: 0, y: offset)
+                    scroll.contentView.scroll(to: newOrigin)  // set the scroll origin
+                    scroll.reflectScrolledClipView(scroll.contentView)
+                    break
                 }
-                .padding(.vertical, 6)
-                .contentShape(Rectangle())
-                .onTapGesture {
-                    onSelect(req)
-                }
+                v = current.superview
             }
         }
-        .listStyle(SidebarListStyle())
     }
 }
