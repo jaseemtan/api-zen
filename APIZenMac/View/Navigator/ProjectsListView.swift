@@ -17,8 +17,9 @@ struct ProjectsListView: View {
     /// We need to invoke the parent view function so that the navigator can navigate to request view on selecting a project.
     let onSelect: (EProject) -> Void
     @Binding var selectedProject: EProject?
-    var searchText: String = ""
     
+    @State private var searchText: String = ""
+    @State private var isSearchActive: Bool? = false  // Is search button clicked and search field display? If so we are hiding other items on the bottom bar, except sort.
     @State private var projects: [EProject] = []
     @State private var dataManager: CoreDataManager<EProject>?
     @State private var sortField: ProjectSortField = .manual
@@ -147,120 +148,7 @@ struct ProjectsListView: View {
             })
             
             // Fixed bottom toolbar overlay
-            VStack(spacing: 0) {
-                Spacer() // push toolbar to bottom
-                Divider()
-                HStack {
-                    Menu {  // Using toggle so that the alignment of text shows fixed center with space for checkmark left as a constant. Using Button with HStack with Image and Text doesn't align the text by leaving the checkmark space constant when not checked.
-                        // Section: Sort By
-                        Text("Sort")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                            .disabled(true)
-
-                        Toggle(isOn: Binding(
-                            get: { sortField == .manual },
-                            set: { isOn in
-                                if isOn {
-                                    sortField = .manual
-                                     state.sortField = sortField
-                                     state.saveProjectPopupState()
-                                }
-                            }
-                        )) {
-                            Text("manual")
-                        }
-                        
-                        Toggle(isOn: Binding(
-                            get: { sortField == .name },
-                            set: { isOn in
-                                if isOn {
-                                    sortField = .name
-                                    state.sortField = sortField
-                                    state.saveProjectPopupState()
-                                }
-                            }
-                        )) {
-                            Text("by Name")
-                        }
-
-                        Toggle(isOn: Binding(
-                            get: { sortField == .created },
-                            set: { isOn in
-                                if isOn {
-                                    sortField = .created
-                                    state.sortField = sortField
-                                    state.saveProjectPopupState()
-                                }
-                            }
-                        )) {
-                            Text("by Created")
-                        }
-
-                        Divider()
-
-                        // SECTION: Order
-                        Text("Order")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                            .disabled(true)
-
-                        Toggle(isOn: Binding(
-                            get: { sortAscending },
-                            set: { isOn in
-                                if isOn {
-                                    sortAscending = true
-                                    state.sortAscending = sortAscending
-                                    state.saveProjectPopupState()
-                                }
-                            }
-                        )) {
-                            Text("Ascending")
-                        }
-
-                        Toggle(isOn: Binding(
-                            get: { !sortAscending },
-                            set: { isOn in
-                                if isOn {
-                                    sortAscending = false
-                                    state.sortAscending = sortAscending
-                                    state.saveProjectPopupState()
-                                }
-                            }
-                        )) {
-                            Text("Descending")
-                        }
-
-                    } label: {
-                        Image(systemName: theme.getSortIconName())
-                            .font(.system(size: 15, weight: .regular))
-                            .imageScale(.medium)
-                            .symbolRenderingMode(.palette)
-                            .foregroundStyle(sortField == .manual && sortAscending ? .primary : theme.getForegroundStyle())
-                    }
-                    .help("Sort Projects")
-                    .buttonStyle(.borderless)
-                    .padding(.leading, 8)
-
-                    Spacer()
-
-                    // Search button on right
-                    Button(action: {
-                        Log.debug("Project search clicked")
-                    }) {
-                        Image(systemName: "magnifyingglass")
-                            .font(.body)
-                            .frame(width: 44, height: 44)
-                    }
-                    .buttonStyle(.plain)
-                }
-                .frame(height: toolbarHeight)
-                .background(.ultraThinMaterial) // subtle translucent background (iOS/macOS)
-                .ignoresSafeArea(edges: .bottom) // let the background extend into safe area if needed
-            }
-            // ensure the overlay doesn't intercept touch events except the toolbar
-            .allowsHitTesting(true)
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+            bottomToolbarView
         }
         .onAppear {
             Log.debug("proj list onAppear: wsId: \(workspaceId)")
@@ -274,6 +162,124 @@ struct ProjectsListView: View {
         .onChange(of: workspaceId) { _, wsId in
             self.updateState(wsId)  // clear project list state and restore state if present for the given workspace.
         }
+        .onChange(of: searchText, { _, _ in
+            self.initDataManager()
+        })
+    }
+    
+    var bottomToolbarView: some View {
+        VStack(spacing: 0) {
+            Spacer() // push toolbar to bottom
+            Divider()
+            HStack {
+                Menu {  // Using toggle so that the alignment of text shows fixed center with space for checkmark left as a constant. Using Button with HStack with Image and Text doesn't align the text by leaving the checkmark space constant when not checked.
+                    // Section: Sort By
+                    Text("Sort")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                        .disabled(true)
+                    
+                    Toggle(isOn: Binding(
+                        get: { sortField == .manual },
+                        set: { isOn in
+                            if isOn {
+                                sortField = .manual
+                                state.sortField = sortField
+                                state.saveProjectPopupState()
+                            }
+                        }
+                    )) {
+                        Text("manual")
+                    }
+                    
+                    Toggle(isOn: Binding(
+                        get: { sortField == .name },
+                        set: { isOn in
+                            if isOn {
+                                sortField = .name
+                                state.sortField = sortField
+                                state.saveProjectPopupState()
+                            }
+                        }
+                    )) {
+                        Text("by Name")
+                    }
+                    
+                    Toggle(isOn: Binding(
+                        get: { sortField == .created },
+                        set: { isOn in
+                            if isOn {
+                                sortField = .created
+                                state.sortField = sortField
+                                state.saveProjectPopupState()
+                            }
+                        }
+                    )) {
+                        Text("by Created")
+                    }
+                    
+                    Divider()
+                    
+                    // SECTION: Order
+                    Text("Order")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                        .disabled(true)
+                    
+                    Toggle(isOn: Binding(
+                        get: { sortAscending },
+                        set: { isOn in
+                            if isOn {
+                                sortAscending = true
+                                state.sortAscending = sortAscending
+                                state.saveProjectPopupState()
+                            }
+                        }
+                    )) {
+                        Text("Ascending")
+                    }
+                    
+                    Toggle(isOn: Binding(
+                        get: { !sortAscending },
+                        set: { isOn in
+                            if isOn {
+                                sortAscending = false
+                                state.sortAscending = sortAscending
+                                state.saveProjectPopupState()
+                            }
+                        }
+                    )) {
+                        Text("Descending")
+                    }
+                    
+                } label: {
+                    Image(systemName: theme.getSortIconName())
+                        .font(.system(size: 15, weight: .regular))
+                        .imageScale(.medium)
+                        .symbolRenderingMode(.palette)
+                        .foregroundStyle(sortField == .manual && sortAscending ? .primary : theme.getForegroundStyle())
+                }
+                .help("Sort Projects")
+                .buttonStyle(.borderless)
+                .padding(.leading, 8)
+
+                Spacer()
+
+                // Search button on right. Hides other toolbar items when expanded.
+                ExpandingSearchField(isActive: $isSearchActive) { query in
+                    let text = query.trim()
+                    Log.debug("Search for: \(query)")
+                    searchText = text
+                }
+                .padding(.horizontal, 8)
+            }
+            .frame(height: toolbarHeight)
+            .background(.ultraThinMaterial) // subtle translucent background (iOS/macOS)
+            .ignoresSafeArea(edges: .bottom) // let the background extend into safe area if needed
+        }
+        // ensure the overlay doesn't intercept touch events except the toolbar
+        .allowsHitTesting(true)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
     }
     
     /// The query is cached. So multiple searches of the same parameters would not be that costly.
@@ -282,7 +288,7 @@ struct ProjectsListView: View {
         let fr = EProject.fetchRequest()
         fr.sortDescriptors = self.getSortDescriptors()
         if searchText.isNotEmpty {
-            // fr.predicate = NSPredicate(format: "(name CONTAINS[cd] %@) OR (desc CONTAINS[cd] %@)", searchText, searchText)  // c: case-insensitive; d: diacritic-insensitive
+            fr.predicate = NSPredicate(format: "(name CONTAINS[cd] %@) OR (desc CONTAINS[cd] %@)", searchText, searchText)  // c: case-insensitive; d: diacritic-insensitive
         } else {
             fr.predicate = NSPredicate(format: "workspace.id == %@ AND name != %@ AND markForDelete == %hdd", workspaceId, "", false)
         }
