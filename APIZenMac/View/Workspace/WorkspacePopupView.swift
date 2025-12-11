@@ -130,7 +130,7 @@ struct WorkspacePopupView: View {
                 HStack {
                     // Sort button to the left
                     Menu {  // Using toggle so that the alignment of text shows fixed center with space for checkmark left as a constant. Using Button with HStack with Image and Text doesn't align the text by leaving the checkmark space constant when not checked.
-                        // SECTION: Sort By
+                        // Section: Sort By
                         Text("Sort")
                             .font(.caption)
                             .foregroundColor(.secondary)
