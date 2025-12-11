@@ -384,6 +384,8 @@ public extension Date {
 }
 
 public extension String {
+    var isNotEmpty: Bool { return !self.isEmpty }
+    
     subscript(_ i: Int) -> String {
         let idx1 = index(startIndex, offsetBy: i)
         let idx2 = index(idx1, offsetBy: 1)
