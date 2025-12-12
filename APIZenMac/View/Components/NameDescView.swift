@@ -26,9 +26,12 @@ struct NameDescView: View {
     var body: some View {
         HStack {
             if isDisplayDragIndicator {
-                Image(systemName: "line.3.horizontal")
-                    .imageScale(.medium)
-                    .frame(width: 6, height: 6, alignment: .center)
+                Image("horizontal-indicator")
+                    .resizable()
+                    .renderingMode(.template)
+                    .foregroundStyle(theme.getDescriptionColor(colorScheme))
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 10, height: 10, alignment: .leading)                
             }
             
             Image(imageName)

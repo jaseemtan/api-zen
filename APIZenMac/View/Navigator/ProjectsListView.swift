@@ -101,81 +101,70 @@ struct ProjectsListView: View {
     }
 
     var body: some View {
-        ZStack {
-            VStack(spacing: 0) {
-                // Safe top padding that doesn't affect scroll offset calculation.
-                // NB: The manual calc of scroll view offset is removed now. But keeping this implementation as is since it works.
-                Color.clear.frame(height: 12)
-                // NOTE: No top padding here — avoid adding .padding() that affects top
-                List {
-                    ForEach(projects) { project in
-                        NameDescView(imageName: "project", name: "\(project.getName()) - \(project.order!)", desc: project.desc, isDisplayDragIndicator: isDragMode)
-                            .padding(.vertical, 6)
-                            .padding(.leading, 4)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .id(project.objectID)
-                            .contentShape(Rectangle())
-                            .onTapIf(!isDragMode, perform: {
-                                onSelect(project)
-                            })
-                            .contextMenu {
-                                Button("Edit") {
-                                    Log.debug("edit on proj: \(project.getName())")
-                                    editProject = project
-                                    editProjectName = project.getName()
-                                    editProjectDesc = project.desc ?? ""
-                                    showEditProjectPopup.toggle()
-                                }
-                                
-                                Button("Delete", role: .destructive) {
-                                    Log.debug("delete on proj: \(project.getName())")
-                                    projectPendingDelete = project
-                                    showDeleteConfirmation = true  // Display delete confirmation dialog
-                                }
+        Group {
+            List {
+                ForEach(projects) { project in
+                    NameDescView(imageName: "project", name: "\(project.getName()) - \(project.order!)", desc: project.desc, isDisplayDragIndicator: isDragMode)
+                        .padding(.vertical, 6)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .id(project.objectID)
+                        .contentShape(Rectangle())
+                        .onTapIf(!isDragMode, perform: {
+                            onSelect(project)
+                        })
+                        .contextMenu {
+                            Button("Edit") {
+                                Log.debug("edit on proj: \(project.getName())")
+                                editProject = project
+                                editProjectName = project.getName()
+                                editProjectDesc = project.desc ?? ""
+                                showEditProjectPopup.toggle()
                             }
-                    }
-                    .onMove { indexSet, order in
-                        Log.debug("on move")
-                        guard sortField == .manual else { return }
-                        reorderProject(from: indexSet, to: order)
-                    }
+                            
+                            Button("Delete", role: .destructive) {
+                                Log.debug("delete on proj: \(project.getName())")
+                                projectPendingDelete = project
+                                showDeleteConfirmation = true  // Display delete confirmation dialog
+                            }
+                        }
                 }
-                // horizontal padding only if you want — no top padding
-                .padding(.horizontal, 8)
-                // Safe bottom padding that doesn't affect scroll offset calculation
-                Color.clear.frame(height: 12 + toolbarHeight)  // Bottom list padding + toolbar height offset.
-            }
-            .onAppear {
-                self.initDataManager()
-            }
-            .onChange(of: workspaceId) { oldId, newId in
-                if oldId != newId {
-                    Log.debug("proj list: workspace id changed: \(newId)")
-                    self.updateState(newId)  // clear project list state and restore state if present for the given workspace.
-                    self.initDataManager()  // reinit data maanger with new predicate for workspaceId to update project listing
+                .onMove { indexSet, order in
+                    Log.debug("on move")
+                    guard sortField == .manual else { return }
+                    reorderProject(from: indexSet, to: order)
                 }
             }
-            .onChange(of: sortField, { _, _ in
-                self.initDataManager()  // reinit data manager with new sort descriptor to update the list ordering
-            })
-            .onChange(of: sortAscending, { _, _ in
-                self.initDataManager()  // reinit data manager with new sort descriptor to update the list ordering
-            })
-            .onChange(of: searchText, { _, _ in
-                self.initDataManager()
-            })
-            // Fixed bottom toolbar overlay
+            .padding(.bottom, toolbarHeight)
+            .listStyle(.sidebar)
+            
             bottomToolbarView
         }
         .onAppear {
             Log.debug("proj list onAppear: wsId: \(workspaceId)")
             state.workspaceId = workspaceId
             state.restoreProjectsListState()
+            self.initDataManager()
         }
         .task {
             sortField = state.sortField
             sortAscending = state.sortAscending
         }
+        .onChange(of: workspaceId) { oldId, newId in
+            if oldId != newId {
+                Log.debug("proj list: workspace id changed: \(newId)")
+                self.updateState(newId)  // clear project list state and restore state if present for the given workspace.
+                self.initDataManager()  // reinit data maanger with new predicate for workspaceId to update project listing
+            }
+        }
+        .onChange(of: sortField, { _, _ in
+            self.initDataManager()  // reinit data manager with new sort descriptor to update the list ordering
+        })
+        .onChange(of: sortAscending, { _, _ in
+            self.initDataManager()  // reinit data manager with new sort descriptor to update the list ordering
+        })
+        .onChange(of: searchText, { _, _ in
+            self.initDataManager()
+        })
         .popover(item: $editProject, attachmentAnchor: .rect(.bounds), arrowEdge: .trailing) { proj in
             // Edit project
             AddProjectView(workspaceId: workspaceId, name: $editProjectName, desc: $editProjectDesc, isEdit: true, isProcessing: $isProcessing, project: proj) { _ in
@@ -208,7 +197,6 @@ struct ProjectsListView: View {
     
     var bottomToolbarView: some View {
         VStack(spacing: 0) {
-            Spacer() // push toolbar to bottom
             Divider()
             HStack {
                 SortMenu(
@@ -226,7 +214,7 @@ struct ProjectsListView: View {
                     },
                     helpText: "Sort Projects"
                 )
-                .padding(.leading, 8)
+                .padding(.leading, 12)
 
                 AddButton(onTap: {}, helpText: "Add Group")
                 

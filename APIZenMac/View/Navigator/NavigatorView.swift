@@ -109,7 +109,7 @@ struct NavigatorView: View {
                     Text(headerTitle)
                         .font(.headline)
                         .lineLimit(1)
-                        .padding(.leading, 4)
+                        .padding(.leading, 8)
                     Spacer()
                     if isProcessing {
                         ProgressView()
