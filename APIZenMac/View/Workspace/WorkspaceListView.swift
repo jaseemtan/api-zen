@@ -24,7 +24,7 @@ struct WorkspaceListView: View {
     
     @Environment(\.managedObjectContext) private var moc
     
-    private var sortField: WorkspacePopupView.WorkspaceSortField
+    private var sortField: SortField
     private var sortAscending: Bool
     private var searchText: String
     private let db = CoreDataService.shared
@@ -33,7 +33,7 @@ struct WorkspaceListView: View {
     let onSelect: (EWorkspace, CoreDataContainer) -> Void
     let onEdit: (EWorkspace, CoreDataContainer) -> Void  // Add form nav view needs to be shown which is in parent view. So we call the parent view function.
 
-    init(isProcessing: Binding<Bool>, selectedWorkspaceId: String, sortField: WorkspacePopupView.WorkspaceSortField, sortAscending: Bool, searchText: String, onSelect: @escaping (EWorkspace, CoreDataContainer) -> Void, onEdit: @escaping (EWorkspace, CoreDataContainer) -> Void) {
+    init(isProcessing: Binding<Bool>, selectedWorkspaceId: String, sortField: SortField, sortAscending: Bool, searchText: String, onSelect: @escaping (EWorkspace, CoreDataContainer) -> Void, onEdit: @escaping (EWorkspace, CoreDataContainer) -> Void) {
         _isProcessing = isProcessing
         self.selectedWorkspaceId = selectedWorkspaceId
         self.onSelect = onSelect

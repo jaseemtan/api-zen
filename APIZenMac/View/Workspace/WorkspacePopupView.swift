@@ -19,7 +19,7 @@ struct WorkspacePopupView: View {
     @State private var showAddForm = false
     @State private var searchText = ""
     @State private var pickerSelection: Int = 0  // 0 = local, 1 = iCloud
-    @State private var sortField: WorkspaceSortField = .manual
+    @State private var sortField: SortField = .manual
     @State private var sortAscending: Bool = true
     /// Indicates if any list processing is happening. If child view is doing reordering, this will be set.
     @State private var isProcessing: Bool = false
@@ -32,17 +32,11 @@ struct WorkspacePopupView: View {
     private let theme = ThemeManager.shared
     private let utils = AZUtils.shared
     
-    enum WorkspaceSortField: String, CaseIterable, Codable, Equatable {
-        case manual
-        case name
-        case created
-    }
-    
     /// For each workspace popup view part of the main view, it will have a user default state value.
     /// This stores the user selected preferences and restores from it each time. This is per workspace. Means, if we have multiple windows of the same workspace, all will have one preference stored.
     struct WorkspacePopupState: Identifiable, Codable {
         var workspaceId: String = ""
-        var sortField: WorkspaceSortField = .manual
+        var sortField: SortField = .manual
         var sortAscending: Bool = true
         
         var id: String { workspaceId }
@@ -133,96 +127,21 @@ struct WorkspacePopupView: View {
                 }
                 
                 HStack {
-                    // Sort button to the left
-                    Menu {  // Using toggle so that the alignment of text shows fixed center with space for checkmark left as a constant. Using Button with HStack with Image and Text doesn't align the text by leaving the checkmark space constant when not checked.
-                        // Section: Sort By
-                        Text("Sort")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                            .disabled(true)
-
-                        Toggle(isOn: Binding(
-                            get: { sortField == .manual },
-                            set: { isOn in
-                                if isOn {
-                                    sortField = .manual
-                                    state.sortField = sortField
-                                    state.saveWorkspacePopupState()
-                                }
-                            }
-                        )) {
-                            Text("manual")
-                        }
-                        
-                        Toggle(isOn: Binding(
-                            get: { sortField == .name },
-                            set: { isOn in
-                                if isOn {
-                                    sortField = .name
-                                    state.sortField = sortField
-                                    state.saveWorkspacePopupState()
-                                }
-                            }
-                        )) {
-                            Text("by Name")
-                        }
-
-                        Toggle(isOn: Binding(
-                            get: { sortField == .created },
-                            set: { isOn in
-                                if isOn {
-                                    sortField = .created
-                                    state.sortField = sortField
-                                    state.saveWorkspacePopupState()
-                                }
-                            }
-                        )) {
-                            Text("by Created")
-                        }
-
-                        Divider()
-
-                        // SECTION: Order
-                        Text("Order")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                            .disabled(true)
-
-                        Toggle(isOn: Binding(
-                            get: { sortAscending },
-                            set: { isOn in
-                                if isOn {
-                                    sortAscending = true
-                                    state.sortAscending = sortAscending
-                                    state.saveWorkspacePopupState()
-                                }
-                            }
-                        )) {
-                            Text("Ascending")
-                        }
-
-                        Toggle(isOn: Binding(
-                            get: { !sortAscending },
-                            set: { isOn in
-                                if isOn {
-                                    sortAscending = false
-                                    state.sortAscending = sortAscending
-                                    state.saveWorkspacePopupState()
-                                }
-                            }
-                        )) {
-                            Text("Descending")
-                        }
-
-                    } label: {
-                        Image(systemName: theme.getSortIconName())
-                            .font(.system(size: 15, weight: .regular))
-                            .imageScale(.medium)
-                            .symbolRenderingMode(.palette)
-                            .foregroundStyle(sortField == .manual && sortAscending ? .primary : theme.getForegroundStyle())
-                    }
-                    .help("Sort Workspaces")
-                    .buttonStyle(.borderless)
+                    SortMenu(
+                        sortField: $sortField,
+                        sortAscending: $sortAscending,
+                        onSortFieldChanged: { field in
+                            sortField = field
+                            state.sortField = sortField
+                            state.saveWorkspacePopupState()
+                        },
+                        onSortAscendingChanged: { flag in
+                            sortAscending = flag
+                            state.sortAscending = sortAscending
+                            state.saveWorkspacePopupState()
+                        },
+                        helpText: "Sort Workspaces"
+                    )
                     
                     Spacer()
                     
