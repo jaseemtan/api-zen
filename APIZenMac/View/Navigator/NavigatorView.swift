@@ -126,8 +126,10 @@ struct NavigatorView: View {
                             attachmentAnchor: .rect(.bounds),
                             arrowEdge: .bottom  // opens popup to the bottom of the button
                         ) {
-                            AddProjectView(workspaceId: workspaceId, name: $newProjectName, desc: $newProjectDesc)
-                                .frame(width: 400, height: 240)  // popup dimension
+                            AddProjectView(workspaceId: workspaceId, name: $newProjectName, desc: $newProjectDesc, isProcessing: $isProcessing, onSave: { _ in
+                                isProcessing = false
+                            })
+                            .frame(width: 400, height: 240)  // popup dimension
                         }
                     }
                 }

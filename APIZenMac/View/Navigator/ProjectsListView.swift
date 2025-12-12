@@ -177,10 +177,12 @@ struct ProjectsListView: View {
             sortAscending = state.sortAscending
         }
         .popover(item: $editProject, attachmentAnchor: .rect(.bounds), arrowEdge: .trailing) { proj in
-            AddProjectView(workspaceId: workspaceId, name: $editProjectName, desc: $editProjectDesc, isEdit: true, project: proj) { _ in
-                Log.debug("on proj save")
+            // Edit project
+            AddProjectView(workspaceId: workspaceId, name: $editProjectName, desc: $editProjectDesc, isEdit: true, isProcessing: $isProcessing, project: proj) { _ in
+                Log.debug("on proj edit save")
                 self.editProject = nil
                 self.initDataManager()
+                isProcessing = false
             }
             .frame(width: 400, height: 240)
         }
