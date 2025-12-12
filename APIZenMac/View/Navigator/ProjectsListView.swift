@@ -22,7 +22,7 @@ struct ProjectsListView: View {
     @State private var isSearchActive: Bool? = false  // Is search button clicked and search field display? If so we are hiding other items on the bottom bar, except sort.
     @State private var projects: [EProject] = []
     @State private var dataManager: CoreDataManager<EProject>?
-    @State private var sortField: ProjectSortField = .manual
+    @State private var sortField: SortField = .manual
     @State private var sortAscending: Bool = true
     
     @Environment(\.managedObjectContext) private var moc
@@ -32,16 +32,10 @@ struct ProjectsListView: View {
     private let db = CoreDataService.shared
     private let theme = ThemeManager.shared
     
-    enum ProjectSortField: String, CaseIterable, Codable, Equatable {
-        case manual
-        case name
-        case created
-    }
-    
     /// This is projects list state which is one per workspace. So it is identified using workspace id.
     struct ProjectsListState: Identifiable, Codable {
         var workspaceId: String = ""
-        var sortField: ProjectSortField = .manual
+        var sortField: SortField = .manual
         var sortAscending: Bool = true
         
         var id: String { workspaceId }
@@ -172,95 +166,21 @@ struct ProjectsListView: View {
             Spacer() // push toolbar to bottom
             Divider()
             HStack {
-                Menu {  // Using toggle so that the alignment of text shows fixed center with space for checkmark left as a constant. Using Button with HStack with Image and Text doesn't align the text by leaving the checkmark space constant when not checked.
-                    // Section: Sort By
-                    Text("Sort")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                        .disabled(true)
-                    
-                    Toggle(isOn: Binding(
-                        get: { sortField == .manual },
-                        set: { isOn in
-                            if isOn {
-                                sortField = .manual
-                                state.sortField = sortField
-                                state.saveProjectPopupState()
-                            }
-                        }
-                    )) {
-                        Text("manual")
-                    }
-                    
-                    Toggle(isOn: Binding(
-                        get: { sortField == .name },
-                        set: { isOn in
-                            if isOn {
-                                sortField = .name
-                                state.sortField = sortField
-                                state.saveProjectPopupState()
-                            }
-                        }
-                    )) {
-                        Text("by Name")
-                    }
-                    
-                    Toggle(isOn: Binding(
-                        get: { sortField == .created },
-                        set: { isOn in
-                            if isOn {
-                                sortField = .created
-                                state.sortField = sortField
-                                state.saveProjectPopupState()
-                            }
-                        }
-                    )) {
-                        Text("by Created")
-                    }
-                    
-                    Divider()
-                    
-                    // SECTION: Order
-                    Text("Order")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                        .disabled(true)
-                    
-                    Toggle(isOn: Binding(
-                        get: { sortAscending },
-                        set: { isOn in
-                            if isOn {
-                                sortAscending = true
-                                state.sortAscending = sortAscending
-                                state.saveProjectPopupState()
-                            }
-                        }
-                    )) {
-                        Text("Ascending")
-                    }
-                    
-                    Toggle(isOn: Binding(
-                        get: { !sortAscending },
-                        set: { isOn in
-                            if isOn {
-                                sortAscending = false
-                                state.sortAscending = sortAscending
-                                state.saveProjectPopupState()
-                            }
-                        }
-                    )) {
-                        Text("Descending")
-                    }
-                    
-                } label: {
-                    Image(systemName: theme.getSortIconName())
-                        .font(.system(size: 15, weight: .regular))
-                        .imageScale(.medium)
-                        .symbolRenderingMode(.palette)
-                        .foregroundStyle(sortField == .manual && sortAscending ? .primary : theme.getForegroundStyle())
-                }
-                .help("Sort Projects")
-                .buttonStyle(.borderless)
+                SortMenu(
+                    sortField: $sortField,
+                    sortAscending: $sortAscending,
+                    onSortFieldChanged: { field in
+                        sortField = field
+                        state.sortField = sortField
+                        state.saveProjectPopupState()
+                    },
+                    onSortAscendingChanged: { flag in
+                        sortAscending = flag
+                        state.sortAscending = sortAscending
+                        state.saveProjectPopupState()
+                    },
+                    helpText: "Sort Projects"
+                )
                 .padding(.leading, 8)
 
                 Spacer()
