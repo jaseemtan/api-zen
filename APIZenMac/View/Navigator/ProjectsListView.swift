@@ -32,6 +32,7 @@ struct ProjectsListView: View {
     @State private var editProjectDesc: String = ""
     @State private var projectPendingDelete: EProject?  // Holds the project that is user is deleting
     @State private var showDeleteConfirmation = false
+    @State private var isDragMode = false
     
     @Environment(\.managedObjectContext) private var moc
     
@@ -101,45 +102,48 @@ struct ProjectsListView: View {
 
     var body: some View {
         ZStack {
-            ScrollView {
-                VStack(spacing: 0) {
-                    // Safe top padding that doesn't affect scroll offset calculation.
-                    // NB: The manual calc of scroll view offset is removed now. But keeping this implementation as is since it works.
-                    Color.clear.frame(height: 12)
-                    // NOTE: No top padding here — avoid adding .padding() that affects top
-                    LazyVStack(alignment: .leading, spacing: 6) {
-                        ForEach(projects) { project in
-                            NameDescView(imageName: "project", name: project.getName(), desc: project.desc)
-                                .padding(.vertical, 6)
-                                .padding(.leading, 4)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .id(project.objectID)
-                                .contentShape(Rectangle())
-                                .onTapGesture { _ in
-                                    onSelect(project)
+            VStack(spacing: 0) {
+                // Safe top padding that doesn't affect scroll offset calculation.
+                // NB: The manual calc of scroll view offset is removed now. But keeping this implementation as is since it works.
+                Color.clear.frame(height: 12)
+                // NOTE: No top padding here — avoid adding .padding() that affects top
+                List {
+                    ForEach(projects) { project in
+                        NameDescView(imageName: "project", name: "\(project.getName()) - \(project.order!)", desc: project.desc, isDisplayDragIndicator: isDragMode)
+                            .padding(.vertical, 6)
+                            .padding(.leading, 4)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .id(project.objectID)
+                            .contentShape(Rectangle())
+                            .onTapIf(!isDragMode, perform: {
+                                onSelect(project)
+                            })
+                            .contextMenu {
+                                Button("Edit") {
+                                    Log.debug("edit on proj: \(project.getName())")
+                                    editProject = project
+                                    editProjectName = project.getName()
+                                    editProjectDesc = project.desc ?? ""
+                                    showEditProjectPopup.toggle()
                                 }
-                                .contextMenu {
-                                    Button("Edit") {
-                                        Log.debug("edit on proj: \(project.getName())")
-                                        editProject = project
-                                        editProjectName = project.getName()
-                                        editProjectDesc = project.desc ?? ""
-                                        showEditProjectPopup.toggle()
-                                    }
-                                    
-                                    Button("Delete", role: .destructive) {
-                                        Log.debug("delete on proj: \(project.getName())")
-                                        projectPendingDelete = project
-                                        showDeleteConfirmation = true  // Display delete confirmation dialog
-                                    }
+                                
+                                Button("Delete", role: .destructive) {
+                                    Log.debug("delete on proj: \(project.getName())")
+                                    projectPendingDelete = project
+                                    showDeleteConfirmation = true  // Display delete confirmation dialog
                                 }
-                        }
+                            }
                     }
-                    // horizontal padding only if you want — no top padding
-                    .padding(.horizontal, 8)
-                    // Safe bottom padding that doesn't affect scroll offset calculation
-                    Color.clear.frame(height: 12 + toolbarHeight)  // Bottom list padding + toolbar height offset.
+                    .onMove { indexSet, order in
+                        Log.debug("on move")
+                        guard sortField == .manual else { return }
+                        reorderProject(from: indexSet, to: order)
+                    }
                 }
+                // horizontal padding only if you want — no top padding
+                .padding(.horizontal, 8)
+                // Safe bottom padding that doesn't affect scroll offset calculation
+                Color.clear.frame(height: 12 + toolbarHeight)  // Bottom list padding + toolbar height offset.
             }
             .onAppear {
                 self.initDataManager()
@@ -224,6 +228,18 @@ struct ProjectsListView: View {
                 )
                 .padding(.leading, 8)
 
+                AddButton(onTap: {}, helpText: "Add Group")
+                
+                Image(systemName: "arrow.up.and.down.text.horizontal")
+                    .font(.system(size: 15, weight: .regular))
+                    .imageScale(.medium)
+                    .contentShape(Rectangle())
+                    .foregroundStyle(!isDragMode ? .primary : theme.getForegroundStyle())
+                    .onTapGesture { _ in
+                        Log.debug("drag mode toggle")
+                        isDragMode.toggle()
+                    }
+                
                 Spacer()
 
                 // Search button on right. Hides other toolbar items when expanded.
@@ -269,6 +285,20 @@ struct ProjectsListView: View {
         state.restoreProjectsListState()
         sortField = state.sortField
         sortAscending = state.sortAscending
+    }
+    
+    func reorderProject(from source: IndexSet, to destination: Int) {
+        guard source.first != nil else { return }
+        isProcessing = true
+        var projects = projects.map { $0 }
+        projects.move(fromOffsets: source, toOffset: destination)  // does the move operation inserting item to the correct order in the local workspace copy. After which we set the order for this list. Saving will update the store and redraw the UI.
+        DispatchQueue.main.async {
+            for (index, project) in projects.enumerated() {
+                project.order = NSDecimalNumber(string: "\(index)")
+            }
+            self.db.saveMainContext()
+            isProcessing = false
+        }
     }
     
     private func getSortDescriptors() -> [NSSortDescriptor] {

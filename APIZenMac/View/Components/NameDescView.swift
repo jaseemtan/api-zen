@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AZCommon
 
 /// Displays name, description with an image as a list item. The texts will wrap to new line to display full text content. Used in workspace, project listing.
 struct NameDescView: View {
@@ -16,12 +17,20 @@ struct NameDescView: View {
     var name: String
     var desc: String?
     var isDisplayCheckmark = false
+    /// List items cannot simultaneously work with click and drag. So when drag is enabled, we need to display an indicator.
+    var isDisplayDragIndicator = false
     
     @Environment(\.colorScheme) private var colorScheme
     private let theme = ThemeManager.shared
     
     var body: some View {
         HStack {
+            if isDisplayDragIndicator {
+                Image(systemName: "line.3.horizontal")
+                    .imageScale(.medium)
+                    .frame(width: 6, height: 6, alignment: .center)
+            }
+            
             Image(imageName)
                 .resizable()
                 .renderingMode(.template)
