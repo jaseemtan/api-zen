@@ -59,80 +59,45 @@ struct MainWindowRoot: View {
     
     private let db = CoreDataService.shared
     
+    @State var isProcessing = true
+    
     var body: some View {
-        MainView(
-            selectedWorkspaceId: $workspaceId,
-            coreDataContainer: $coreDataContainer,
-            workspaceName: $workspaceName,
-            windowIndex: windowIndex,
-            showNavigator: $showNavigator,
-            showInspector: $showInspector,
-            showRequestComposer: $showRequestComposer,
-            showCodeView: $showCodeView
-        )
-        .environment(\.coreDataContainer, $coreDataContainer)
-        .environment(\.managedObjectContext, coreDataContainer == .local ? self.db.localMainMOC : self.db.ckMainMOC)
-        .task {
-            Log.debug("WorkspaceWindowRoot task")
-            // Assign a unique windowIndex per window
-            if windowIndex == 0 {
-                windowIndex = Self.nextWindowIndex
-                Self.nextWindowIndex += 1
+        if !isProcessing {
+            MainView(
+                selectedWorkspaceId: $workspaceId,
+                coreDataContainer: $coreDataContainer,
+                workspaceName: $workspaceName,
+                windowIndex: windowIndex,
+                showNavigator: $showNavigator,
+                showInspector: $showInspector,
+                showRequestComposer: $showRequestComposer,
+                showCodeView: $showCodeView
+            )
+            .environment(\.coreDataContainer, $coreDataContainer)
+            .environment(\.managedObjectContext, coreDataContainer == .local ? self.db.localMainMOC : self.db.ckMainMOC)
+            .onDisappear {
+                Log.debug("WorkspaceWindowRoot onDisappear")
+                // self.windowRegistry.remove(windowIndex: windowIndex)
             }
-            // Make sure default workspace is created in local CoreData container.
-            _ = self.db.getDefaultWorkspace(ctx: self.db.localMainMOC)
-            // Bootstrap windows if present after restoration during init. Each window only participates in bootstrap once.
-            if !didAssignBootstrapWorkspace,
-               Self.nextBootstrapIndex < Self.bootstrapWorkspaces.count {
-                let entry = Self.bootstrapWorkspaces[Self.nextBootstrapIndex]
-                // Restore state from registry
-                workspaceId = entry.workspaceId
-                coreDataContainer = entry.coreDataContainer
-                showNavigator = entry.showNavigator
-                showInspector = entry.showInspector
-                showRequestComposer = entry.showRequestComposer
-                showCodeView = entry.showCodeView
-                if let ws = self.db.getWorkspace(id: workspaceId, ctx: self.db.getMainMOC(container: coreDataContainer)) {
-                    workspaceName = ws.getName()
+        } else {
+            ProgressView()
+                .controlSize(.small)
+                .onAppear(perform: {
+                    Log.debug("WorkspaceWindowRoot onAppear")
+//                    Self.bootstrapWorkspaces = self.windowRegistry.restoreOpenWindows()
+                    self.workspaceName = "Foo bar"
+                })
+                .task {
+                    Log.debug("WorkspaceWindowRoot task")
+                    // Assign a unique windowIndex per window
+                    if windowIndex == 0 {
+                        windowIndex = Self.nextWindowIndex
+                        Self.nextWindowIndex += 1
+                    }
+                    // Make sure default workspace is created in local CoreData container.
+                    _ = self.db.getDefaultWorkspace(ctx: self.db.localMainMOC)
+                    isProcessing = false
                 }
-                didAssignBootstrapWorkspace = true
-                Self.nextBootstrapIndex += 1
-                // If there's still another bootstrap workspace left, ask SwiftUI to open a new window for it.
-                if Self.nextBootstrapIndex < Self.bootstrapWorkspaces.count {
-                    openWindow(id: "workspace") // opens another WorkspaceWindowRoot
-                }
-            } else {
-                if let ws = self.db.getWorkspace(id: workspaceId, ctx: self.db.getMainMOC(container: coreDataContainer)) {
-                    workspaceName = ws.getName()
-                }
-//                _ = self.db.createWorkspace(id: "test-ws", name: "Test workspace", desc: "", isSyncEnabled: false, ctx: self.db.localMainMOC)
-//                self.db.saveMainContext()
-            }
-            self.windowRegistry.add(windowIndex: windowIndex, workspaceId: workspaceId, coreDataContainer: coreDataContainer, showNavigator: showNavigator, showInspector: showInspector, showRequestComposer: showRequestComposer, showCodeView: showCodeView)
-        }
-        .onChange(of: workspaceId, { oldValue, newValue in
-            Log.debug("wsId changed - old: \(oldValue) - new: \(newValue)")
-            self.windowRegistry.add(windowIndex: windowIndex, workspaceId: newValue, coreDataContainer: coreDataContainer, showNavigator: showNavigator, showInspector: showInspector, showRequestComposer: showRequestComposer, showCodeView: showCodeView)
-        })
-        .onChange(of: showNavigator, { oldValue, newValue in
-            self.windowRegistry.add(windowIndex: windowIndex, workspaceId: workspaceId, coreDataContainer: coreDataContainer, showNavigator: newValue, showInspector: showInspector, showRequestComposer: showRequestComposer, showCodeView: showCodeView)
-        })
-        .onChange(of: showInspector, { oldValue, newValue in
-            self.windowRegistry.add(windowIndex: windowIndex, workspaceId: workspaceId, coreDataContainer: coreDataContainer, showNavigator: showNavigator, showInspector: newValue, showRequestComposer: showRequestComposer, showCodeView: showCodeView)
-        })
-        .onChange(of: showRequestComposer, { oldValue, newValue in
-            self.windowRegistry.add(windowIndex: windowIndex, workspaceId: workspaceId, coreDataContainer: coreDataContainer, showNavigator: showNavigator, showInspector: showInspector, showRequestComposer: newValue, showCodeView: showCodeView)
-        })
-        .onChange(of: showCodeView, { oldValue, newValue in
-            self.windowRegistry.add(windowIndex: windowIndex, workspaceId: workspaceId, coreDataContainer: coreDataContainer, showNavigator: showNavigator, showInspector: showInspector, showRequestComposer: showRequestComposer, showCodeView: newValue)
-        })
-        .onAppear {
-            Log.debug("WorkspaceWindowRoot onAppear")            
-            Self.bootstrapWorkspaces = self.windowRegistry.restoreOpenWindows()
-        }
-        .onDisappear {
-            Log.debug("WorkspaceWindowRoot onDisappear")
-            self.windowRegistry.remove(windowIndex: windowIndex)
         }
     }
 }
