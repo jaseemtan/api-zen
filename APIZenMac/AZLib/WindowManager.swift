@@ -6,6 +6,7 @@
 //
 
 import Cocoa
+import SwiftUI
 import AZCommon
 import AZData
 
@@ -82,5 +83,17 @@ class WindowRegistry {
             }
         }
         return []
+    }
+}
+
+class WindowManager {
+    static let shared = WindowManager()
+    
+    func isWindowInTab(_ window: NSWindow?) -> Bool {
+        guard let window = window else { return false }
+        if let group = window.tabGroup {
+            return group.windows.count > 1
+        }
+        return false
     }
 }
