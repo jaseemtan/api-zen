@@ -17,6 +17,7 @@ struct ProjectsListView: View {
     /// We need to invoke the parent view function so that the navigator can navigate to request view on selecting a project.
     let onSelect: (EProject) -> Void
     @Binding var selectedProject: EProject?
+    @Binding var isProcessing: Bool
     
     @State private var searchText: String = ""
     @State private var isSearchActive: Bool? = false  // Is search button clicked and search field display? If so we are hiding other items on the bottom bar, except sort.
@@ -28,6 +29,8 @@ struct ProjectsListView: View {
     @State private var editProject: EProject?  // Holds the project that is under editing.
     @State private var editProjectName: String = ""
     @State private var editProjectDesc: String = ""
+    @State private var projectPendingDelete: EProject?  // Holds the project that is user is deleting
+    @State private var showDeleteConfirmation = false
     
     @Environment(\.managedObjectContext) private var moc
     
@@ -86,12 +89,13 @@ struct ProjectsListView: View {
     @State private var state: ProjectsListState = ProjectsListState()
     
     // Explicit init with only the required params is required because we have many properties and default init becomes internal.
-    init(workspaceId: String, onSelect: @escaping (EProject) -> Void, selectedProject: Binding<EProject?>, searchText: String) {
+    init(workspaceId: String, onSelect: @escaping (EProject) -> Void, selectedProject: Binding<EProject?>, searchText: String, isProcessing: Binding<Bool>) {
         Log.debug("proj list view: ws id: \(workspaceId)")
         self.workspaceId = workspaceId
         self.onSelect = onSelect
         self._selectedProject = selectedProject
         self.searchText = searchText
+        self._isProcessing = isProcessing
     }
 
     var body: some View {
@@ -129,8 +133,8 @@ struct ProjectsListView: View {
                                 
                                 Button("Delete", role: .destructive) {
                                     Log.debug("delete on proj: \(project.getName())")
-//                                    workspacePendingDelete = workspace
-//                                    showDeleteConfirmation = true  // Display delete confirmation dialog
+                                    projectPendingDelete = project
+                                    showDeleteConfirmation = true  // Display delete confirmation dialog
                                 }
                             }
                         }
@@ -179,6 +183,24 @@ struct ProjectsListView: View {
                 self.initDataManager()
             }
             .frame(width: 400, height: 240)
+        }
+        .confirmationDialog("Are you sure you want to delete this project?", isPresented: $showDeleteConfirmation, titleVisibility: .visible) {
+            Button("Delete", role: .destructive) {
+                if let project = projectPendingDelete {
+                    isProcessing = true
+                    self.db.deleteEntity(project, ctx: moc)
+                    self.db.saveMainContext { _ in
+                        isProcessing = false
+                    }
+                    // TODO: delete any request list preferences
+                }
+                projectPendingDelete = nil
+            }
+
+            Button("Cancel", role: .cancel) {
+                projectPendingDelete = nil
+                isProcessing = false
+            }
         }
     }
     

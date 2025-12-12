@@ -27,6 +27,7 @@ struct NavigatorView: View {
     
     @State private var newProjectName = ""
     @State private var newProjectDesc = ""
+    @State private var isProcessing = false  // For progress indicator at the add project button position that will be set on project operations like delete, copy, move etc.
 
     enum Pane {
         case project
@@ -45,7 +46,7 @@ struct NavigatorView: View {
 
             ZStack {
                 if pane == .project {
-                    ProjectsListView(workspaceId: workspaceId, onSelect: onProjectSelected(_:), selectedProject: $selectedProject, searchText: "")
+                    ProjectsListView(workspaceId: workspaceId, onSelect: onProjectSelected(_:), selectedProject: $selectedProject, searchText: "", isProcessing: $isProcessing)
                     .transition(listTransition)
                 }
 
@@ -83,6 +84,7 @@ struct NavigatorView: View {
     /// List header which shows Projects or project name with a back button.
     private var header: some View {
         HStack {
+            // Request list
             if pane == .request {
                 Button {
                     isPushing = false
@@ -102,24 +104,31 @@ struct NavigatorView: View {
                 .help("Back")
 //                .debugOverlay()
             } else {
+                // Project list
                 HStack {
                     Text(headerTitle)
                         .font(.headline)
                         .lineLimit(1)
                         .padding(.leading, 4)
                     Spacer()
-                    // Add project button
-                    AddButton(onTap: {
-                        Log.debug("add project clicked")
-                        showAddProjectPopup.toggle()
-                    }, helpText: "Add Project")
-                    .popover(
-                        isPresented: $showAddProjectPopup,
-                        attachmentAnchor: .rect(.bounds),
-                        arrowEdge: .bottom  // opens popup to the bottom of the button
-                    ) {
-                        AddProjectView(workspaceId: workspaceId, name: $newProjectName, desc: $newProjectDesc)
-                            .frame(width: 400, height: 240)  // popup dimension
+                    if isProcessing {
+                        ProgressView()
+                            .controlSize(.small)
+                            .padding(.horizontal, 8)
+                    } else {
+                        // Add project button
+                        AddButton(onTap: {
+                            Log.debug("add project clicked")
+                            showAddProjectPopup.toggle()
+                        }, helpText: "Add Project")
+                        .popover(
+                            isPresented: $showAddProjectPopup,
+                            attachmentAnchor: .rect(.bounds),
+                            arrowEdge: .bottom  // opens popup to the bottom of the button
+                        ) {
+                            AddProjectView(workspaceId: workspaceId, name: $newProjectName, desc: $newProjectDesc)
+                                .frame(width: 400, height: 240)  // popup dimension
+                        }
                     }
                 }
             }
