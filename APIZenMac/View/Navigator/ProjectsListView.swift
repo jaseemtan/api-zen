@@ -35,6 +35,7 @@ struct ProjectsListView: View {
     @State private var isDragMode = false
     
     @Environment(\.managedObjectContext) private var moc
+    @Environment(\.colorScheme) private var colorScheme
     
     private let projectsCacheName: String = "projects-cache"
     private let toolbarHeight: CGFloat = 32.0
@@ -218,15 +219,20 @@ struct ProjectsListView: View {
 
                 AddButton(onTap: {}, helpText: "Add Group")
                 
-                Image(systemName: "arrow.up.and.down.text.horizontal")
-                    .font(.system(size: 15, weight: .regular))
-                    .imageScale(.medium)
-                    .contentShape(Rectangle())
-                    .foregroundStyle(!isDragMode ? .primary : theme.getForegroundStyle())
-                    .onTapGesture { _ in
-                        Log.debug("drag mode toggle")
-                        isDragMode.toggle()
-                    }
+                // Drag mode button
+                Button {
+                    Log.debug("drag mode toggle")
+                    isDragMode.toggle()
+                } label: {
+                    Image(systemName: "arrow.up.and.down.text.horizontal")
+                        .font(.system(size: 15, weight: .regular))
+                        .imageScale(.medium)
+                        .contentShape(Rectangle())
+                        .foregroundStyle(getDragModeIconColor())
+                }
+                .buttonStyle(.borderless)
+                .help("Drag Mode")
+                .disabled(!isDraggable())
                 
                 Spacer()
 
@@ -287,6 +293,21 @@ struct ProjectsListView: View {
             self.db.saveMainContext()
             isProcessing = false
         }
+    }
+    
+    /// Check if the project list is draggable, which will be the case only when sorting is manual and order is ascending.
+    private func isDraggable() -> Bool {
+        return sortField == .manual && sortAscending
+    }
+    
+    private func getDragModeIconColor() -> Color {
+        if !isDraggable() {
+            return theme.getDisabledIconColor(colorScheme)
+        }
+        if isDragMode {
+            return theme.getAccentColor()
+        }
+        return .secondary
     }
     
     private func getSortDescriptors() -> [NSSortDescriptor] {

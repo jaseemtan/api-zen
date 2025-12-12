@@ -19,7 +19,7 @@ class ThemeManager {
     
     /// The description text colour.
     func getDescriptionColor(_ scheme: ColorScheme) -> Color {
-        scheme == .dark ? .darkGrey4 : .lightGrey4
+        return scheme == .dark ? .darkGrey4 : .lightGrey4
     }
     
     /// Foreground style for elements like images which returns the system accent colour.
@@ -32,25 +32,30 @@ class ThemeManager {
         return coreDataContainer == .local ? "desktopcomputer" : "icloud"
     }
     
+    /// Sort icon with a cirle and lines
     func getSortIconName() -> String {
         return "line.3.horizontal.decrease.circle"
+    }
+    
+    func getDisabledIconColor(_ scheme: ColorScheme) -> Color {
+        return scheme == .dark ? .darkGrey4 : .lightGrey4
     }
 }
 
 /// API Zen color values for macOS
 extension Color {
-    static let darkGrey  = Color(NSColor(red: 39/255,  green: 40/255,  blue: 42/255,  alpha: 1.0))
-    static let darkGrey1 = Color(NSColor(red: 50/255,  green: 50/255,  blue: 50/255,  alpha: 1.0))
+    static let darkGrey  = Color(NSColor(red: 39/255,  green: 40/255,  blue: 42/255,  alpha: 1.0))  // very dark - closer to black
+    static let darkGrey1 = Color(NSColor(red: 50/255,  green: 50/255,  blue: 50/255,  alpha: 1.0))  // lighter - decrease in darkness
     static let darkGrey2 = Color(NSColor(red: 70/255,  green: 70/255,  blue: 70/255,  alpha: 1.0))
     static let darkGrey3 = Color(NSColor(red: 100/255, green: 100/255, blue: 100/255, alpha: 1.0))
     static let darkGrey4 = Color(NSColor(red: 125/255, green: 125/255, blue: 125/255, alpha: 1.0))
 
-    static let lightGrey  = Color(NSColor(red: 245/255, green: 245/255, blue: 245/255, alpha: 1.0))
+    static let lightGrey  = Color(NSColor(red: 245/255, green: 245/255, blue: 245/255, alpha: 1.0))  // very light
     static let lightGrey1 = Color(NSColor(red: 235/255, green: 235/255, blue: 235/255, alpha: 1.0))
     static let lightGrey2 = Color(NSColor(red: 210/255, green: 210/255, blue: 210/255, alpha: 1.0))
     static let lightGrey3 = Color(NSColor(red: 175/255, green: 175/255, blue: 175/255, alpha: 1.0))
     static let lightGrey4 = Color(NSColor(red: 125/255, green: 125/255, blue: 125/255, alpha: 1.0))
     static let lightGrey5 = Color(NSColor(red: 100/255, green: 100/255, blue: 100/255, alpha: 1.0))
 
-    static let lightPurple = Color(NSColor(red: 119/255, green: 123/255, blue: 246/255, alpha: 1.0))
+    static let lightPurple = Color(NSColor(red: 119/255, green: 123/255, blue: 246/255, alpha: 1.0))  // purple like
 }
