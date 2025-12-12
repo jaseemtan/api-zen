@@ -32,9 +32,6 @@ struct ProjectsListView: View {
     @State private var editProjectDesc: String = ""
     @State private var projectPendingDelete: EProject?  // Holds the project that is user is deleting
     @State private var showDeleteConfirmation = false
-    // This tracks where the indicator line should appear
-    @State private var dropTargetId: String?
-    @State private var dropAbove: Bool = true
     
     @Environment(\.managedObjectContext) private var moc
     
@@ -134,21 +131,6 @@ struct ProjectsListView: View {
                                         Log.debug("delete on proj: \(project.getName())")
                                         projectPendingDelete = project
                                         showDeleteConfirmation = true  // Display delete confirmation dialog
-                                    }
-                                }
-                                // We need to handle drag and drop manually because list has tag gesture enabled and default drag and drop does not work
-                                .onDrag {
-                                    Log.debug("proj: \(project.getName()) dragged")
-                                    return NSItemProvider(object: project.getId() as NSString)
-                                }
-                                .onDrop(of: [UTType.plainText.identifier], delegate: ProjectDropDelegate(target: project, projects: $projects, isProcessing: $isProcessing, dropTargetId: $dropTargetId, dropAbove: $dropAbove))
-                                .overlay(alignment: dropAbove ? .top : .bottom) {
-                                    if dropTargetId == project.getId() {
-                                        Rectangle()
-                                            .fill(Color.accentColor)
-                                            .frame(height: 2)
-                                            .padding(.horizontal, -8)
-                                            .transition(.opacity)
                                     }
                                 }
                         }
@@ -303,78 +285,3 @@ struct ProjectsListView: View {
     }
 }
 
-private struct ProjectDropDelegate: DropDelegate {
-    /// The dropped project
-    let target: EProject
-    @Binding var projects: [EProject]
-    @Binding var isProcessing: Bool
-    
-    @Binding var dropTargetId: String?
-    @Binding var dropAbove: Bool
-    
-    private let db: CoreDataService = CoreDataService.shared
-    
-    func performDrop(info: DropInfo) -> Bool {
-        isProcessing = true
-        guard
-            let fromId = loadId(info),
-            let fromIndex = projects.firstIndex(where: { $0.getId() == fromId }),
-            let toIndex = projects.firstIndex(where: { $0.getId() == target.getId() }),
-            fromIndex != toIndex
-        else {
-            isProcessing = false
-            return false
-        }
-        withAnimation {
-            let item = projects.remove(at: fromIndex)
-            let insertIndex = fromIndex < toIndex ? toIndex + 1 : toIndex
-            projects.insert(item, at: insertIndex)
-        }
-        DispatchQueue.main.async {
-            for (index, project) in projects.enumerated() {
-                project.order = NSDecimalNumber(string: "\(index)")
-            }
-            self.db.saveMainContext { _ in
-                isProcessing = false
-            }
-        }
-        return true
-    }
-    
-    func dropEntered(info: DropInfo) {
-        guard
-            let dragId = loadId(info),
-            let _ = projects.firstIndex(where: { $0.getId() == dragId }),
-            let _ = projects.firstIndex(of: target)
-        else { return }
-
-        // Determine whether the drop point is in upper or lower half
-        let location = info.location
-        Log.debug("location.y: \(location.y)")
-        dropAbove = location.y > 1
-
-        dropTargetId = target.getId()
-    }
-    
-    func dropExited(info: DropInfo) {
-        dropTargetId = nil
-    }
-    
-    func dropUpdated(info: DropInfo) -> DropProposal? {
-        return DropProposal(operation: .move)
-    }
-    
-    private func loadId(_ info: DropInfo) -> String? {
-        let providers = info.itemProviders(for: [UTType.plainText.identifier])
-        guard let provider = providers.first else { return nil }
-
-        var result: String?
-        let sema = DispatchSemaphore(value: 0)  // semaphore to wait for result before returning the call
-        provider.loadObject(ofClass: NSString.self) { obj, _ in
-            result = obj as? String
-            sema.signal()
-        }
-        sema.wait()
-        return result
-    }
-}
