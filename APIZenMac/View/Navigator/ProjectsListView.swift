@@ -217,22 +217,24 @@ struct ProjectsListView: View {
                 )
                 .padding(.leading, 12)
 
-                AddButton(onTap: {}, helpText: "Add Group")
-                
-                // Drag mode button
-                Button {
-                    Log.debug("drag mode toggle")
-                    isDragMode.toggle()
-                } label: {
-                    Image(systemName: "arrow.up.and.down.text.horizontal")
-                        .font(.system(size: 15, weight: .regular))
-                        .imageScale(.medium)
-                        .contentShape(Rectangle())
-                        .foregroundStyle(getDragModeIconColor())
+                if !(isSearchActive ?? false) {
+                    AddButton(onTap: {}, helpText: "Add Group")
+                    
+                    // Drag mode button
+                    Button {
+                        Log.debug("drag mode toggle")
+                        isDragMode.toggle()
+                    } label: {
+                        Image(systemName: "arrow.up.and.down.text.horizontal")
+                            .font(.system(size: 15, weight: .regular))
+                            .imageScale(.medium)
+                            .contentShape(Rectangle())
+                            .foregroundStyle(getDragModeIconColor())
+                    }
+                    .buttonStyle(.borderless)
+                    .help("Drag Mode")
+                    .disabled(!isDraggable())
                 }
-                .buttonStyle(.borderless)
-                .help("Drag Mode")
-                .disabled(!isDraggable())
                 
                 Spacer()
 
