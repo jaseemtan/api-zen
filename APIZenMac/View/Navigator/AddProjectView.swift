@@ -18,6 +18,8 @@ struct AddProjectView: View {
     var isEdit: Bool = false
     
     var project: EProject?  // Holds the project if edit mode
+    // Optional callback on save
+    var onSave: ((EProject) -> Void)?
     
     @Environment(\.managedObjectContext) private var moc
     @Environment(\.dismiss) private var dismiss
@@ -39,7 +41,7 @@ struct AddProjectView: View {
             .disabled(isSaveButtonDisabled())
             Spacer()
         }
-        .navigationTitle(isEdit ? "Edit Workspace" : "New Workspace")
+        .navigationTitle(isEdit ? "Edit Project" : "New Project")
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
     }
     
@@ -52,12 +54,26 @@ struct AddProjectView: View {
     }
     
     private func saveProject() {
-        Log.debug("add project")
-        if let ws = self.db.getWorkspace(id: workspaceId, ctx: moc) {
+        Log.debug("add/edit project")
+        guard let ws = self.db.getWorkspace(id: workspaceId, ctx: moc) else { return }
+        if !isEdit {
             self.dbSvc.createProject(workspace: ws, name: name, desc: desc)
+            name = ""
+            desc = ""
+            dismiss()
+        } else {
+            if let project = project {
+                project.name = name
+                project.desc = desc
+                self.db.saveMainContext { _ in
+                    DispatchQueue.main.async {
+                        onSave?(project)
+                        name = ""
+                        desc = ""
+                        dismiss()
+                    }
+                }
+            }
         }
-        name = ""
-        desc = ""
-        dismiss()
     }
 }

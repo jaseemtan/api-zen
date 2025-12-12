@@ -115,6 +115,7 @@ struct WorkspaceListView: View {
         fr.fetchBatchSize = 50
         if let dm = self.dataManager { dm.clearCache() }  // clear previous cache if already initialized before.
         dataManager = CoreDataManager(fetchRequest: fr, ctx: moc, cacheName: self.workspacesCacheName, onChange: { workspaces in
+            self.workspaces = []  // force reload
             self.workspaces = workspaces
         })
     }

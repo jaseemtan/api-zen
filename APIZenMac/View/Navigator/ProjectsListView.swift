@@ -24,6 +24,10 @@ struct ProjectsListView: View {
     @State private var dataManager: CoreDataManager<EProject>?
     @State private var sortField: SortField = .manual
     @State private var sortAscending: Bool = true
+    @State private var showEditProjectPopup: Bool = false
+    @State private var editProject: EProject?  // Holds the project that is under editing.
+    @State private var editProjectName: String = ""
+    @State private var editProjectDesc: String = ""
     
     @Environment(\.managedObjectContext) private var moc
     
@@ -114,6 +118,21 @@ struct ProjectsListView: View {
                             }
                             .buttonStyle(.plain)
                             .id(project.objectID)
+                            .contextMenu {
+                                Button("Edit") {
+                                    Log.debug("edit on proj: \(project.getName())")
+                                    editProject = project
+                                    editProjectName = project.getName()
+                                    editProjectDesc = project.desc ?? ""
+                                    showEditProjectPopup.toggle()
+                                }
+                                
+                                Button("Delete", role: .destructive) {
+                                    Log.debug("delete on proj: \(project.getName())")
+//                                    workspacePendingDelete = workspace
+//                                    showDeleteConfirmation = true  // Display delete confirmation dialog
+                                }
+                            }
                         }
                     }
                     // horizontal padding only if you want — no top padding
@@ -128,6 +147,7 @@ struct ProjectsListView: View {
             .onChange(of: workspaceId) { oldId, newId in
                 if oldId != newId {
                     Log.debug("proj list: workspace id changed: \(newId)")
+                    self.updateState(newId)  // clear project list state and restore state if present for the given workspace.
                     self.initDataManager()  // reinit data maanger with new predicate for workspaceId to update project listing
                 }
             }
@@ -140,7 +160,6 @@ struct ProjectsListView: View {
             .onChange(of: searchText, { _, _ in
                 self.initDataManager()
             })
-            
             // Fixed bottom toolbar overlay
             bottomToolbarView
         }
@@ -153,12 +172,14 @@ struct ProjectsListView: View {
             sortField = state.sortField
             sortAscending = state.sortAscending
         }
-        .onChange(of: workspaceId) { _, wsId in
-            self.updateState(wsId)  // clear project list state and restore state if present for the given workspace.
+        .popover(item: $editProject, attachmentAnchor: .rect(.bounds), arrowEdge: .trailing) { proj in
+            AddProjectView(workspaceId: workspaceId, name: $editProjectName, desc: $editProjectDesc, isEdit: true, project: proj) { _ in
+                Log.debug("on proj save")
+                self.editProject = nil
+                self.initDataManager()
+            }
+            .frame(width: 400, height: 240)
         }
-        .onChange(of: searchText, { _, _ in
-            self.initDataManager()
-        })
     }
     
     var bottomToolbarView: some View {
@@ -204,7 +225,7 @@ struct ProjectsListView: View {
     
     /// The query is cached. So multiple searches of the same parameters would not be that costly.
     func initDataManager() {
-        Log.debug("proj list view: init data manager")
+        Log.debug("proj list view: init data manager - \(self.db.getContainer(moc))" )
         let fr = EProject.fetchRequest()
         fr.sortDescriptors = self.getSortDescriptors()
         if searchText.isNotEmpty {
@@ -216,6 +237,7 @@ struct ProjectsListView: View {
         if let dm = self.dataManager { dm.clearCache() }  // clear previous cache if already initialized before.
         dataManager = CoreDataManager(fetchRequest: fr, ctx: moc, cacheName: self.projectsCacheName, onChange: { projects in
             withAnimation {
+                self.projects = []  // force reload. For some reason, editing local project is not reloading the list. Edit cloud project is reflecting properly.
                 self.projects = projects
             }
         })
