@@ -59,7 +59,7 @@ struct MainWindowRoot: View {
             .environment(\.coreDataContainer, $coreDataContainer)
             .environment(\.managedObjectContext, coreDataContainer == .local ? self.db.localMainMOC : self.db.ckMainMOC)
             .onChange(of: workspaceId, { oldValue, newValue in
-                Log.debug("wsId changed - old: \(oldValue) - new: \(newValue)")
+                Log.debug("mwroot: wsId changed - old: \(oldValue) - new: \(newValue)")
                 self.windowRegistry.add(windowIndex: windowIndex, workspaceId: newValue, coreDataContainer: coreDataContainer, showNavigator: showNavigator, showInspector: showInspector, showCodeView: showCodeView)
             })
             .onChange(of: showNavigator, { oldValue, newValue in
@@ -72,7 +72,7 @@ struct MainWindowRoot: View {
                 self.windowRegistry.add(windowIndex: windowIndex, workspaceId: workspaceId, coreDataContainer: coreDataContainer, showNavigator: showNavigator, showInspector: showInspector, showCodeView: newValue)
             })
             .onDisappear {
-                Log.debug("WorkspaceWindowRoot onDisappear")
+                Log.debug("mwroot: onDisappear")
                 self.windowRegistry.remove(windowIndex: windowIndex)
             }
         } else {
@@ -80,31 +80,36 @@ struct MainWindowRoot: View {
             ProgressView()
                 .controlSize(.small)
                 .onAppear(perform: {
-                    Log.debug("WorkspaceWindowRoot onAppear")
+                    Log.debug("mwroot: onAppear")
                     if isRootWindow {
+                        Log.debug("mwroot: root window \(windowIndex)")
                         _ = self.db.getDefaultWorkspace(ctx: self.db.localMainMOC)  // Make sure default workspace is created in local CoreData container.
-                        self.windowRegistry.restoreOpenWindows()  // restore open window state from user defaults
+                        self.windowRegistry.restoreOpenWindows()  // restore open window state from user defaults once.
+                    } else {
+                        Log.debug("mwroot: not root window \(windowIndex)")
                     }
                     self.restoreWindowState()  // restore current window state
                 })
                 .task {
-                    Log.debug("WorkspaceWindowRoot task")
+                    Log.debug("mwroot: task")
                     isProcessing = false
                 }
         }
     }
     
-    /// Restore window state for the current window.
+    /// Restore window state for the current window. If there is no state, default values will be used. If there is state, it beings with 0, so the first window will get this state and so on.
+    /// Since it's the root window, it will open other windows in order if present. The windows opened using this method has `isRootWindow` set to false. So this newly opened window will not open other windows.
+    /// There will be only one root window when windows are restored automatically. When user press cmd + n, the new window it opens will be a root window. But since we set all windows opened flag, this new root window will not open additional windows.
     private func restoreWindowState() {
         self.windowIndex = self.windowRegistry.incIdx()
         let idx = self.windowIndex
-        Log.debug("main window root: restore window state - \(idx)")
+        Log.debug("mwroot: restore window state - \(idx)")
         if let window = self.windowRegistry.getWindow(windowIdx: idx) {
             self.workspaceId = window.workspaceId
             self.coreDataContainer = window.coreDataContainer
             if let ws = self.db.getWorkspace(id: self.workspaceId, ctx: self.db.getMainMOC(container: self.coreDataContainer)) {
                 self.workspaceName = ws.getName()
-                Log.debug("restoring ws: \(ws.getName())")
+                Log.debug("mwroot: restoring ws: \(ws.getName())")
             }
             self.showNavigator = window.showNavigator
             self.showInspector = window.showInspector
@@ -112,13 +117,15 @@ struct MainWindowRoot: View {
          
             //TODO: restore tabs for the current window
             
-            if isRootWindow {  // restore other windows
+            if isRootWindow && !self.windowRegistry.isAllWindowsOpened() {  // restore other windows
                 let totalWindows: Int = min(self.windowRegistry.getWindows().count, 20)  // restore a max of 20 windows only.
                 if totalWindows > 1 {
+                    Log.debug("mwroot: opening windows")
                     for idx in 1..<totalWindows {
                         openWindow(id: "workspace", value: idx)
                     }
                 }
+                self.windowRegistry.setAllWindowsOpened()
             }
         } else {
             // This window is not present in the registry. Add it.

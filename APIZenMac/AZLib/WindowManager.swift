@@ -28,10 +28,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 /// Since it's an actor it can work safely in concurrency with multiple windows reading and writing data.
 class WindowRegistry {
     static let shared = WindowRegistry()
-    private var idx: Int = -1  // Use incIdx() to get new window index.
-
-    private let queue = DispatchQueue(label: "az-window-registry-queue")
+    let maxWindowsToRestore = 20
+    let maxTabsToRestore = 50
     
+    private var idx: Int = -1  // Use incIdx() to get new window index.
+    /// Initially set to false. Once the initial windows are restored from storage on launch, this will be set to prevent overwriting open window states from storage.
+    private var isRestored: Bool = false
+    
+    /// Flag indicating that all windows saved in storage which was restored on launch is opened. Once, further open window calls will not be made.
+    private var isAllWindowOpened: Bool = false
+    
+    private let queue = DispatchQueue(label: "az-window-registry-queue")
     private let utils = AZUtils.shared
     
     struct Entry: Identifiable, Codable {  // Codable to serialize
@@ -140,13 +147,15 @@ class WindowRegistry {
         let windowsCount = self.windows.values.count
         var tabIdx = windowsCount  // Order tabs sequentially starting after windows index. This is so that all windows get unique index on restoration.
         var entries: [Entry] = Array(self.windows.values).sorted { $0.id < $1.id }  // Since this is a dictionary the values are not in order. So we sort by id asc so that during restoration window 1 gets the first workspace in that order.
-        for idx in entries.indices {
+        let wlen = min(maxWindowsToRestore, entries.count)  // process only a limited set of windows
+        for idx in 0..<wlen {
             entries[idx].windowIdx = idx  // order windows sequentially
             let tabs = entries[idx].tabs.values.sorted { tabA, tabB in
                 tabA.windowIdx < tabB.windowIdx
             }
             entries[idx].tabs = [:]
-            for tIdx in tabs.indices {
+            let tlen = min(maxTabsToRestore, tabs.count)  // process only a limited set of tabs.
+            for tIdx in 0..<tlen {
                 entries[idx].tabs[tabIdx] = tabs[tIdx]
                 entries[idx].tabs[tabIdx]!.parentWindowIdx = entries[idx].windowIdx  // update tab's parent window id
                 tabIdx += 1
@@ -174,6 +183,10 @@ class WindowRegistry {
     /// Restores the list of open windows entries to the window registry state. This does not update the UI.
     func restoreOpenWindows() {
         Log.debug("restore open windows")
+        if isRestored {
+            Log.debug("window registry: windows are restored. Ignoring restore window call.")
+            return
+        }
         if let data = self.utils.getValue(self.openWindowsKey) as? Data, let entries = self.decode(data) {
             self.windows = [:]
             entries.forEach { entry in
@@ -182,6 +195,7 @@ class WindowRegistry {
         } else {
             self.windows = [:]
         }
+        self.isRestored = true
     }
     
     /// Clear all saved windows values
@@ -193,6 +207,19 @@ class WindowRegistry {
     func resetWindowIdx() {
         self.queue.sync {
             self.idx = -1
+        }
+    }
+    
+    /// Returns if all windows restored from the storage has been opened.
+    func isAllWindowsOpened() -> Bool {
+        self.queue.sync {
+            return self.isAllWindowOpened
+        }
+    }
+    
+    func setAllWindowsOpened() {
+        self.queue.sync {
+            self.isAllWindowOpened = true
         }
     }
 }
