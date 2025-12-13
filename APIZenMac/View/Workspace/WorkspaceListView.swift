@@ -113,7 +113,6 @@ struct WorkspaceListView: View {
         }
         fr.fetchBatchSize = 50
         dataManager = CoreDataManager(fetchRequest: fr, ctx: moc, onChange: { workspaces in
-            self.workspaces = []  // force reload
             self.workspaces = workspaces
         })
     }

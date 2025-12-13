@@ -267,7 +267,6 @@ struct ProjectsListView: View {
         fr.fetchBatchSize = 50
         dataManager = CoreDataManager(fetchRequest: fr, ctx: moc, onChange: { projects in
             withAnimation {
-                self.projects = []  // force reload. For some reason, editing local project is not reloading the list. Edit cloud project is reflecting properly.
                 self.projects = projects
             }
         })
