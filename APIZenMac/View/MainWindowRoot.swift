@@ -62,16 +62,16 @@ struct MainWindowRoot: View {
             .environment(\.managedObjectContext, coreDataContainer == .local ? self.db.localMainMOC : self.db.ckMainMOC)
             .onChange(of: workspaceId, { oldValue, newValue in
                 Log.debug("mwroot: wsId changed - old: \(oldValue) - new: \(newValue)")
-                self.windowRegistry.add(windowIndex: windowIndex, workspaceId: newValue, coreDataContainer: coreDataContainer, showNavigator: showNavigator, showInspector: showInspector, showCodeView: showCodeView)
+                self.windowRegistry.add(windowIndex: windowIndex, workspaceId: newValue, coreDataContainer: coreDataContainer.rawValue, showNavigator: showNavigator, showInspector: showInspector, showCodeView: showCodeView)
             })
             .onChange(of: showNavigator, { oldValue, newValue in
-                self.windowRegistry.add(windowIndex: windowIndex, workspaceId: workspaceId, coreDataContainer: coreDataContainer, showNavigator: newValue, showInspector: showInspector, showCodeView: showCodeView)
+                self.windowRegistry.add(windowIndex: windowIndex, workspaceId: workspaceId, coreDataContainer: coreDataContainer.rawValue, showNavigator: newValue, showInspector: showInspector, showCodeView: showCodeView)
             })
             .onChange(of: showInspector, { oldValue, newValue in
-                self.windowRegistry.add(windowIndex: windowIndex, workspaceId: workspaceId, coreDataContainer: coreDataContainer, showNavigator: showNavigator, showInspector: newValue, showCodeView: showCodeView)
+                self.windowRegistry.add(windowIndex: windowIndex, workspaceId: workspaceId, coreDataContainer: coreDataContainer.rawValue, showNavigator: showNavigator, showInspector: newValue, showCodeView: showCodeView)
             })
             .onChange(of: showCodeView, { oldValue, newValue in
-                self.windowRegistry.add(windowIndex: windowIndex, workspaceId: workspaceId, coreDataContainer: coreDataContainer, showNavigator: showNavigator, showInspector: showInspector, showCodeView: newValue)
+                self.windowRegistry.add(windowIndex: windowIndex, workspaceId: workspaceId, coreDataContainer: coreDataContainer.rawValue, showNavigator: showNavigator, showInspector: showInspector, showCodeView: newValue)
             })
             .onDisappear {
                 Log.debug("mwroot: on disappear")
@@ -108,7 +108,7 @@ struct MainWindowRoot: View {
         Log.debug("mwroot: restore window state - \(idx)")
         if let window = self.windowRegistry.getWindow(windowIdx: idx) {
             self.workspaceId = window.workspaceId
-            self.coreDataContainer = window.coreDataContainer
+            self.coreDataContainer = CoreDataContainer(rawValue: window.coreDataContainer) ?? .local
             if let ws = self.db.getWorkspace(id: self.workspaceId, ctx: self.db.getMainMOC(container: self.coreDataContainer)) {
                 self.workspaceName = ws.getName()
                 Log.debug("mwroot: restoring ws: \(ws.getName())")
@@ -131,7 +131,7 @@ struct MainWindowRoot: View {
             }
         } else {
             // This window is not present in the registry. Add it.
-            self.windowRegistry.add(windowIndex: windowIndex, workspaceId: workspaceId, coreDataContainer: coreDataContainer, showNavigator: showNavigator, showInspector: showInspector, showCodeView: showCodeView)
+            self.windowRegistry.add(windowIndex: windowIndex, workspaceId: workspaceId, coreDataContainer: coreDataContainer.rawValue, showNavigator: showNavigator, showInspector: showInspector, showCodeView: showCodeView)
         }
     }
 }
