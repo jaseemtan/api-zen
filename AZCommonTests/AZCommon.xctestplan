@@ -1,0 +1,25 @@
+{
+  "configurations" : [
+    {
+      "id" : "C4E2C9FC-4DAF-4CF3-A3FF-C68DEA4F06F8",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "performanceAntipatternCheckerEnabled" : true
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:AZCommon.xcodeproj",
+        "identifier" : "9EFB71552D9921260089AC7A",
+        "name" : "AZCommonTests"
+      }
+    }
+  ],
+  "version" : 1
+}
