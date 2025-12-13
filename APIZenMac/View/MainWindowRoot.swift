@@ -39,6 +39,8 @@ struct MainWindowRoot: View {
     /// This is set for the first window. Which is responsible for bootstrapping other windows.
     @State var isRootWindow: Bool
     
+    @State private var didSetSize = false
+    
     private let windowRegistry = WindowRegistry.shared
     private let db = CoreDataService.shared
     
@@ -55,7 +57,7 @@ struct MainWindowRoot: View {
                 showRequestComposer: $showRequestComposer,
                 showCodeView: $showCodeView
             )
-            .frame(minWidth: 1024, minHeight: 500)
+            .frame(minWidth: 1024, idealWidth: 1280, minHeight: 600, idealHeight: 700, alignment: .center)
             .environment(\.coreDataContainer, $coreDataContainer)
             .environment(\.managedObjectContext, coreDataContainer == .local ? self.db.localMainMOC : self.db.ckMainMOC)
             .onChange(of: workspaceId, { oldValue, newValue in
@@ -72,7 +74,7 @@ struct MainWindowRoot: View {
                 self.windowRegistry.add(windowIndex: windowIndex, workspaceId: workspaceId, coreDataContainer: coreDataContainer, showNavigator: showNavigator, showInspector: showInspector, showCodeView: newValue)
             })
             .onDisappear {
-                Log.debug("mwroot: onDisappear")
+                Log.debug("mwroot: on disappear")
                 self.windowRegistry.remove(windowIndex: windowIndex)
             }
         } else {
@@ -80,7 +82,7 @@ struct MainWindowRoot: View {
             ProgressView()
                 .controlSize(.small)
                 .onAppear(perform: {
-                    Log.debug("mwroot: onAppear")
+                    Log.debug("mwroot: on appear")
                     if isRootWindow {
                         Log.debug("mwroot: root window \(windowIndex)")
                         _ = self.db.getDefaultWorkspace(ctx: self.db.localMainMOC)  // Make sure default workspace is created in local CoreData container.
