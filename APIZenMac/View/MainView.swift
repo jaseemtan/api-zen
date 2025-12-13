@@ -37,7 +37,7 @@ struct MainView: View {
                     .controlSize(.small)
             } else {
                 ThreeColumnSplitView(
-                    left: NavigatorView(workspaceId: selectedWorkspaceId),
+                    left: NavigatorView(workspaceId: $selectedWorkspaceId),
                     center: VStack {
                         VSplitView {
                             RequestComposerView()

@@ -151,7 +151,9 @@ class WindowRegistry {
                 entries[idx].tabs[tabIdx]!.parentWindowIdx = entries[idx].windowIdx  // update tab's parent window id
                 tabIdx += 1
             }
+            Log.debug("window registry: entry prepared for window idx \(entries[idx].windowIdx)")
         }
+        Log.debug("window registry: opened windows: \(entries.count)")
         return try? JSONEncoder().encode(entries)
     }
     

@@ -14,52 +14,34 @@ struct MainWindowRoot: View {
     @Environment(\.openWindow) private var openWindow
     
     // Per-window workspace id (each window has its own copy)
-    @SceneStorage("workspaceId")
-    private var workspaceId: String = CoreDataService.shared.defaultWorkspaceId
+    @State private var workspaceId: String = CoreDataService.shared.defaultWorkspaceId
     
-    @SceneStorage("workspaceName")
-    private var workspaceName: String = CoreDataService.shared.defaultWorkspaceName
+    @State private var workspaceName: String = CoreDataService.shared.defaultWorkspaceName
     
     // Per-window index: Window #0, #1, etc.
-    @SceneStorage("windowIndex")
-    private var windowIndex: Int = 0
+    @State private var windowIndex: Int = 0
     
     // Indicates if the workspace is local or cloud based.
-    @SceneStorage("coreDataContainer")
-    private var coreDataContainer: CoreDataContainer = CoreDataContainer.local
+    @State private var coreDataContainer: CoreDataContainer = CoreDataContainer.local
     
     // Pane preference is saved in the window registry because it's window specific. If I have same workspace in two different window and if I save workspace specific preference, then I can't have per window pane display. Hiding navigator will hide in all windows with the same workspace.
     // And this is saved for the open windows. If we close a window, these settings are cleared. The preference for the last window is saved.
-    @SceneStorage("showNavigator")
-    private var showNavigator: Bool = true  // Left pane
+    @State private var showNavigator: Bool = true  // Left pane
 
-    @SceneStorage("showInspector")
-    private var showInspector: Bool = true // Right pane
+    @State private var showInspector: Bool = true // Right pane
 
-    @SceneStorage("showRequestComposer")
-    private var showRequestComposer: Bool = true // The center pane
+    @State private var showRequestComposer: Bool = true // The center pane
 
-    @SceneStorage("showCodeView")
-    private var showCodeView: Bool = true // Center bottom pane
-    
-    // Tracks whether this specific window has already been given one of the initial bootstrap workspaces.
-    @SceneStorage("didAssignBootstrapWorkspace")
-    private var didAssignBootstrapWorkspace: Bool = false
-
-    // Static vars shared across all windows in this process
-
-    // Initial workspaces we want to open at launch.
-    private static var bootstrapWorkspaces: [WindowRegistry.Entry] = []
-    private static var nextBootstrapIndex: Int = 0
-
-    // Counter to assign "Window #N". Starts with 0.
-    private static var nextWindowIndex: Int = 0
-    
-    private let windowRegistry = WindowRegistry.shared
-    
-    private let db = CoreDataService.shared
+    @State private var showCodeView: Bool = true // Center bottom pane
     
     @State var isProcessing = true
+    
+    /// This is set for the first window. Which is responsible for bootstrapping other windows.
+    @State var isRootWindow: Bool
+    
+    private let windowRegistry = WindowRegistry.shared
+    private let db = CoreDataService.shared
+    
     
     var body: some View {
         if !isProcessing {
@@ -73,6 +55,7 @@ struct MainWindowRoot: View {
                 showRequestComposer: $showRequestComposer,
                 showCodeView: $showCodeView
             )
+            .frame(minWidth: 1024, minHeight: 500)
             .environment(\.coreDataContainer, $coreDataContainer)
             .environment(\.managedObjectContext, coreDataContainer == .local ? self.db.localMainMOC : self.db.ckMainMOC)
             .onChange(of: workspaceId, { oldValue, newValue in
@@ -93,11 +76,16 @@ struct MainWindowRoot: View {
                 self.windowRegistry.remove(windowIndex: windowIndex)
             }
         } else {
+            // The first view that will be loaded which bootstraps the main view.
             ProgressView()
                 .controlSize(.small)
                 .onAppear(perform: {
                     Log.debug("WorkspaceWindowRoot onAppear")
-                    self.restoreWindowState()
+                    if isRootWindow {
+                        _ = self.db.getDefaultWorkspace(ctx: self.db.localMainMOC)  // Make sure default workspace is created in local CoreData container.
+                        self.windowRegistry.restoreOpenWindows()  // restore open window state from user defaults
+                    }
+                    self.restoreWindowState()  // restore current window state
                 })
                 .task {
                     Log.debug("WorkspaceWindowRoot task")
@@ -108,9 +96,9 @@ struct MainWindowRoot: View {
     
     /// Restore window state for the current window.
     private func restoreWindowState() {
-        Log.debug("main window root: restore window state")
         self.windowIndex = self.windowRegistry.incIdx()
         let idx = self.windowIndex
+        Log.debug("main window root: restore window state - \(idx)")
         if let window = self.windowRegistry.getWindow(windowIdx: idx) {
             self.workspaceId = window.workspaceId
             self.coreDataContainer = window.coreDataContainer
@@ -121,9 +109,20 @@ struct MainWindowRoot: View {
             self.showNavigator = window.showNavigator
             self.showInspector = window.showInspector
             self.showCodeView = window.showCodeView
-//            self.isProcessing = false
-            // TODO: restore tabs
+         
+            //TODO: restore tabs for the current window
+            
+            if isRootWindow {  // restore other windows
+                let totalWindows: Int = min(self.windowRegistry.getWindows().count, 20)  // restore a max of 20 windows only.
+                if totalWindows > 1 {
+                    for idx in 1..<totalWindows {
+                        openWindow(id: "workspace", value: idx)
+                    }
+                }
+            }
+        } else {
+            // This window is not present in the registry. Add it.
+            self.windowRegistry.add(windowIndex: windowIndex, workspaceId: workspaceId, coreDataContainer: coreDataContainer, showNavigator: showNavigator, showInspector: showInspector, showCodeView: showCodeView)
         }
-        // TODO: restore the next window if present
     }
 }

@@ -13,7 +13,7 @@ import AZCommon
 /// Left pane of the main window. Displays projects list for the selected workspace. Displays requests for if a project is selected.
 struct NavigatorView: View {
     /// Selected workspace id.
-    let workspaceId: String
+    @Binding var workspaceId: String
     private let db: CoreDataService = CoreDataService.shared
 
     @Environment(\.managedObjectContext) private var moc
@@ -46,7 +46,7 @@ struct NavigatorView: View {
 
             ZStack {
                 if pane == .project {
-                    ProjectsListView(workspaceId: workspaceId, onSelect: onProjectSelected(_:), selectedProject: $selectedProject, searchText: "", isProcessing: $isProcessing)
+                    ProjectsListView(workspaceId: $workspaceId, onSelect: onProjectSelected(_:), selectedProject: $selectedProject, searchText: "", isProcessing: $isProcessing)
                     .transition(listTransition)
                 }
 

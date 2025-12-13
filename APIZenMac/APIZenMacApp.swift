@@ -18,14 +18,12 @@ struct APIZenMacApp: App {
     
     var body: some Scene {
         // Single scene: each window represents one workspace
-        WindowGroup("", id: "workspace") {  // We give empty window group name so that it does not appear on the title bar. If this parameter is not given at all, it shows the app name.
-            MainWindowRoot()
-                .onAppear {
-                    Log.debug("az window group: on appear")
-                    // Make sure default workspace is created in local CoreData container.
-                    _ = self.db.getDefaultWorkspace(ctx: self.db.localMainMOC)
-                    self.windowRegistry.restoreOpenWindows()
-                }
+        WindowGroup("", id: "workspace", for: Int.self) { $windowIndex in // We give empty window group name so that it does not appear on the title bar. If this parameter is not given at all, it shows the app name.
+            if windowIndex == nil {
+                MainWindowRoot(isRootWindow: true)
+            } else {
+                MainWindowRoot(isRootWindow: false)
+            }
         }
     }
 }

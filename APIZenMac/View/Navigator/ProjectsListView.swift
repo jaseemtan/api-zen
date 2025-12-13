@@ -14,7 +14,7 @@ import AZCommon
 /// Projects list view that preserves scroll offset when navigating back from requests view. The offset works by default because this view is inside an AppKit split view controller.
 struct ProjectsListView: View {
     /// Selected workspace id
-    let workspaceId: String
+    @Binding var workspaceId: String
     /// We need to invoke the parent view function so that the navigator can navigate to request view on selecting a project.
     let onSelect: (EProject) -> Void
     @Binding var selectedProject: EProject?
@@ -37,7 +37,6 @@ struct ProjectsListView: View {
     @Environment(\.managedObjectContext) private var moc
     @Environment(\.colorScheme) private var colorScheme
     
-    private let projectsCacheName: String = "projects-cache"
     private let toolbarHeight: CGFloat = 32.0
     private let db = CoreDataService.shared
     private let theme = ThemeManager.shared
@@ -92,9 +91,9 @@ struct ProjectsListView: View {
     @State private var state: ProjectsListState = ProjectsListState()
     
     // Explicit init with only the required params is required because we have many properties and default init becomes internal.
-    init(workspaceId: String, onSelect: @escaping (EProject) -> Void, selectedProject: Binding<EProject?>, searchText: String, isProcessing: Binding<Bool>) {
-        Log.debug("proj list view: ws id: \(workspaceId)")
-        self.workspaceId = workspaceId
+    init(workspaceId: Binding<String>, onSelect: @escaping (EProject) -> Void, selectedProject: Binding<EProject?>, searchText: String, isProcessing: Binding<Bool>) {
+        Log.debug("proj list view init: ws id: \(workspaceId.wrappedValue)")
+        self._workspaceId = workspaceId
         self.onSelect = onSelect
         self._selectedProject = selectedProject
         self.searchText = searchText
@@ -257,7 +256,7 @@ struct ProjectsListView: View {
     
     /// The query is cached. So multiple searches of the same parameters would not be that costly.
     func initDataManager() {
-        Log.debug("proj list view: init data manager - \(self.db.getContainer(moc))" )
+        Log.debug("proj list view: init data manager - \(self.db.getContainer(moc)) - wsId: \(workspaceId)")
         let fr = EProject.fetchRequest()
         fr.sortDescriptors = self.getSortDescriptors()
         if searchText.isNotEmpty {
@@ -266,8 +265,7 @@ struct ProjectsListView: View {
             fr.predicate = NSPredicate(format: "workspace.id == %@ AND name != %@ AND markForDelete == %hdd", workspaceId, "", false)
         }
         fr.fetchBatchSize = 50
-        if let dm = self.dataManager { dm.clearCache() }  // clear previous cache if already initialized before.
-        dataManager = CoreDataManager(fetchRequest: fr, ctx: moc, cacheName: self.projectsCacheName, onChange: { projects in
+        dataManager = CoreDataManager(fetchRequest: fr, ctx: moc, onChange: { projects in
             withAnimation {
                 self.projects = []  // force reload. For some reason, editing local project is not reloading the list. Edit cloud project is reflecting properly.
                 self.projects = projects
