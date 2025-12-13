@@ -18,7 +18,7 @@ struct MainWindowRoot: View {
     private var workspaceId: String = CoreDataService.shared.defaultWorkspaceId
     
     @SceneStorage("workspaceName")
-    private var workspaceName: String = ""  // Empty string to prevent displaying the default label while the state loads from user defaults and updates. Avoids flashing of default value.
+    private var workspaceName: String = CoreDataService.shared.defaultWorkspaceName
     
     // Per-window index: Window #0, #1, etc.
     @SceneStorage("windowIndex")
@@ -75,29 +75,55 @@ struct MainWindowRoot: View {
             )
             .environment(\.coreDataContainer, $coreDataContainer)
             .environment(\.managedObjectContext, coreDataContainer == .local ? self.db.localMainMOC : self.db.ckMainMOC)
+            .onChange(of: workspaceId, { oldValue, newValue in
+                Log.debug("wsId changed - old: \(oldValue) - new: \(newValue)")
+                self.windowRegistry.add(windowIndex: windowIndex, workspaceId: newValue, coreDataContainer: coreDataContainer, showNavigator: showNavigator, showInspector: showInspector, showCodeView: showCodeView)
+            })
+            .onChange(of: showNavigator, { oldValue, newValue in
+                self.windowRegistry.add(windowIndex: windowIndex, workspaceId: workspaceId, coreDataContainer: coreDataContainer, showNavigator: newValue, showInspector: showInspector, showCodeView: showCodeView)
+            })
+            .onChange(of: showInspector, { oldValue, newValue in
+                self.windowRegistry.add(windowIndex: windowIndex, workspaceId: workspaceId, coreDataContainer: coreDataContainer, showNavigator: showNavigator, showInspector: newValue, showCodeView: showCodeView)
+            })
+            .onChange(of: showCodeView, { oldValue, newValue in
+                self.windowRegistry.add(windowIndex: windowIndex, workspaceId: workspaceId, coreDataContainer: coreDataContainer, showNavigator: showNavigator, showInspector: showInspector, showCodeView: newValue)
+            })
             .onDisappear {
                 Log.debug("WorkspaceWindowRoot onDisappear")
-                // self.windowRegistry.remove(windowIndex: windowIndex)
+                self.windowRegistry.remove(windowIndex: windowIndex)
             }
         } else {
             ProgressView()
                 .controlSize(.small)
                 .onAppear(perform: {
                     Log.debug("WorkspaceWindowRoot onAppear")
-//                    Self.bootstrapWorkspaces = self.windowRegistry.restoreOpenWindows()
-                    self.workspaceName = "Foo bar"
+                    self.restoreWindowState()
                 })
                 .task {
                     Log.debug("WorkspaceWindowRoot task")
-                    // Assign a unique windowIndex per window
-                    if windowIndex == 0 {
-                        windowIndex = Self.nextWindowIndex
-                        Self.nextWindowIndex += 1
-                    }
-                    // Make sure default workspace is created in local CoreData container.
-                    _ = self.db.getDefaultWorkspace(ctx: self.db.localMainMOC)
                     isProcessing = false
                 }
         }
+    }
+    
+    /// Restore window state for the current window.
+    private func restoreWindowState() {
+        Log.debug("main window root: restore window state")
+        self.windowIndex = self.windowRegistry.incIdx()
+        let idx = self.windowIndex
+        if let window = self.windowRegistry.getWindow(windowIdx: idx) {
+            self.workspaceId = window.workspaceId
+            self.coreDataContainer = window.coreDataContainer
+            if let ws = self.db.getWorkspace(id: self.workspaceId, ctx: self.db.getMainMOC(container: self.coreDataContainer)) {
+                self.workspaceName = ws.getName()
+                Log.debug("restoring ws: \(ws.getName())")
+            }
+            self.showNavigator = window.showNavigator
+            self.showInspector = window.showInspector
+            self.showCodeView = window.showCodeView
+//            self.isProcessing = false
+            // TODO: restore tabs
+        }
+        // TODO: restore the next window if present
     }
 }

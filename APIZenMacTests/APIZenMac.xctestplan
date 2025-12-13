@@ -1,0 +1,44 @@
+{
+  "configurations" : [
+    {
+      "id" : "A2F8D635-125B-494A-A675-C5D9046882F9",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "commandLineArgumentEntries" : [
+      {
+        "argument" : "-AZ_TESTING"
+      }
+    ],
+    "performanceAntipatternCheckerEnabled" : true,
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:APIZenMac.xcodeproj",
+      "identifier" : "9E1297082EE2FAA900053E53",
+      "name" : "APIZenMac"
+    }
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:APIZenMac.xcodeproj",
+        "identifier" : "9E1297152EE2FAAE00053E53",
+        "name" : "APIZenMacTests"
+      }
+    },
+    {
+      "enabled" : false,
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:APIZenMac.xcodeproj",
+        "identifier" : "9E12971F2EE2FAAE00053E53",
+        "name" : "APIZenMacUITests"
+      }
+    }
+  ],
+  "version" : 1
+}
