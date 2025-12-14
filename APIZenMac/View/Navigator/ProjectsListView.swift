@@ -121,7 +121,7 @@ struct ProjectsListView: View {
                             }
                             
                             Button("Delete", role: .destructive) {
-                                Log.debug("delete on proj: \(project.getName())")
+                                Log.debug("delete on proj: \(project.getName()) - \(project.getId())")
                                 Log.debug("selected project ids: \(selectedProjectIds)")
                                 projectPendingDelete = project
                                 showDeleteConfirmation = true  // Display delete confirmation dialog
@@ -194,17 +194,34 @@ struct ProjectsListView: View {
             }
             .frame(width: 400, height: 240)
         }
-        .confirmationDialog("Are you sure you want to delete this project?", isPresented: $showDeleteConfirmation, titleVisibility: .visible) {
+        .confirmationDialog(isThereMultipleProjectsToDelete() ? "Are you sure you want to delete the selected projects?" : "Are you sure you want to delete this project?", isPresented: $showDeleteConfirmation, titleVisibility: .visible) {
             Button("Delete", role: .destructive) {
-//                if let project = projectPendingDelete {
-//                    isProcessing = true
-//                    self.db.deleteEntity(project, ctx: moc)
-//                    self.db.saveMainContext { _ in
-//                        isProcessing = false
-//                    }
-//                    // TODO: delete any request list preferences
-//                }
-//                projectPendingDelete = nil
+                if let project = projectPendingDelete {
+                    isProcessing = true
+                    if selectedProjectIds.contains(project.getId()) {
+                        // Delete all selected project. Current project is part of it.
+                        var projectsToDelete: [EProject] = []
+                        selectedProjectIds.forEach { id in
+                            if let proj = self.projects.first(where: { elem in
+                                elem.getId() == id
+                            }) {
+                                projectsToDelete.append(proj)
+                            }
+                        }
+                        projectsToDelete.forEach { proj in
+                            self.db.deleteEntity(proj, ctx: moc)
+                        }
+                    } else {
+                        // Delete only the item on which the context menu delete was clicked.
+                        self.db.deleteEntity(project, ctx: moc)
+                    }
+                    
+                    self.db.saveMainContext { _ in
+                        isProcessing = false
+                    }
+                    // TODO: delete any request list preferences
+                }
+                projectPendingDelete = nil
             }
 
             Button("Cancel", role: .cancel) {
@@ -296,6 +313,17 @@ struct ProjectsListView: View {
             self.db.saveMainContext()
             isProcessing = false
         }
+    }
+    
+    /// Checks if there are multiple projects selected and user clicked the delete on one of the items' context menu.
+    /// If there are multiple projects selected and user clicked the context menu of a new item, there is only that project which needs to be deleted.
+    func isThereMultipleProjectsToDelete() -> Bool {
+        if let project = projectPendingDelete {
+            if selectedProjectIds.contains(project.getId()) {
+                return true
+            }
+        }
+        return false
     }
     
     private func getSortDescriptors() -> [NSSortDescriptor] {
