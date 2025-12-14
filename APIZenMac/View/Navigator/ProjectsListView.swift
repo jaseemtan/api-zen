@@ -224,8 +224,6 @@ struct ProjectsListView: View {
                 .padding(.leading, 12)
 
                 if !(isSearchActive ?? false) {
-                    AddButton(onTap: {}, helpText: "Add Group")
-                    
                     // Drag mode button
                     Button {
                         Log.debug("drag mode toggle")
