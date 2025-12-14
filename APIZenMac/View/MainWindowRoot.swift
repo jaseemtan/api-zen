@@ -65,7 +65,9 @@ struct MainWindowRoot: View {
             .environment(\.managedObjectContext, coreDataContainer == .local ? self.db.localMainMOC : self.db.ckMainMOC)
             .onChange(of: workspaceId, { oldValue, newValue in
                 Log.debug("mwroot: wsId changed - old: \(oldValue) - new: \(newValue)")
-                self.windowRegistry.add(windowIndex: windowIndex, workspaceId: newValue, coreDataContainer: coreDataContainer.rawValue, showNavigator: showNavigator, showInspector: showInspector, showCodeView: showCodeView)
+                if !isTabbed {  // NB: disabling this for tabs to prevent it from restoring a new window on launch for now. #tab
+                    self.windowRegistry.add(windowIndex: windowIndex, workspaceId: newValue, coreDataContainer: coreDataContainer.rawValue, showNavigator: showNavigator, showInspector: showInspector, showCodeView: showCodeView)
+                }
             })
             .onChange(of: showNavigator, { oldValue, newValue in
                 self.windowRegistry.add(windowIndex: windowIndex, workspaceId: workspaceId, coreDataContainer: coreDataContainer.rawValue, showNavigator: newValue, showInspector: showInspector, showCodeView: showCodeView)
@@ -100,6 +102,7 @@ struct MainWindowRoot: View {
                     self.restoreWindowState()  // restore current window state
                 })
                 // This gets called after onAppear. So we don't know if the window is in tabbed mode before `restoreWindowState()`.
+                // Disabling this for now as appkit tabs does not work with swiftui window.
                 .background(
                     WindowAccessor { window in
                         self.window = window
@@ -110,28 +113,40 @@ struct MainWindowRoot: View {
                 )
                 .task {  // called last
                     Log.debug("mwroot: task")
-                    self.restoreTabs()
+//                    self.restoreTabs()  // #tab
+                    self.handleTab()  // #tab
                     isProcessing = false
                 }
         }
     }
     
-    func restoreTabs() {
+    /// If current window is opened as a SwiftUI tab in the window tab group, we should not add it as a main window. So clear it from window list. Otherwise tabs will be opened as new window on launch.
+    /// Currently restoring tabs are not supported.
+    /// #tab
+    func handleTab() {
         if isTabbed {
-            if let group = window?.tabGroup {
-                // The first window in the tab group is the main window for this group.
-                if let first = group.windows.first, let wIdx = first.windowIndex {
-                    self.parentWindowIndx = wIdx
-                    // TODO: update tab tracking for all windows. There is no APIs for tab move or joining, leaving tab group. So we need to update the state at some point in time.
-                    self.windowRegistry.addTab(mainWindowIdx: wIdx, tabIdx: windowIndex, workspaceId: workspaceId, coreDataContainer: coreDataContainer.rawValue, showNavigator: showNavigator, showInspector: showInspector, showCodeView: showCodeView)
-                }
-                group.windows.forEach { win in
-                    Log.debug("mwroot: win tab index: \(win.windowIndex ?? -1)")
-                }
-            }
-            // add tab
+            self.windowRegistry.remove(windowIndex: windowIndex)
         }
     }
+    
+    // #tab
+    // Restoring tabs have issues because restored tabs are created using AppKit and for such tabs, new tab button does not work. Since the main window is SwiftUI and new tab is SwiftUI functionality.
+    // So disabling this for now until SwiftUI has a way to open new tabs.
+//    func restoreTabs() {
+//        if isTabbed {
+//            if let group = window?.tabGroup {
+//                // The first window in the tab group is the main window for this group.
+//                if let first = group.windows.first, let wIdx = first.windowIndex {
+//                    self.parentWindowIndx = wIdx
+//                    // TODO: update tab tracking for all windows. There is no APIs for tab move or joining, leaving tab group. So we need to update the state at some point in time.
+//                    self.windowRegistry.addTab(mainWindowIdx: wIdx, tabIdx: windowIndex, workspaceId: workspaceId, coreDataContainer: coreDataContainer.rawValue, showNavigator: showNavigator, showInspector: showInspector, showCodeView: showCodeView)
+//                }
+//                group.windows.forEach { win in
+//                    Log.debug("mwroot: win tab index: \(win.windowIndex ?? -1)")
+//                }
+//            }
+//        }
+//    }
     
     /// Restore window state for the current window. If there is no state, default values will be used. If there is state, it beings with 0, so the first window will get this state and so on.
     /// Since it's the root window, it will open other windows in order if present. The windows opened using this method has `isRootWindow` set to false. So this newly opened window will not open other windows.
@@ -152,14 +167,15 @@ struct MainWindowRoot: View {
             self.showInspector = window.showInspector
             self.showCodeView = window.showCodeView
          
+            // #tab
             // Restore tabs for the current window
-            let tabs = window.tabs
-            if tabs.count > 0 {
-                tabs.values.forEach { entry in
-                    Log.debug("mwroot: opening tab \(entry.windowIdx)")
-                    NSApp.openInNewTab(MainWindowRoot(isRootWindow: false, windowIndex: entry.windowIdx, parentWindowIndx: windowIndex))
-                }
-            }
+//            let tabs = window.tabs
+//            if tabs.count > 0 {
+//                tabs.values.forEach { entry in
+//                    Log.debug("mwroot: opening tab \(entry.windowIdx)")
+//                    NSApp.openInNewTab(MainWindowRoot(isRootWindow: false, windowIndex: entry.windowIdx, parentWindowIndx: windowIndex))
+//                }
+//            }
             
             if isRootWindow && !self.windowRegistry.isAllWindowsOpened() {  // restore other windows
                 let totalWindows: Int = min(self.windowRegistry.getWindows().count, 20)  // restore a max of 20 windows only.
