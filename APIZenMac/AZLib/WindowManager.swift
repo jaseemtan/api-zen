@@ -13,6 +13,10 @@ import AZCommon
 class AppDelegate: NSObject, NSApplicationDelegate {
     private var windowRegistry = WindowRegistry.shared
     
+    func applicationDidFinishLaunching(_ notification: Notification) {
+        NSWindow.allowsAutomaticWindowTabbing = true
+    }
+    
     /// Called when user has quit the app and app is about to be terminated.
     func applicationWillTerminate(_ notification: Notification) {
         Log.debug("application will terminate")

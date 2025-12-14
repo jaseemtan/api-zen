@@ -18,8 +18,14 @@ struct MainWindowRoot: View {
     
     @State private var workspaceName: String = CoreDataService.shared.defaultWorkspaceName
     
-    // Per-window index: Window #0, #1, etc.
-    @State private var windowIndex: Int = 0
+    /// This is set for the first window. Which is responsible for bootstrapping other windows.
+    @State var isRootWindow: Bool
+    
+    /// Per-window index - 0, 1, etc.
+    @State var windowIndex: Int = 0
+    
+    /// If this windows is part of a tab group, the index of the first window in the group.
+    @State var parentWindowIndx: Int = -1
     
     // Indicates if the workspace is local or cloud based.
     @State private var coreDataContainer: CoreDataContainer = CoreDataContainer.local
@@ -36,14 +42,11 @@ struct MainWindowRoot: View {
     
     @State var isProcessing = true
     
-    /// This is set for the first window. Which is responsible for bootstrapping other windows.
-    @State var isRootWindow: Bool
-    
-    @State private var didSetSize = false
+    @State private var isTabbed = false
+    @State private var window: NSWindow?
     
     private let windowRegistry = WindowRegistry.shared
     private let db = CoreDataService.shared
-    
     
     var body: some View {
         if !isProcessing {
@@ -75,7 +78,11 @@ struct MainWindowRoot: View {
             })
             .onDisappear {
                 Log.debug("mwroot: on disappear")
-                self.windowRegistry.remove(windowIndex: windowIndex)
+                if isTabbed {
+                    self.windowRegistry.removeTab(mainWindowIdx: parentWindowIndx, tabIdx: windowIndex)
+                } else {
+                    self.windowRegistry.remove(windowIndex: windowIndex)
+                }
             }
         } else {
             // The first view that will be loaded which bootstraps the main view.
@@ -92,10 +99,37 @@ struct MainWindowRoot: View {
                     }
                     self.restoreWindowState()  // restore current window state
                 })
-                .task {
+                // This gets called after onAppear. So we don't know if the window is in tabbed mode before `restoreWindowState()`.
+                .background(
+                    WindowAccessor { window in
+                        self.window = window
+                        self.window?.windowIndex = windowIndex
+                        isTabbed = WindowManager.shared.isWindowInTab(window)
+                        Log.debug("mwroot: is tabbed: \(isTabbed)")
+                    }
+                )
+                .task {  // called last
                     Log.debug("mwroot: task")
+                    self.restoreTabs()
                     isProcessing = false
                 }
+        }
+    }
+    
+    func restoreTabs() {
+        if isTabbed {
+            if let group = window?.tabGroup {
+                // The first window in the tab group is the main window for this group.
+                if let first = group.windows.first, let wIdx = first.windowIndex {
+                    self.parentWindowIndx = wIdx
+                    // TODO: update tab tracking for all windows. There is no APIs for tab move or joining, leaving tab group. So we need to update the state at some point in time.
+                    self.windowRegistry.addTab(mainWindowIdx: wIdx, tabIdx: windowIndex, workspaceId: workspaceId, coreDataContainer: coreDataContainer.rawValue, showNavigator: showNavigator, showInspector: showInspector, showCodeView: showCodeView)
+                }
+                group.windows.forEach { win in
+                    Log.debug("mwroot: win tab index: \(win.windowIndex ?? -1)")
+                }
+            }
+            // add tab
         }
     }
     
@@ -106,6 +140,7 @@ struct MainWindowRoot: View {
         self.windowIndex = self.windowRegistry.incIdx()
         let idx = self.windowIndex
         Log.debug("mwroot: restore window state - \(idx)")
+        
         if let window = self.windowRegistry.getWindow(windowIdx: idx) {
             self.workspaceId = window.workspaceId
             self.coreDataContainer = CoreDataContainer(rawValue: window.coreDataContainer) ?? .local
@@ -117,7 +152,14 @@ struct MainWindowRoot: View {
             self.showInspector = window.showInspector
             self.showCodeView = window.showCodeView
          
-            //TODO: restore tabs for the current window
+            // Restore tabs for the current window
+            let tabs = window.tabs
+            if tabs.count > 0 {
+                tabs.values.forEach { entry in
+                    Log.debug("mwroot: opening tab \(entry.windowIdx)")
+                    NSApp.openInNewTab(MainWindowRoot(isRootWindow: false, windowIndex: entry.windowIdx, parentWindowIndx: windowIndex))
+                }
+            }
             
             if isRootWindow && !self.windowRegistry.isAllWindowsOpened() {  // restore other windows
                 let totalWindows: Int = min(self.windowRegistry.getWindows().count, 20)  // restore a max of 20 windows only.

@@ -7,6 +7,8 @@
 
 import SwiftUI
 import Cocoa
+import ObjectiveC
+import AZCommon
 
 extension View {
     /// Adds a rectangular border around the given view so that the dimensions can be made visible. Helps in identifying button click area.
@@ -32,15 +34,49 @@ extension View {
 }
 
 extension NSApplication {
-    /// Open the given view in a new tab in the current window.
+    /// Open the given view in a new tab in the current window. This will open an AppKit window. This window behavious like AppKit native window.
+    /// Which means the default new tab button available in a main window created by SwiftUI will not work.
     func openInNewTab<Content: View>(_ view: Content) {
-        guard let keyWindow = NSApp.keyWindow else { return }
-        // Create a new window with SwiftUI content
-        let newWindow = NSWindow(contentRect: keyWindow.frame, styleMask: keyWindow.styleMask, backing: .buffered, defer: false)
-        newWindow.isReleasedWhenClosed = false
-        newWindow.contentView = NSHostingView(rootView: view)
-        // Add tab to the existing window
-        keyWindow.addTabbedWindow(newWindow, ordered: .above)
-        newWindow.makeKeyAndOrderFront(nil)
+        DispatchQueue.main.async {
+            guard let mainWindow = NSApp.mainWindow ?? NSApp.windows.first else {
+                Log.debug("No main window found")
+                return
+            }
+
+            // Enable tabbing
+            NSWindow.allowsAutomaticWindowTabbing = true
+            mainWindow.tabbingMode = .preferred
+
+            let newWindow = NSWindow(
+                contentRect: mainWindow.frame,
+                styleMask: [.titled, .resizable, .closable, .miniaturizable],
+                backing: .buffered,
+                defer: false
+            )
+
+            newWindow.tabbingMode = .preferred
+            newWindow.isReleasedWhenClosed = false
+            newWindow.contentView = NSHostingView(rootView: view)
+
+            // Order first
+            newWindow.orderFront(nil)
+
+            // Add as tab
+            mainWindow.addTabbedWindow(newWindow, ordered: .above)
+        }
+    }
+}
+
+private var windowIndexKey: UInt8 = 0
+
+extension NSWindow {
+    /// Allows us to associate a windowIndex for the SwiftUI window.
+    var windowIndex: Int? {
+        get {
+            objc_getAssociatedObject(self, &windowIndexKey) as? Int
+        }
+        set {
+            objc_setAssociatedObject(self, &windowIndexKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        }
     }
 }
