@@ -32,6 +32,7 @@ struct ProjectsListView: View {
     @State private var projectPendingDelete: EProject?  // Holds the project that is user is deleting
     @State private var showDeleteConfirmation = false
     @State private var selectedProjectIds: Set<String> = []
+    @State private var isDragMode = false
     
     @Environment(\.managedObjectContext) private var moc
     @Environment(\.colorScheme) private var colorScheme
@@ -101,6 +102,7 @@ struct ProjectsListView: View {
 
     var body: some View {
         Group {
+            // Selection is specified so that selected item tracking works properly when in drag mode. When not in drag mode, the tap gesture takes precedence.
             List(selection: $selectedProjectIds) {  // The scroll offset is automatically preserved when navigated back.
                 ForEach(projects) { proj in
                     NameDescView(imageName: "project", name: "\(proj.getName()) - \(proj.order!)", desc: proj.desc)
@@ -108,6 +110,10 @@ struct ProjectsListView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .contentShape(Rectangle())
                         .tag(proj.getId())
+                        .onTapIf(!isDragMode) {  // This overrides the default selection check on the list.
+                            Log.debug("projlist: tap")
+                            onSelect(proj)
+                        }
                         .contextMenu {
                             if selectedProjectIds.count <= 1 {
                                 Button("Edit") {
@@ -150,27 +156,6 @@ struct ProjectsListView: View {
             sortField = state.sortField
             sortAscending = state.sortAscending
         }
-        .onChange(of: selectedProjectIds) { _, projIds in
-            Log.debug("projlist: project selection changed to: \(projIds)")
-            if UI.isCommandClicked() {
-                Log.debug("projlist: command clicked. do nothing.")
-            } else {
-                // Navigate to requests list only if one project is selected.
-                if projIds.count == 1 {
-                    if let projId = projIds.first, let proj = self.projects.first(where: { project in
-                        project.getId() == projId
-                    }) {
-                        onSelect(proj)
-                        Task { @MainActor in
-                            await Task.yield()   // wait one SwiftUI commit
-                            withTransaction(Transaction(animation: nil)) {
-                                selectedProjectIds.removeAll()
-                            }
-                        }
-                    }
-                }
-            }
-        }
         .onChange(of: workspaceId) { oldId, newId in
             if oldId != newId {
                 Log.debug("projlist: workspace id changed: \(newId)")
@@ -186,6 +171,11 @@ struct ProjectsListView: View {
         })
         .onChange(of: searchText, { _, _ in
             self.initDataManager()
+        })
+        .onChange(of: isDragMode, { _, flag in
+            if !flag {
+                selectedProjectIds.removeAll()
+            }
         })
         .popover(item: $editProject, attachmentAnchor: .rect(.bounds), arrowEdge: .trailing) { proj in
             // Edit project
@@ -235,6 +225,21 @@ struct ProjectsListView: View {
 
                 if !(isSearchActive ?? false) {
                     AddButton(onTap: {}, helpText: "Add Group")
+                    
+                    // Drag mode button
+                    Button {
+                        Log.debug("drag mode toggle")
+                        isDragMode.toggle()
+                    } label: {
+                        Image(systemName: "arrow.up.and.down.text.horizontal")
+                            .font(.system(size: 15, weight: .regular))
+                            .imageScale(.medium)
+                            .contentShape(Rectangle())
+                            .foregroundStyle(getDragModeIconColor())
+                    }
+                    .buttonStyle(.borderless)
+                    .help("Drag Mode")
+                    .disabled(!isDraggable())
                 }
                 
                 Spacer()
@@ -276,6 +281,7 @@ struct ProjectsListView: View {
     
     /// Update user preference state
     func updateState(_ wsId: String) {
+        isDragMode = false
         state = ProjectsListState(workspaceId: wsId)
         state.restoreProjectsListState()
         sortField = state.sortField
@@ -336,6 +342,21 @@ struct ProjectsListView: View {
             }
         }
         return false
+    }
+    
+    /// Check if the project list is draggable, which will be the case only when sorting is manual and order is ascending.
+    private func isDraggable() -> Bool {
+        return sortField == .manual && sortAscending
+    }
+
+    private func getDragModeIconColor() -> Color {
+        if !isDraggable() {
+            return theme.getDisabledIconColor(colorScheme)
+        }
+        if isDragMode {
+            return theme.getAccentColor()
+        }
+        return .secondary
     }
     
     private func getSortDescriptors() -> [NSSortDescriptor] {
