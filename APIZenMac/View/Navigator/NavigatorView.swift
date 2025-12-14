@@ -14,51 +14,65 @@ import AZCommon
 struct NavigatorView: View {
     /// Selected workspace id.
     @Binding var workspaceId: String
-    private let db: CoreDataService = CoreDataService.shared
+    /// If a project is selected in the workspace, the window root will hold it.
+    @Binding var project: EProject?
 
     @Environment(\.managedObjectContext) private var moc
 
     @State private var requests: [ERequest] = []
-
     @State private var pane: Pane = .project
-    @State private var selectedProject: EProject? = nil
     @State private var isPushing: Bool = true
     @State private var showAddProjectPopup = false
-    
     @State private var newProjectName = ""
     @State private var newProjectDesc = ""
-    @State private var isProcessing = false  // For progress indicator at the add project button position that will be set on project operations like delete, copy, move etc.
+    /// For progress indicator at the add project button position that will be set on project operations like delete, copy, move etc.
+    @State private var isProcessing = false
+    /// Initially set to loading. Once the whole window loads, it's set to false.
+    @State private var isLoading = true
 
+    private let db: CoreDataService = CoreDataService.shared
+    
     enum Pane {
         case project
         case request
     }
 
     var onSelectRequest: ((ERequest) -> Void)?
-
+    
     var body: some View {
-        VStack(spacing: 0) {
-            header
-                .padding(.horizontal, 8)
-                .frame(height: 44)
-                .background(.ultraThinMaterial)
-                .overlay(Divider(), alignment: .bottom)
-
-            ZStack {
-                if pane == .project {
-                    ProjectsListView(workspaceId: $workspaceId, onSelect: onProjectSelected(_:), selectedProject: $selectedProject, searchText: "", isProcessing: $isProcessing)
-                    .transition(listTransition)
+        if isLoading {
+            // If there is request restored, the window will appear with projects list and make a transition to request view. This changing of the view is visible.
+            // Adding this progress view hides this UX and window appears with the request list when it gets visible.
+            ProgressView()
+                .controlSize(.small)
+                .onAppear {
+                    if project != nil {
+                        pane = .request
+                    }
+                    isLoading = false
                 }
-
-                if pane == .request, let sel = selectedProject {
-                    RequestsListView(project: sel, requests: requests, onSelect: { req in
-                        onSelectRequest?(req)
-                    })
-                    .transition(listTransition)
+        } else {
+            VStack(spacing: 0) {
+                header
+                    .padding(.horizontal, 8)
+                    .frame(height: 44)
+                    .background(.ultraThinMaterial)
+                    .overlay(Divider(), alignment: .bottom)
+                
+                ZStack {
+                    if pane == .request, let sel = project {
+                        RequestsListView(project: sel, requests: requests, onSelect: { req in
+                            onSelectRequest?(req)
+                        })
+                        .transition(listTransition)
+                    } else {
+                        ProjectsListView(workspaceId: $workspaceId, onSelect: onProjectSelected(_:), project: $project, searchText: "", isProcessing: $isProcessing)
+                            .transition(listTransition)
+                    }
                 }
+                .animation(.default, value: pane)  // When pane changes, animate with the transition associated with the view.
+                .animation(.default, value: isPushing)  // When isPushing changes, animate with the transition associated with the view.
             }
-            .animation(.default, value: pane)  // When pane changes, animate with the transition associated with the view.
-            .animation(.default, value: isPushing)  // When isPushing changes, animate with the transition associated with the view.
         }
     }
 
@@ -85,11 +99,12 @@ struct NavigatorView: View {
     private var header: some View {
         HStack {
             // Request list
-            if pane == .request {
+            if project != nil && pane == .request {
                 Button {
                     isPushing = false
                     withAnimation {
                         pane = .project
+                        project = nil  // clear selected project
                     }
                 } label: {
                     HStack(spacing: 6) {
@@ -144,15 +159,15 @@ struct NavigatorView: View {
         case .project:
             return "Projects"
         case .request:
-            if let p = selectedProject {
+            if let p = project {
                 return p.getName()
             }
-            return "Requests"
+            return "Projects"
         }
     }
 
     private func onProjectSelected(_ project: EProject) {
-        selectedProject = project
+        self.project = project
         loadRequests(for: project)
         isPushing = true
         withAnimation {

@@ -17,7 +17,7 @@ struct ProjectsListView: View {
     @Binding var workspaceId: String
     /// We need to invoke the parent view function so that the navigator can navigate to request view on selecting a project.
     let onSelect: (EProject) -> Void
-    @Binding var selectedProject: EProject?
+    @Binding var project: EProject?
     @Binding var isProcessing: Bool
     
     @State private var searchText: String = ""
@@ -91,11 +91,11 @@ struct ProjectsListView: View {
     @State private var state: ProjectsListState = ProjectsListState()
     
     // Explicit init with only the required params is required because we have many properties and default init becomes internal.
-    init(workspaceId: Binding<String>, onSelect: @escaping (EProject) -> Void, selectedProject: Binding<EProject?>, searchText: String, isProcessing: Binding<Bool>) {
+    init(workspaceId: Binding<String>, onSelect: @escaping (EProject) -> Void, project: Binding<EProject?>, searchText: String, isProcessing: Binding<Bool>) {
         Log.debug("proj list view init: ws id: \(workspaceId.wrappedValue)")
         self._workspaceId = workspaceId
         self.onSelect = onSelect
-        self._selectedProject = selectedProject
+        self._project = project  // selected project
         self.searchText = searchText
         self._isProcessing = isProcessing
     }
@@ -103,27 +103,27 @@ struct ProjectsListView: View {
     var body: some View {
         Group {
             List(selection: $selectedProjectIds) {
-                ForEach(projects) { project in
-                    NameDescView(imageName: "project", name: "\(project.getName()) - \(project.order!)", desc: project.desc)
+                ForEach(projects) { proj in
+                    NameDescView(imageName: "project", name: "\(proj.getName()) - \(proj.order!)", desc: proj.desc)
                         .padding(.vertical, 6)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .contentShape(Rectangle())
-                        .tag(project.getId())
+                        .tag(proj.getId())
                         .contextMenu {
                             if selectedProjectIds.count <= 1 {
                                 Button("Edit") {
-                                    Log.debug("edit on proj: \(project.getName())")
-                                    editProject = project
-                                    editProjectName = project.getName()
-                                    editProjectDesc = project.desc ?? ""
+                                    Log.debug("edit on proj: \(proj.getName())")
+                                    editProject = proj
+                                    editProjectName = proj.getName()
+                                    editProjectDesc = proj.desc ?? ""
                                     showEditProjectPopup.toggle()
                                 }
                             }
                             
                             Button("Delete", role: .destructive) {
-                                Log.debug("delete on proj: \(project.getName()) - \(project.getId())")
+                                Log.debug("delete on proj: \(proj.getName()) - \(proj.getId())")
                                 Log.debug("selected project ids: \(selectedProjectIds)")
-                                projectPendingDelete = project
+                                projectPendingDelete = proj
                                 showDeleteConfirmation = true  // Display delete confirmation dialog
                             }
                         }
@@ -264,7 +264,8 @@ struct ProjectsListView: View {
                     Log.debug("Search for: \(query)")
                     searchText = text
                 }
-                .padding(.horizontal, 8)
+                .padding(.leading, 4)
+                .padding(.trailing, 12)
             }
             .frame(height: toolbarHeight)
             .background(.ultraThinMaterial) // subtle translucent background (iOS/macOS)

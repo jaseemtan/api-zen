@@ -17,6 +17,8 @@ struct MainView: View {
     @Binding var selectedWorkspaceId: String
     @Binding var coreDataContainer: CoreDataContainer
     @Binding var workspaceName: String
+    @Binding var project: EProject?
+    @Binding var request: ERequest?
     
     @Environment(\.managedObjectContext) private var ctx
     
@@ -37,7 +39,7 @@ struct MainView: View {
                     .controlSize(.small)
             } else {
                 ThreeColumnSplitView(
-                    left: NavigatorView(workspaceId: $selectedWorkspaceId),
+                    left: NavigatorView(workspaceId: $selectedWorkspaceId, project: $project),
                     center: VStack {
                         VSplitView {
                             RequestComposerView()

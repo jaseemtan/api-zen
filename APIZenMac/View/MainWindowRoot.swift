@@ -13,37 +13,32 @@ import AZCommon
 struct MainWindowRoot: View {
     @Environment(\.openWindow) private var openWindow
     
-    // Per-window workspace id (each window has its own copy)
-    @State private var workspaceId: String = CoreDataService.shared.defaultWorkspaceId
-    
-    @State private var workspaceName: String = CoreDataService.shared.defaultWorkspaceName
-    
     /// This is set for the first window. Which is responsible for bootstrapping other windows.
     @State var isRootWindow: Bool
-    
     /// Per-window index - 0, 1, etc.
     @State var windowIndex: Int = 0
-    
     /// If this windows is part of a tab group, the index of the first window in the group.
     @State var parentWindowIndx: Int = -1
-    
     // Indicates if the workspace is local or cloud based.
     @State private var coreDataContainer: CoreDataContainer = CoreDataContainer.local
-    
+    // Per-window workspace id (each window has its own copy)
+    @State private var workspaceId: String = CoreDataService.shared.defaultWorkspaceId
+    @State private var workspaceName: String = CoreDataService.shared.defaultWorkspaceName
+    /// Selected project for the current workspace if present.
+    @State private var project: EProject?
+    /// Selected request for the project if present.
+    @State private var request: ERequest?
     // Pane preference is saved in the window registry because it's window specific. If I have same workspace in two different window and if I save workspace specific preference, then I can't have per window pane display. Hiding navigator will hide in all windows with the same workspace.
     // And this is saved for the open windows. If we close a window, these settings are cleared. The preference for the last window is saved.
     @State private var showNavigator: Bool = true  // Left pane
-
     @State private var showInspector: Bool = true // Right pane
-
     @State private var showRequestComposer: Bool = true // The center pane
-
     @State private var showCodeView: Bool = true // Center bottom pane
-    
     @State var isProcessing = true
-    
     @State private var isTabbed = false
     @State private var window: NSWindow?
+    
+    
     
     private let windowRegistry = WindowRegistry.shared
     private let db = CoreDataService.shared
@@ -54,17 +49,21 @@ struct MainWindowRoot: View {
                 selectedWorkspaceId: $workspaceId,
                 coreDataContainer: $coreDataContainer,
                 workspaceName: $workspaceName,
+                project: $project,
+                request: $request,
                 windowIndex: windowIndex,
                 showNavigator: $showNavigator,
                 showInspector: $showInspector,
                 showRequestComposer: $showRequestComposer,
-                showCodeView: $showCodeView
+                showCodeView: $showCodeView,
             )
             .frame(minWidth: 1024, idealWidth: 1280, minHeight: 600, idealHeight: 700, alignment: .center)
             .environment(\.coreDataContainer, $coreDataContainer)
             .environment(\.managedObjectContext, coreDataContainer == .local ? self.db.localMainMOC : self.db.ckMainMOC)
             .onChange(of: workspaceId, { oldValue, newValue in
                 Log.debug("mwroot: wsId changed - old: \(oldValue) - new: \(newValue)")
+                request = nil  // clear request and project
+                project = nil
                 if !isTabbed {  // NB: disabling this for tabs to prevent it from restoring a new window on launch for now. #tab
                     self.windowRegistry.add(windowIndex: windowIndex, workspaceId: newValue, coreDataContainer: coreDataContainer.rawValue, showNavigator: showNavigator, showInspector: showInspector, showCodeView: showCodeView)
                 }
@@ -77,6 +76,17 @@ struct MainWindowRoot: View {
             })
             .onChange(of: showCodeView, { oldValue, newValue in
                 self.windowRegistry.add(windowIndex: windowIndex, workspaceId: workspaceId, coreDataContainer: coreDataContainer.rawValue, showNavigator: showNavigator, showInspector: showInspector, showCodeView: newValue)
+            })
+            .onChange(of: project, { oldValue, newProj in
+                let projId: String = newProj != nil ? newProj!.getId() : ""
+                if projId == "" { request = nil }
+                Log.debug("mwroot: selected project changed to \(projId)")
+                self.windowRegistry.add(windowIndex: windowIndex, workspaceId: workspaceId, coreDataContainer: coreDataContainer.rawValue, showNavigator: showNavigator, showInspector: showInspector, showCodeView: showCodeView, projectId: projId, requestId: request != nil ? request!.getId() : "")
+            })
+            .onChange(of: request, { oldValue, newReq in
+                let reqId: String = newReq != nil ? newReq!.getId() : ""
+                Log.debug("mwroot: selected request changed: \(reqId)")
+                // TODO: update window registry
             })
             .onDisappear {
                 Log.debug("mwroot: on disappear")
@@ -157,15 +167,29 @@ struct MainWindowRoot: View {
         Log.debug("mwroot: restore window state - \(idx)")
         
         if let window = self.windowRegistry.getWindow(windowIdx: idx) {
+            // Restore workspace data
             self.workspaceId = window.workspaceId
             self.coreDataContainer = CoreDataContainer(rawValue: window.coreDataContainer) ?? .local
             if let ws = self.db.getWorkspace(id: self.workspaceId, ctx: self.db.getMainMOC(container: self.coreDataContainer)) {
                 self.workspaceName = ws.getName()
                 Log.debug("mwroot: restoring ws: \(ws.getName())")
             }
+            // Restore main window data
             self.showNavigator = window.showNavigator
             self.showInspector = window.showInspector
             self.showCodeView = window.showCodeView
+            // Restore project, request data
+            if window.projectId.isNotEmpty {
+                let ctx = self.db.getMainMOC(container: coreDataContainer)
+                if let proj = self.db.getProject(id: window.projectId, ctx: ctx) {
+                    project = proj
+                    if window.requestId.isNotEmpty {
+                        if let req = self.db.getRequest(id: window.requestId, ctx: ctx) {
+                            request = req
+                        }
+                    }
+                }
+            }
          
             // #tab
             // Restore tabs for the current window
