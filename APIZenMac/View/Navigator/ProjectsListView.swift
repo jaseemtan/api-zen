@@ -135,7 +135,8 @@ struct ProjectsListView: View {
                 }
             }
             .padding(.bottom, toolbarHeight)
-            .listStyle(.sidebar)
+            .scrollContentBackground(.hidden)
+            .background(.ultraThinMaterial)
             
             bottomToolbarView
         }
