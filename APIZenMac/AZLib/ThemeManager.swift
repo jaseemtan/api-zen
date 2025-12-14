@@ -19,7 +19,7 @@ class ThemeManager {
     
     /// The description text colour.
     func getDescriptionColor(_ scheme: ColorScheme) -> Color {
-        return scheme == .dark ? .darkGrey4 : .lightGrey4
+        return scheme == .dark ? .primary.opacity(0.6) : .primary.opacity(0.7)
     }
     
     /// Foreground style for elements like images which returns the system accent colour.
@@ -38,7 +38,7 @@ class ThemeManager {
     }
     
     func getDisabledIconColor(_ scheme: ColorScheme) -> Color {
-        return scheme == .dark ? .darkGrey4 : .lightGrey4
+        return Color(nsColor: .tertiaryLabelColor)
     }
 }
 

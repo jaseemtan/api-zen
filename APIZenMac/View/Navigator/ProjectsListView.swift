@@ -32,7 +32,7 @@ struct ProjectsListView: View {
     @State private var editProjectDesc: String = ""
     @State private var projectPendingDelete: EProject?  // Holds the project that is user is deleting
     @State private var showDeleteConfirmation = false
-    @State private var isDragMode = false
+    @State private var selectedProjectId: String = ""
     
     @Environment(\.managedObjectContext) private var moc
     @Environment(\.colorScheme) private var colorScheme
@@ -102,16 +102,13 @@ struct ProjectsListView: View {
 
     var body: some View {
         Group {
-            List {
+            List(selection: $selectedProjectId) {
                 ForEach(projects) { project in
-                    NameDescView(imageName: "project", name: "\(project.getName()) - \(project.order!)", desc: project.desc, isDisplayDragIndicator: isDragMode)
+                    NameDescView(imageName: "project", name: "\(project.getName()) - \(project.order!)", desc: project.desc)
                         .padding(.vertical, 6)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .id(project.objectID)
                         .contentShape(Rectangle())
-                        .onTapIf(!isDragMode, perform: {
-                            onSelect(project)
-                        })
+                        .tag(project.getId())
                         .contextMenu {
                             Button("Edit") {
                                 Log.debug("edit on proj: \(project.getName())")
@@ -130,7 +127,7 @@ struct ProjectsListView: View {
                 }
                 .onMove { indexSet, order in
                     Log.debug("on move")
-                    guard sortField == .manual else { return }
+                    guard sortField == .manual && sortAscending else { return }
                     reorderProject(from: indexSet, to: order)
                 }
             }
@@ -149,6 +146,14 @@ struct ProjectsListView: View {
         .task {
             sortField = state.sortField
             sortAscending = state.sortAscending
+        }
+        .onChange(of: selectedProjectId) { _, projId in
+            Log.debug("project selection changed to: \(projId)")
+            if let proj = self.projects.first(where: { project in
+                project.getId() == projId
+            }) {
+                onSelect(proj)
+            }
         }
         .onChange(of: workspaceId) { oldId, newId in
             if oldId != newId {
@@ -219,21 +224,6 @@ struct ProjectsListView: View {
 
                 if !(isSearchActive ?? false) {
                     AddButton(onTap: {}, helpText: "Add Group")
-                    
-                    // Drag mode button
-                    Button {
-                        Log.debug("drag mode toggle")
-                        isDragMode.toggle()
-                    } label: {
-                        Image(systemName: "arrow.up.and.down.text.horizontal")
-                            .font(.system(size: 15, weight: .regular))
-                            .imageScale(.medium)
-                            .contentShape(Rectangle())
-                            .foregroundStyle(getDragModeIconColor())
-                    }
-                    .buttonStyle(.borderless)
-                    .help("Drag Mode")
-                    .disabled(!isDraggable())
                 }
                 
                 Spacer()
@@ -293,21 +283,6 @@ struct ProjectsListView: View {
             self.db.saveMainContext()
             isProcessing = false
         }
-    }
-    
-    /// Check if the project list is draggable, which will be the case only when sorting is manual and order is ascending.
-    private func isDraggable() -> Bool {
-        return sortField == .manual && sortAscending
-    }
-    
-    private func getDragModeIconColor() -> Color {
-        if !isDraggable() {
-            return theme.getDisabledIconColor(colorScheme)
-        }
-        if isDragMode {
-            return theme.getAccentColor()
-        }
-        return .secondary
     }
     
     private func getSortDescriptors() -> [NSSortDescriptor] {
