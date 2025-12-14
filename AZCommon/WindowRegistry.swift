@@ -88,6 +88,9 @@ public class WindowRegistry {
     public func addTab(mainWindowIdx: Int, tabIdx: Int, workspaceId: String, coreDataContainer: String, showNavigator: Bool, showInspector: Bool, showCodeView: Bool) {
         Log.debug("add tab: main window idx: \(mainWindowIdx) - tabIdx: \(tabIdx)")
         self.windows[mainWindowIdx]?.tabs[tabIdx] = Entry(windowIdx: tabIdx, workspaceId: workspaceId, coreDataContainer: coreDataContainer, showNavigator: showNavigator, showInspector: showInspector, showCodeView: showCodeView, parentWindowIdx: mainWindowIdx)
+        /// In SwiftUI we are only able to detect if the current window is in tabbed mode after `onAppear`. The state restoration happens in onAppear and it will add the current window to window registry.
+        /// So during `restoreTabs()` we need to remove this tab from windows if present. This would also be required if the tab was moved to a separate window before and added to the tab group now.
+        self.windows.removeValue(forKey: tabIdx)
     }
     
     /// Removes the tab from the main window with the given index.
