@@ -32,7 +32,7 @@ struct ProjectsListView: View {
     @State private var editProjectDesc: String = ""
     @State private var projectPendingDelete: EProject?  // Holds the project that is user is deleting
     @State private var showDeleteConfirmation = false
-    @State private var selectedProjectId: Set<String> = []
+    @State private var selectedProjectIds: Set<String> = []
     
     @Environment(\.managedObjectContext) private var moc
     @Environment(\.colorScheme) private var colorScheme
@@ -102,7 +102,7 @@ struct ProjectsListView: View {
 
     var body: some View {
         Group {
-            List(selection: $selectedProjectId) {
+            List(selection: $selectedProjectIds) {
                 ForEach(projects) { project in
                     NameDescView(imageName: "project", name: "\(project.getName()) - \(project.order!)", desc: project.desc)
                         .padding(.vertical, 6)
@@ -110,7 +110,7 @@ struct ProjectsListView: View {
                         .contentShape(Rectangle())
                         .tag(project.getId())
                         .contextMenu {
-                            if selectedProjectId.count <= 1 {
+                            if selectedProjectIds.count <= 1 {
                                 Button("Edit") {
                                     Log.debug("edit on proj: \(project.getName())")
                                     editProject = project
@@ -122,6 +122,7 @@ struct ProjectsListView: View {
                             
                             Button("Delete", role: .destructive) {
                                 Log.debug("delete on proj: \(project.getName())")
+                                Log.debug("selected project ids: \(selectedProjectIds)")
                                 projectPendingDelete = project
                                 showDeleteConfirmation = true  // Display delete confirmation dialog
                             }
@@ -149,14 +150,21 @@ struct ProjectsListView: View {
             sortField = state.sortField
             sortAscending = state.sortAscending
         }
-        .onChange(of: selectedProjectId) { _, projIds in
+        .onChange(of: selectedProjectIds) { _, projIds in
             Log.debug("project selection changed to: \(projIds)")
-            /// Navigate to requests list only if one project is selected.
-            if projIds.count == 1 {
-                if let projId = projIds.first, let proj = self.projects.first(where: { project in
-                    project.getId() == projId
-                }) {
-                    onSelect(proj)
+            if UI.isCommandClicked() {
+                Log.debug("project list command clicked. do nothing.")
+            } else {
+                // Navigate to requests list only if one project is selected.
+                if projIds.count == 1 {
+                    if let projId = projIds.first, let proj = self.projects.first(where: { project in
+                        project.getId() == projId
+                    }) {
+                        onSelect(proj)
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                            selectedProjectIds = []  // clear selection so that after navigating back, we can select the same project again and the change selection will be invoked
+                        }
+                    }
                 }
             }
         }
@@ -188,15 +196,15 @@ struct ProjectsListView: View {
         }
         .confirmationDialog("Are you sure you want to delete this project?", isPresented: $showDeleteConfirmation, titleVisibility: .visible) {
             Button("Delete", role: .destructive) {
-                if let project = projectPendingDelete {
-                    isProcessing = true
-                    self.db.deleteEntity(project, ctx: moc)
-                    self.db.saveMainContext { _ in
-                        isProcessing = false
-                    }
-                    // TODO: delete any request list preferences
-                }
-                projectPendingDelete = nil
+//                if let project = projectPendingDelete {
+//                    isProcessing = true
+//                    self.db.deleteEntity(project, ctx: moc)
+//                    self.db.saveMainContext { _ in
+//                        isProcessing = false
+//                    }
+//                    // TODO: delete any request list preferences
+//                }
+//                projectPendingDelete = nil
             }
 
             Button("Cancel", role: .cancel) {

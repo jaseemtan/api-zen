@@ -10,6 +10,14 @@ import Cocoa
 import ObjectiveC
 import AZCommon
 
+class UI {
+    /// Returns true if command clicked.
+    static func isCommandClicked() -> Bool {
+        let flags = NSApp.currentEvent?.modifierFlags ?? []
+        return flags.contains(.command)
+    }
+}
+
 extension View {
     /// Adds a rectangular border around the given view so that the dimensions can be made visible. Helps in identifying button click area.
     /// This is useful mainly in debugging.
