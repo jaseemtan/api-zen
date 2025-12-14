@@ -51,7 +51,7 @@ struct AddProjectView: View {
             return name.trim().isEmpty
         }
         guard let project = project else { return false }
-        return !(project.getName() != name || (project.desc != nil && project.desc! != desc))
+        return !(project.getName() != name.trim() || (project.desc != nil && project.desc! != desc.trim()))
     }
     
     private func saveProject() {
@@ -62,7 +62,7 @@ struct AddProjectView: View {
             return
         }
         if !isEdit {
-            self.dbSvc.createProject(workspace: ws, name: name, desc: desc)
+            self.dbSvc.createProject(workspace: ws, name: name.trim(), desc: desc.trim())
             name = ""
             desc = ""
             onSave?(nil)  // isProcessing will be set to false in the callback.
@@ -70,8 +70,8 @@ struct AddProjectView: View {
         } else {
             if let project = project {
                 isProcessing = true
-                project.name = name
-                project.desc = desc
+                project.name = name.trim()
+                project.desc = desc.trim()
                 self.db.saveMainContext { _ in
                     DispatchQueue.main.async {
                         onSave?(project)  // isProcessing will be set to false in the callback.
