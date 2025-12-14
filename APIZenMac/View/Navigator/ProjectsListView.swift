@@ -32,7 +32,7 @@ struct ProjectsListView: View {
     @State private var editProjectDesc: String = ""
     @State private var projectPendingDelete: EProject?  // Holds the project that is user is deleting
     @State private var showDeleteConfirmation = false
-    @State private var selectedProjectId: String = ""
+    @State private var selectedProjectId: Set<String> = []
     
     @Environment(\.managedObjectContext) private var moc
     @Environment(\.colorScheme) private var colorScheme
@@ -110,12 +110,14 @@ struct ProjectsListView: View {
                         .contentShape(Rectangle())
                         .tag(project.getId())
                         .contextMenu {
-                            Button("Edit") {
-                                Log.debug("edit on proj: \(project.getName())")
-                                editProject = project
-                                editProjectName = project.getName()
-                                editProjectDesc = project.desc ?? ""
-                                showEditProjectPopup.toggle()
+                            if selectedProjectId.count <= 1 {
+                                Button("Edit") {
+                                    Log.debug("edit on proj: \(project.getName())")
+                                    editProject = project
+                                    editProjectName = project.getName()
+                                    editProjectDesc = project.desc ?? ""
+                                    showEditProjectPopup.toggle()
+                                }
                             }
                             
                             Button("Delete", role: .destructive) {
@@ -147,12 +149,15 @@ struct ProjectsListView: View {
             sortField = state.sortField
             sortAscending = state.sortAscending
         }
-        .onChange(of: selectedProjectId) { _, projId in
-            Log.debug("project selection changed to: \(projId)")
-            if let proj = self.projects.first(where: { project in
-                project.getId() == projId
-            }) {
-                onSelect(proj)
+        .onChange(of: selectedProjectId) { _, projIds in
+            Log.debug("project selection changed to: \(projIds)")
+            /// Navigate to requests list only if one project is selected.
+            if projIds.count == 1 {
+                if let projId = projIds.first, let proj = self.projects.first(where: { project in
+                    project.getId() == projId
+                }) {
+                    onSelect(proj)
+                }
             }
         }
         .onChange(of: workspaceId) { oldId, newId in
