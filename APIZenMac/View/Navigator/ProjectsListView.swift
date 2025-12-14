@@ -7,11 +7,10 @@
 
 import SwiftUI
 import CoreData
-import UniformTypeIdentifiers
 import AZData
 import AZCommon
  
-/// Projects list view that preserves scroll offset when navigating back from requests view. The offset works by default because this view is inside an AppKit split view controller.
+/// Projects list view.
 struct ProjectsListView: View {
     /// Selected workspace id
     @Binding var workspaceId: String
@@ -59,10 +58,10 @@ struct ProjectsListView: View {
         }
         
         /// Saves the state to user defaults.
-        func saveProjectPopupState() {
+        func saveProjectsListState() {
             if let data = self.encode() {
                 AZUtils.shared.setValue(key: self.getUserDefaultsKey(), value: data)
-                Log.debug("saved proj state: sortField: \(sortField) - sortAsc: \(sortAscending) - wsId: \(workspaceId)")
+                Log.debug("projlist: saved proj state: sortField: \(sortField) - sortAsc: \(sortAscending) - wsId: \(workspaceId)")
             }
         }
         
@@ -71,14 +70,14 @@ struct ProjectsListView: View {
             if workspaceId.isEmpty { return }
             if let data = AZUtils.shared.getValue(self.getUserDefaultsKey()) as? Data {
                 if let state = self.decode(data) {
-                    Log.debug("restored proj state: sortField: \(sortField) - sortAsc: \(sortAscending) - wsId: \(workspaceId)")
+                    Log.debug("projlist: restored proj state: sortField: \(sortField) - sortAsc: \(sortAscending) - wsId: \(workspaceId)")
                     self.sortField = state.sortField
                     self.sortAscending = state.sortAscending
                 }
             }
         }
         
-        /// Workspace delete is done in the list view. So keeping this static.
+        /// Projects list state is per workspace. So it gets deleted when workspace is deleted. And that happens in workspaces list view. So this is static.
         static func deleteProjectsListState(_ workspaceId: String) {
             AZUtils.shared.removeValue("\(AZMConst.projectsListStateKey)-\(workspaceId)")
         }
@@ -90,9 +89,9 @@ struct ProjectsListView: View {
     
     @State private var state: ProjectsListState = ProjectsListState()
     
-    // Explicit init with only the required params is required because we have many properties and default init becomes internal.
+    // Explicit init with only the required params because we have many properties and default init becomes internal.
     init(workspaceId: Binding<String>, onSelect: @escaping (EProject) -> Void, project: Binding<EProject?>, searchText: String, isProcessing: Binding<Bool>) {
-        Log.debug("proj list view init: ws id: \(workspaceId.wrappedValue)")
+        Log.debug("projlist: view init: ws id: \(workspaceId.wrappedValue)")
         self._workspaceId = workspaceId
         self.onSelect = onSelect
         self._project = project  // selected project
@@ -102,7 +101,7 @@ struct ProjectsListView: View {
 
     var body: some View {
         Group {
-            List(selection: $selectedProjectIds) {
+            List(selection: $selectedProjectIds) {  // The scroll offset is automatically preserved when navigated back.
                 ForEach(projects) { proj in
                     NameDescView(imageName: "project", name: "\(proj.getName()) - \(proj.order!)", desc: proj.desc)
                         .padding(.vertical, 6)
@@ -112,7 +111,7 @@ struct ProjectsListView: View {
                         .contextMenu {
                             if selectedProjectIds.count <= 1 {
                                 Button("Edit") {
-                                    Log.debug("edit on proj: \(proj.getName())")
+                                    Log.debug("projlist: edit on proj: \(proj.getName())")
                                     editProject = proj
                                     editProjectName = proj.getName()
                                     editProjectDesc = proj.desc ?? ""
@@ -121,15 +120,15 @@ struct ProjectsListView: View {
                             }
                             
                             Button("Delete", role: .destructive) {
-                                Log.debug("delete on proj: \(proj.getName()) - \(proj.getId())")
-                                Log.debug("selected project ids: \(selectedProjectIds)")
+                                Log.debug("projlist: delete on proj: \(proj.getName()) - \(proj.getId())")
+                                Log.debug("projlist: selected project ids: \(selectedProjectIds)")
                                 projectPendingDelete = proj
                                 showDeleteConfirmation = true  // Display delete confirmation dialog
                             }
                         }
                 }
                 .onMove { indexSet, order in
-                    Log.debug("on move")
+                    Log.debug("projlist: on move")
                     guard sortField == .manual && sortAscending else { return }
                     reorderProject(from: indexSet, to: order)
                 }
@@ -141,7 +140,8 @@ struct ProjectsListView: View {
             bottomToolbarView
         }
         .onAppear {
-            Log.debug("proj list onAppear: wsId: \(workspaceId)")
+            Log.debug("projlist: onAppear: wsId: \(workspaceId)")
+            selectedProjectIds = []
             state.workspaceId = workspaceId
             state.restoreProjectsListState()
             self.initDataManager()
@@ -151,9 +151,9 @@ struct ProjectsListView: View {
             sortAscending = state.sortAscending
         }
         .onChange(of: selectedProjectIds) { _, projIds in
-            Log.debug("project selection changed to: \(projIds)")
+            Log.debug("projlist: project selection changed to: \(projIds)")
             if UI.isCommandClicked() {
-                Log.debug("project list command clicked. do nothing.")
+                Log.debug("projlist: command clicked. do nothing.")
             } else {
                 // Navigate to requests list only if one project is selected.
                 if projIds.count == 1 {
@@ -161,8 +161,11 @@ struct ProjectsListView: View {
                         project.getId() == projId
                     }) {
                         onSelect(proj)
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                            selectedProjectIds = []  // clear selection so that after navigating back, we can select the same project again and the change selection will be invoked
+                        Task { @MainActor in
+                            await Task.yield()   // wait one SwiftUI commit
+                            withTransaction(Transaction(animation: nil)) {
+                                selectedProjectIds.removeAll()
+                            }
                         }
                     }
                 }
@@ -170,7 +173,7 @@ struct ProjectsListView: View {
         }
         .onChange(of: workspaceId) { oldId, newId in
             if oldId != newId {
-                Log.debug("proj list: workspace id changed: \(newId)")
+                Log.debug("projlist: workspace id changed: \(newId)")
                 self.updateState(newId)  // clear project list state and restore state if present for the given workspace.
                 self.initDataManager()  // reinit data maanger with new predicate for workspaceId to update project listing
             }
@@ -187,7 +190,7 @@ struct ProjectsListView: View {
         .popover(item: $editProject, attachmentAnchor: .rect(.bounds), arrowEdge: .trailing) { proj in
             // Edit project
             AddProjectView(workspaceId: workspaceId, name: $editProjectName, desc: $editProjectDesc, isEdit: true, isProcessing: $isProcessing, project: proj) { _ in
-                Log.debug("on proj edit save")
+                Log.debug("projlist: on proj edit save")
                 self.editProject = nil
                 self.initDataManager()
                 isProcessing = false
@@ -196,38 +199,16 @@ struct ProjectsListView: View {
         }
         .confirmationDialog(isThereMultipleProjectsToDelete() ? "Are you sure you want to delete the selected projects?" : "Are you sure you want to delete this project?", isPresented: $showDeleteConfirmation, titleVisibility: .visible) {
             Button("Delete", role: .destructive) {
-                if let project = projectPendingDelete {
-                    isProcessing = true
-                    if selectedProjectIds.contains(project.getId()) {
-                        // Delete all selected project. Current project is part of it.
-                        var projectsToDelete: [EProject] = []
-                        selectedProjectIds.forEach { id in
-                            if let proj = self.projects.first(where: { elem in
-                                elem.getId() == id
-                            }) {
-                                projectsToDelete.append(proj)
-                            }
-                        }
-                        projectsToDelete.forEach { proj in
-                            self.db.deleteEntity(proj, ctx: moc)
-                        }
-                    } else {
-                        // Delete only the item on which the context menu delete was clicked.
-                        self.db.deleteEntity(project, ctx: moc)
-                    }
-                    
-                    self.db.saveMainContext { _ in
-                        isProcessing = false
-                    }
-                    // TODO: delete any request list preferences
-                }
-                projectPendingDelete = nil
+                deleteProjects()
             }
 
             Button("Cancel", role: .cancel) {
                 projectPendingDelete = nil
                 isProcessing = false
             }
+        }
+        .onDisappear {
+            Log.debug("projlist: on disappear")
         }
     }
     
@@ -241,12 +222,12 @@ struct ProjectsListView: View {
                     onSortFieldChanged: { field in
                         sortField = field
                         state.sortField = sortField
-                        state.saveProjectPopupState()
+                        state.saveProjectsListState()
                     },
                     onSortAscendingChanged: { flag in
                         sortAscending = flag
                         state.sortAscending = sortAscending
-                        state.saveProjectPopupState()
+                        state.saveProjectsListState()
                     },
                     helpText: "Sort Projects"
                 )
@@ -261,7 +242,7 @@ struct ProjectsListView: View {
                 // Search button on right. Hides other toolbar items when expanded.
                 ExpandingSearchField(isActive: $isSearchActive) { query in
                     let text = query.trim()
-                    Log.debug("Search for: \(query)")
+                    Log.debug("projlist: search for: \(query)")
                     searchText = text
                 }
                 .padding(.leading, 4)
@@ -276,9 +257,8 @@ struct ProjectsListView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
     }
     
-    /// The query is cached. So multiple searches of the same parameters would not be that costly.
     func initDataManager() {
-        Log.debug("proj list view: init data manager - \(self.db.getContainer(moc)) - wsId: \(workspaceId)")
+        Log.debug("projlist: view: init data manager - \(self.db.getContainer(moc)) - wsId: \(workspaceId)")
         let fr = EProject.fetchRequest()
         fr.sortDescriptors = self.getSortDescriptors()
         if searchText.isNotEmpty {
@@ -306,7 +286,7 @@ struct ProjectsListView: View {
         guard source.first != nil else { return }
         isProcessing = true
         var projects = projects.map { $0 }
-        projects.move(fromOffsets: source, toOffset: destination)  // does the move operation inserting item to the correct order in the local workspace copy. After which we set the order for this list. Saving will update the store and redraw the UI.
+        projects.move(fromOffsets: source, toOffset: destination)
         DispatchQueue.main.async {
             for (index, project) in projects.enumerated() {
                 project.order = NSDecimalNumber(string: "\(index)")
@@ -314,6 +294,37 @@ struct ProjectsListView: View {
             self.db.saveMainContext()
             isProcessing = false
         }
+    }
+    
+    /// Delete projects after the confirmation. If multiple projects are selected and the delete context menu is inside the selection, all those projects are deleted.
+    /// If there are multiple projects selected and delete context menu is for a project outside the selection, then only that specific project is deleted. This is the standard macOS behaviour.
+    func deleteProjects() {
+        if let project = projectPendingDelete {
+            isProcessing = true
+            if selectedProjectIds.contains(project.getId()) {
+                // Delete all selected projects. Current project is part of it.
+                var projectsToDelete: [EProject] = []
+                selectedProjectIds.forEach { id in
+                    if let proj = self.projects.first(where: { elem in
+                        elem.getId() == id
+                    }) {
+                        projectsToDelete.append(proj)
+                    }
+                }
+                projectsToDelete.forEach { proj in
+                    self.db.deleteEntity(proj, ctx: moc)
+                    RequestsListView.RequestsListState.deleteRequestsListState(proj.getId())  // Clear request list preferences associated with this project.
+                }
+            } else {
+                // Delete only the item on which the context menu delete was clicked.
+                self.db.deleteEntity(project, ctx: moc)
+                RequestsListView.RequestsListState.deleteRequestsListState(project.getId())  // Clear request list preferences associated with this project.
+            }
+            self.db.saveMainContext { _ in
+                isProcessing = false
+            }
+        }
+        projectPendingDelete = nil
     }
     
     /// Checks if there are multiple projects selected and user clicked the delete on one of the items' context menu.
@@ -340,4 +351,3 @@ struct ProjectsListView: View {
         return [sortDescriptor]
     }
 }
-

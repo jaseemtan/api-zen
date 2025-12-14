@@ -60,10 +60,8 @@ struct NavigatorView: View {
                     .overlay(Divider(), alignment: .bottom)
                 
                 ZStack {
-                    if pane == .request, let sel = project {
-                        RequestsListView(project: sel, requests: requests, onSelect: { req in
-                            onSelectRequest?(req)
-                        })
+                    if pane == .request && project != nil {
+                        RequestsListView(workspaceId: $workspaceId, project: $project, searchText: "", isProcessing: $isProcessing)
                         .transition(listTransition)
                     } else {
                         ProjectsListView(workspaceId: $workspaceId, onSelect: onProjectSelected(_:), project: $project, searchText: "", isProcessing: $isProcessing)
@@ -178,30 +176,5 @@ struct NavigatorView: View {
     // MARK: - Data loading
     private func loadRequests(for project: EProject) {
         requests = db.getRequests(projectId: project.getId(), ctx: moc)
-    }
-}
-
-// MARK: - Request List View
-struct RequestsListView: View {
-    let project: EProject
-    let requests: [ERequest]
-    let onSelect: (ERequest) -> Void
-
-    var body: some View {
-        List {
-            ForEach(requests, id: \.objectID) { req in
-                HStack {
-                    Image(systemName: "doc.text")
-                    Text(req.name ?? "No name")
-                    Spacer()
-                }
-                .padding(.vertical, 6)
-                .contentShape(Rectangle())
-                .onTapGesture {
-                    onSelect(req)
-                }
-            }
-        }
-        .listStyle(SidebarListStyle())
     }
 }
