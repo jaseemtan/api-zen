@@ -13,7 +13,7 @@ struct NameDescView: View {
     // Here we use plain variables instead of @State because this value is obtained from parent and this view does not own this.
     // @State means this view owns this piece of data and is the source of truth for it. SwiftUI will store and preserve it across view reloads. External changes will not reflect once set unless synced in some way.
     // So NameDescView is a pure view of the data. It doesn't own the data.
-    var imageName: String
+    var imageName: String = ""
     var name: String
     var desc: String?
     var isDisplayCheckmark = false
@@ -31,15 +31,17 @@ struct NameDescView: View {
                     .renderingMode(.template)
                     .foregroundStyle(theme.getDescriptionColor(colorScheme))
                     .aspectRatio(contentMode: .fit)
-                    .frame(width: 10, height: 10, alignment: .leading)                
+                    .frame(width: 10, height: 10, alignment: .leading)
             }
             
-            Image(imageName)
-                .resizable()
-                .renderingMode(.template)
-                .foregroundStyle(theme.getForegroundStyle())
-                .aspectRatio(contentMode: .fit)
-                .frame(width: 20, height: 20, alignment: .center)
+            if imageName.isNotEmpty {
+                Image(imageName)
+                    .resizable()
+                    .renderingMode(.template)
+                    .foregroundStyle(theme.getForegroundStyle())
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 20, height: 20, alignment: .center)
+            }
             
             VStack(alignment: .leading, spacing: 2) {
                 Text(name)

@@ -105,7 +105,7 @@ struct ProjectsListView: View {
             // Selection is specified so that selected item tracking works properly when in drag mode. When not in drag mode, the tap gesture takes precedence.
             List(selection: $selectedProjectIds) {  // The scroll offset is automatically preserved when navigated back.
                 ForEach(projects) { proj in
-                    NameDescView(imageName: "project", name: "\(proj.getName()) - \(proj.order!)", desc: proj.desc)
+                    NameDescView(imageName: "project", name: "\(proj.getName()) - \(proj.order!)", desc: proj.desc, isDisplayDragIndicator: isDragMode)
                         .padding(.vertical, 6)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .contentShape(Rectangle())
@@ -147,7 +147,7 @@ struct ProjectsListView: View {
         }
         .onAppear {
             Log.debug("projlist: onAppear: wsId: \(workspaceId)")
-            selectedProjectIds = []
+            selectedProjectIds.removeAll()
             state.workspaceId = workspaceId
             state.restoreProjectsListState()
             self.initDataManager()
@@ -172,8 +172,8 @@ struct ProjectsListView: View {
         .onChange(of: searchText, { _, _ in
             self.initDataManager()
         })
-        .onChange(of: isDragMode, { _, flag in
-            if !flag {
+        .onChange(of: isDragMode, { _, dragMode in
+            if !dragMode {
                 selectedProjectIds.removeAll()
             }
         })
@@ -227,7 +227,9 @@ struct ProjectsListView: View {
                     // Drag mode button
                     Button {
                         Log.debug("drag mode toggle")
-                        isDragMode.toggle()
+                        withAnimation {
+                            isDragMode.toggle()
+                        }
                     } label: {
                         Image(systemName: "arrow.up.and.down.text.horizontal")
                             .font(.system(size: 15, weight: .regular))

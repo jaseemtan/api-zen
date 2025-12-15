@@ -26,6 +26,7 @@ struct RequestsListView: View {
     @State private var requestPendingDelete: ERequest?  // Holds the project that is user is deleting
     @State private var showDeleteConfirmation = false
     @State private var selectedRequestIds: Set<String> = []
+    @State private var isDragMode = false
     
     @Environment(\.managedObjectContext) private var moc
     @Environment(\.colorScheme) private var colorScheme
@@ -96,13 +97,16 @@ struct RequestsListView: View {
         Group {
             List(selection: $selectedRequestIds) {
                 ForEach(requests) { req in
-                    NameDescView(imageName: "project", name: "\(req.getName()) - \(req.order!)", desc: req.desc)
+                    NameDescView(name: "\(req.getName()) - \(req.order!)", isDisplayDragIndicator: isDragMode)
                         .padding(.vertical, 6)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .contentShape(Rectangle())
                         .tag(req.getId())
+                        .onTapIf(!isDragMode) {  // This overrides the default selection check on the list.
+                            Log.debug("reqlist: tap")
+//                            onSelect(req)
+                        }
                         .contextMenu {
-                            
                             Button("Copy") {
                                 Log.debug("reqlist: req copy: \(req.getName())")
                             }
@@ -137,6 +141,7 @@ struct RequestsListView: View {
         }
         .onAppear {
             Log.debug("reqlist: on appear: wsId: \(workspaceId)")
+            selectedRequestIds.removeAll()
             if let proj = project {
                 state.projectId = proj.getId()
                 state.restoreRequestsListState()
@@ -146,22 +151,6 @@ struct RequestsListView: View {
         .task {
             sortField = state.sortField
             sortAscending = state.sortAscending
-        }
-        .onChange(of: selectedRequestIds) { _, reqIds in
-            Log.debug("reqlist: request list selection changed to: \(reqIds)")
-            if UI.isCommandClicked() {
-                Log.debug("reqlist: command clicked.")
-                // TODO: display all requests as cards for sending and getting response.
-            } else {
-                // Display the request composer only if one request is selected.
-                if reqIds.count == 1 {
-                    if let reqId = reqIds.first, let req = self.requests.first(where: { request in
-                        request.getId() == reqId
-                    }) {
-                        Log.debug("reqlist: request selected - \(req.getId())")
-                    }
-                }
-            }
         }
         .onChange(of: project) { _, newProj in
             guard let proj = newProj else { return }
@@ -177,6 +166,11 @@ struct RequestsListView: View {
         })
         .onChange(of: searchText, { _, _ in
             self.initDataManager()
+        })
+        .onChange(of: isDragMode, { _, dragMode in
+            if !dragMode {
+                selectedRequestIds.removeAll()
+            }
         })
         .confirmationDialog(isThereMultipleRequestsToDelete() ? "Are you sure you want to delete the selected requests?" : "Are you sure you want to delete this request?", isPresented: $showDeleteConfirmation, titleVisibility: .visible) {
             Button("Delete", role: .destructive) {
@@ -213,6 +207,22 @@ struct RequestsListView: View {
 
                 if !(isSearchActive ?? false) {
                     AddButton(onTap: {}, helpText: "Add Group")
+                    // Drag mode button
+                    Button {
+                        Log.debug("drag mode toggle")
+                        withAnimation {
+                            isDragMode.toggle()
+                        }
+                    } label: {
+                        Image(systemName: "arrow.up.and.down.text.horizontal")
+                            .font(.system(size: 15, weight: .regular))
+                            .imageScale(.medium)
+                            .contentShape(Rectangle())
+                            .foregroundStyle(getDragModeIconColor())
+                    }
+                    .buttonStyle(.borderless)
+                    .help("Drag Mode")
+                    .disabled(!isDraggable())
                 }
                 
                 Spacer()
@@ -263,6 +273,7 @@ struct RequestsListView: View {
     
     /// Update user preference state
     func updateState(_ proj: EProject) {
+        isDragMode = false
         state = RequestsListState(projectId: proj.getId())
         state.restoreRequestsListState()
         sortField = state.sortField
@@ -320,6 +331,21 @@ struct RequestsListView: View {
             }
         }
         return false
+    }
+    
+    /// Check if the request list is draggable, which will be the case only when sorting is manual and order is ascending.
+    private func isDraggable() -> Bool {
+        return sortField == .manual && sortAscending
+    }
+
+    private func getDragModeIconColor() -> Color {
+        if !isDraggable() {
+            return theme.getDisabledIconColor(colorScheme)
+        }
+        if isDragMode {
+            return theme.getAccentColor()
+        }
+        return .secondary
     }
     
     private func getSortDescriptors() -> [NSSortDescriptor] {
