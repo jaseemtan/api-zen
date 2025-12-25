@@ -30,7 +30,7 @@ extension View {
     }
     
     /// Attach a tap handler only when `enabled` is true.
-    /// This is handy when we want to have click on list view by default. But when drag mode is enabled, we remove the tap gesture to make drag to work.
+    /// This is can be used when we want to have click on list view by default. But when drag mode is enabled, we remove the tap gesture to make the drag work.
     @ViewBuilder  // ViewBuilder is required so that the function can return different view trees.
     func onTapIf(_ enabled: Bool, perform action: @escaping () -> Void) -> some View {
         if enabled {
