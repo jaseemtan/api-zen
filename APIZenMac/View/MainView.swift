@@ -19,17 +19,17 @@ struct MainView: View {
     @Binding var workspaceName: String
     @Binding var project: EProject?
     @Binding var request: ERequest?
-    
-    @Environment(\.managedObjectContext) private var ctx
-    
-    let windowIndex: Int
-    
     @Binding var showNavigator: Bool  // Left pane
     @Binding var showInspector: Bool  // Right pane
     @Binding var showRequestComposer: Bool  // The center pane
     @Binding var showCodeView: Bool  // Center bottom pane
     
+    @Environment(\.managedObjectContext) private var ctx
+    
     @State private var isLoading: Bool = true
+    
+    let windowIndex: Int
+    
     private let db = CoreDataService.shared
 
     var body: some View {
