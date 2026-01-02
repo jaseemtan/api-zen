@@ -127,11 +127,6 @@ public class EditRequestTracker {
         if let method = x.method {
             if self.didRequestMethodChangeImp(method) { self.updateModified(x); return true }
         }
-        // if (x.method == nil && self.requestDict["method"] != nil) || (x.method != nil && (x.method!.isInserted || x.method!.isDeleted) && requestDict["method"] == nil) { return true }
-        // if let hm = self.requestDict["method"] as? [String: Any], let ida = x.id, let idb = hm["id"] as? String, ida != idb { return true }
-        // guard let projId = x.project?.getId() else { return true }
-        //let methods = self.localdb.getRequestMethodData(projId: projId, ctx: x.managedObjectContext)
-//        if self.didAnyRequestMethodChangeImp(methods) { return true }
         if self.didRequestBodyChangeImp(x.body) { return true }
         if let headers = x.headers?.allObjects as? [ERequestData] {
             if self.didAnyRequestHeaderChangeImp(headers) { return true }
@@ -500,6 +495,4 @@ public class EditRequestTracker {
         }
         return false
     }
-    
-    
 }

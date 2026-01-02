@@ -587,7 +587,6 @@ extension RequestTableViewController: KVTableViewManagerDelegate {
     }
     
     func reloadData() {
-        //self.updateData()
         self.tableView.reloadData()
     }
 }

@@ -221,17 +221,6 @@ class HistoryViewController: UIViewController, UITableViewDelegate, UITableViewD
         return self.sectionTitle[section]
     }
     
-//    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-//        let width = tableView.frame.width
-//        let view = UIView(frame: CGRect(x: 0, y: 0, width: width, height: 28))
-//        view.backgroundColor = UIColor(named: "table-view-cell-bg")
-//        let label = UILabel(frame: CGRect(x: 15, y: 4, width: width, height: 17))
-//        label.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
-//        label.text = self.sectionTitle[section]
-//        view.addSubview(label)
-//        return view
-//    }
-    
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         if self.hasElements(inSection: section) {
             return 28
@@ -273,4 +262,3 @@ extension HistoryViewController: NSFetchedResultsControllerDelegate {
         }
     }
 }
-

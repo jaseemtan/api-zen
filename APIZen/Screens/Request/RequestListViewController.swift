@@ -30,7 +30,6 @@ class RequestListViewController: APITesterProViewController {
     private lazy var localdbSvc = { PersistenceService.shared }()
     private var frc: NSFetchedResultsController<ERequest>!
     private let cellReuseId = "requestCell"
-    // private lazy var db = { PersistenceService.shared }()
     private let nc = NotificationCenter.default
     var project: EProject?
     var methods: [ERequestMethodData] = []

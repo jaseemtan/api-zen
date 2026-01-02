@@ -15,7 +15,6 @@ extension Notification.Name {
     static let donationDidChange = Notification.Name("donation-did-change")
 }
 
-
 class DonateTableViewController: APITesterProTableViewController {
     @IBOutlet weak var circuitBoard: UIImageView!
     @IBOutlet weak var donationAmountLabel: UILabel!

@@ -41,8 +41,6 @@ class ValidateSSLCell: UITableViewCell {
 
 class EditRequestTableViewController: APITesterProTableViewController, UITextFieldDelegate, UITextViewDelegate {
     @IBOutlet weak var titleLabel: UILabel!
-    // @IBOutlet weak var cancelBtn: UIButton!
-    // @IBOutlet weak var doneBtn: UIButton!
     @IBOutlet weak var methodView: UIView!
     @IBOutlet weak var methodLabel: UILabel!
     @IBOutlet weak var urlTextField: EATextField!
@@ -320,8 +318,6 @@ class EditRequestTableViewController: APITesterProTableViewController, UITextFie
         self.nc.addObserver(self, selector: #selector(self.presentImagePicker(_:)), name: .imagePickerShouldPresent, object: nil)
         self.nc.addObserver(self, selector: #selector(self.validateSSLDidChange(_:)), name: .validateSSLDidChange, object: nil)
         self.nc.addObserver(self, selector: #selector(self.presentWebCodeEditor(_:)), name: .codeEditorShouldPresent, object: nil)
-        // self.cancelBtn.addTarget(self, action: #selector(self.cancelDidTap(_:)), for: .touchUpInside)
-        // self.doneBtn.addTarget(self, action: #selector(self.doneDidTap(_:)), for: .touchUpInside)
     }
 
     func updateData() {
@@ -419,14 +415,6 @@ class EditRequestTableViewController: APITesterProTableViewController, UITextFie
         self.requestTracker.diffRescheduler.done()
         if self.isDirty, let data = self.request, let proj = self.project {
             self.request.project = proj
-//            if let set = proj.requestMethods, let xs = set.allObjects as? [ERequestMethodData] {
-//                xs.forEach { method in
-//                    if method.shouldDelete {
-//                        // TODO: ck: mark entities for delete
-//                        // self.db.markEntityForDelete(reqMethodData: method, ctx: method.managedObjectContext)
-//                    }
-//                }
-//            }
             // delete entities marked for delete
             self.requestTracker.deletedEntites.forEach { elem in
                 self.localdbSvc.deleteEntity(elem as! any Entity)
@@ -759,7 +747,7 @@ class EditRequestTableViewController: APITesterProTableViewController, UITextFie
             let count: Double = n == 0 ? 1 : Double(n)
             return CGFloat(count * 92.5) + 57  // field cell + title cell
         }
-        return 92.5 + 57  // 84 + 77
+        return 92.5 + 57
     }
 }
 
@@ -1798,11 +1786,6 @@ class KVEditBodyFieldTableView: UITableView, UITableViewDelegate, UITableViewDat
             if let cell = tableView.cellForRow(at: indexPath) as? KVEditBodyFieldTableViewCell  {
                 if !cell.reqDataId.isEmpty {
                     if let elem = self.localdb.getRequestData(id: cell.reqDataId, ctx: ctx) {
-//                        if let xs = elem?.files?.allObjects as? [EFile] {
-//                            xs.forEach { file in self.app.addEditRequestDeleteObject(file) }
-//                        }
-                        // TODO: ck: mark request data for delete
-                        // self.db.markEntityForDelete(reqData: elem, ctx: ctx)
                         self.localdbSvc.markEntityForDelete(reqData: elem, ctx: ctx)
                         self.editTVDelegate?.getRequestTracker().trackDeletedEntity(elem)
                     }
@@ -1942,20 +1925,16 @@ class KVEditTableViewManager: NSObject, UITableViewDelegate, UITableViewDataSour
         let data = delegate.getRequest()
         if type == .body {
             guard let body = self.localdb.getRequestBodyData(id: id, ctx: ctx) else { return }
-            // TODO: ck: mark body for delete
-            // self.db.markEntityForDelete(body: body, ctx: ctx)
             // delete body
             self.localdbSvc.markEntityForDelete(reqBodyData: body, ctx: ctx)
             self.delegate?.getRequestTracker().trackDeletedEntity(body)
         } else if type == .header {
             guard let elem = self.localdb.getRequestData(id: id, ctx: ctx) else { return }
-            // TODO: ck: mark request data for delete
             // delete header
             self.localdbSvc.markEntityForDelete(reqData: elem, ctx: ctx)
             self.delegate?.getRequestTracker().trackDeletedEntity(elem)
         } else if type == .param {
             guard let elem = self.localdb.getRequestData(id: id, ctx: ctx) else { return }
-            // TODO: ck: mark request data for delete
             // delete param
             self.localdbSvc.markEntityForDelete(reqData: elem, ctx: ctx)
             self.delegate?.getRequestTracker().trackDeletedEntity(elem)
@@ -1978,8 +1957,6 @@ class KVEditTableViewManager: NSObject, UITableViewDelegate, UITableViewDataSour
                     eimage?.isCameraMode = DocumentPickerState.isCameraMode
                     if let xs = binary.files?.allObjects as? [EFile] {  // binary contains image data, so we remove any files it has
                         xs.forEach { file in
-                            // TODO: ck: mark file for delete
-                            // self.db.markEntityForDelete(file: file, ctx: ctx)
                             self.localdbSvc.markEntityForDelete(file: file, ctx: ctx)
                             self.delegate?.getRequestTracker().trackDeletedEntity(file)
                         }
@@ -2012,8 +1989,6 @@ class KVEditTableViewManager: NSObject, UITableViewDelegate, UITableViewDataSour
                             Log.debug("bin: file read")
                             if let xs = binary.files?.allObjects as? [EFile] {  // updated files picked, remove existing ones
                                 xs.forEach { file in
-                                    // TODO: ck: mark file for delete
-                                    // self.db.markEntityForDelete(file: file, ctx: ctx)
                                     self.localdbSvc.markEntityForDelete(file: file, ctx: ctx)
                                     self.delegate?.getRequestTracker().trackDeletedEntity(file)
                                 }
@@ -2023,8 +1998,6 @@ class KVEditTableViewManager: NSObject, UITableViewDelegate, UITableViewDataSour
                                                                   type: .binary, checkExists: true, ctx: ctx) {
                                 file.requestData = binary
                                 if let img = binary.image {  // remove image if present as file is picked
-                                    // TODO: ck: mark image for delete
-                                    // self.db.markForDelete(image: img, ctx: ctx)
                                     self.localdbSvc.markEntityForDelete(image: img, ctx: ctx)
                                     self.delegate?.getRequestTracker().trackDeletedEntity(img)
                                 }

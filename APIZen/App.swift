@@ -206,12 +206,8 @@ class App: NSObject {
     }
     
     func getDataForURL(_ url: URL, completion: EADataResultCallback? = nil) {
-        //if EAFileManager.isFileExists(at: url) {  // since the app is sandboxed, this check will not work.
-            let fm = EAFileManager(url: url)
-            fm.readToEOF(completion: completion)
-        //} else {
-         //   if let cb = completion { cb(.failure(AppError.fileNotFound)) }
-        //}
+        let fm = EAFileManager(url: url)
+        fm.readToEOF(completion: completion)
     }
     
     /// Return a request name based on the current project's request count.
@@ -260,7 +256,6 @@ class App: NSObject {
     
     /// Returns the current workspace
     func getSelectedWorkspace() -> EWorkspace {
-        // if AppState.currentWorkspace != nil { return AppState.currentWorkspace! }
         let wsId = self.utils.getValue(AZConst.selectedWorkspaceIdKey) as? String ?? ""
         let container = self.utils.getValue(AZConst.selectedWorkspaceContainerKey) as? String ?? CoreDataContainer.cloud.rawValue
         Log.debug("ws: selected container: \(container)")
@@ -285,8 +280,6 @@ class App: NSObject {
     
     func didReceiveMemoryWarning() {
         Log.debug("app: did receive memory warning")
-        // TODO: ck: fix me
-        // self.dbSvc.clearCache()
     }
     
     func getImageType(_ url: URL) -> ImageType? {

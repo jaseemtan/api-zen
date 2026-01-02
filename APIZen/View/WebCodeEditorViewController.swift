@@ -185,5 +185,4 @@ class WebCodeEditorViewController: UIViewController, WKNavigationDelegate, WKScr
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         Log.debug("wk script message received: \(message.body)")
     }
-    
 }

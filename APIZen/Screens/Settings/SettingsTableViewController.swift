@@ -18,7 +18,6 @@ class SettingsTableViewController: APITesterProTableViewController {
     @IBOutlet weak var saveHistorySwitch: UISwitch!
     @IBOutlet weak var workspaceTypeLabel: UILabel!
     private lazy var localDB = { CoreDataService.shared }()
-    // private lazy var db = { PersistenceService.shared }()
     private lazy var workspace = { self.app.getSelectedWorkspace() }()
     @IBOutlet weak var aboutTitle: UILabel!
     private lazy var utils = { AZUtils.shared }()

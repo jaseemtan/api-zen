@@ -75,9 +75,6 @@ class Base64ViewController: UIViewController, UITextViewDelegate {
             let kbHeight = keyboardSize.cgRectValue.height
             self.keyboardHeight = kbHeight
             if !self.isViewDidOffset {
-                //self.scrollView.contentSize.height += self.keyboardHeight
-                //self.scrollView.showsVerticalScrollIndicator = false
-                //self.inputTextView.isScrollEnabled = true
                 self.isViewDidOffset = true
             }
         }
@@ -85,8 +82,6 @@ class Base64ViewController: UIViewController, UITextViewDelegate {
     
     @objc func keyboardWillHide(notif: Notification) {
         if self.isViewDidOffset {
-            //self.scrollView.contentSize.height -= self.keyboardHeight
-            //self.scrollView.showsVerticalScrollIndicator = true
             self.isViewDidOffset = false
         }
     }
