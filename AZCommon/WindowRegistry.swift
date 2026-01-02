@@ -41,6 +41,10 @@ public class WindowRegistry {
         public var parentWindowIdx: Int = -1
         /// Holds any tabs for this window with [TabIdx : Entry]
         public var tabs: [Int: Entry] = [:]
+        /// If a project is selected, its id.
+        public var projectId: String = ""
+        /// If a request in the project is selected, its id.
+        public var requestId: String = ""
         /// The entry identifier.
         public var id: Int { windowIdx }
     }
@@ -73,9 +77,9 @@ public class WindowRegistry {
     }
     
     /// Adds the given index and workspaceId to the window registry. The window index will be unique. So there won't be a case of getting the same index in one app lifecycle.
-    public func add(windowIndex: Int, workspaceId: String, coreDataContainer: String, showNavigator: Bool, showInspector: Bool, showCodeView: Bool) {
+    public func add(windowIndex: Int, workspaceId: String, coreDataContainer: String, showNavigator: Bool, showInspector: Bool, showCodeView: Bool, projectId: String = "", requestId: String = "") {
         Log.debug("adding window index: \(windowIndex) with wsId: \(workspaceId) to window registry with container: \(coreDataContainer)")
-        self.windows[windowIndex] = Entry(windowIdx: windowIndex, workspaceId: workspaceId, coreDataContainer: coreDataContainer, showNavigator: showNavigator, showInspector: showInspector, showCodeView: showCodeView)
+        self.windows[windowIndex] = Entry(windowIdx: windowIndex, workspaceId: workspaceId, coreDataContainer: coreDataContainer, showNavigator: showNavigator, showInspector: showInspector, showCodeView: showCodeView, projectId: projectId, requestId: requestId)
     }
     
     /// Removes the given window index from the window registry.
@@ -85,9 +89,9 @@ public class WindowRegistry {
     }
     
     /// Adds a tab to the given main window index. Tab is just another window with a parent window index.
-    public func addTab(mainWindowIdx: Int, tabIdx: Int, workspaceId: String, coreDataContainer: String, showNavigator: Bool, showInspector: Bool, showCodeView: Bool) {
+    public func addTab(mainWindowIdx: Int, tabIdx: Int, workspaceId: String, coreDataContainer: String, showNavigator: Bool, showInspector: Bool, showCodeView: Bool, projectId: String = "", requestId: String = "") {
         Log.debug("add tab: main window idx: \(mainWindowIdx) - tabIdx: \(tabIdx)")
-        self.windows[mainWindowIdx]?.tabs[tabIdx] = Entry(windowIdx: tabIdx, workspaceId: workspaceId, coreDataContainer: coreDataContainer, showNavigator: showNavigator, showInspector: showInspector, showCodeView: showCodeView, parentWindowIdx: mainWindowIdx)
+        self.windows[mainWindowIdx]?.tabs[tabIdx] = Entry(windowIdx: tabIdx, workspaceId: workspaceId, coreDataContainer: coreDataContainer, showNavigator: showNavigator, showInspector: showInspector, showCodeView: showCodeView, parentWindowIdx: mainWindowIdx, projectId: projectId, requestId: requestId)
         /// In SwiftUI we are only able to detect if the current window is in tabbed mode after `onAppear`. The state restoration happens in onAppear and it will add the current window to window registry.
         /// So during `restoreTabs()` we need to remove this tab from windows if present. This would also be required if the tab was moved to a separate window before and added to the tab group now.
         self.windows.removeValue(forKey: tabIdx)
@@ -117,14 +121,14 @@ public class WindowRegistry {
     /// Converts tab with tabIdx in the window with windowIdx to a standalone window. Standalone window will have parent id -1.
     public func convertTabToWindow(windowIdx: Int, tabIdx: Int) {
         guard let tab = self.getTab(windowIdx: windowIdx, tabIdx: tabIdx) else { return }
-        self.add(windowIndex: incIdx(), workspaceId: tab.workspaceId, coreDataContainer: tab.coreDataContainer, showNavigator: tab.showNavigator, showInspector: tab.showInspector, showCodeView: tab.showCodeView)
+        self.add(windowIndex: incIdx(), workspaceId: tab.workspaceId, coreDataContainer: tab.coreDataContainer, showNavigator: tab.showNavigator, showInspector: tab.showInspector, showCodeView: tab.showCodeView, projectId: tab.projectId, requestId: tab.requestId)
         self.removeTab(mainWindowIdx: windowIdx, tabIdx: tabIdx)
     }
     
     /// Converts a standalone window with windowIdx to a tab in the parentWindowIdx.
     public func convertWindowToTab(windowIdx: Int, parentWindowIdx: Int) {
         guard let window = self.getWindow(windowIdx: windowIdx) else { return }
-        self.addTab(mainWindowIdx: parentWindowIdx, tabIdx: windowIdx, workspaceId: window.workspaceId, coreDataContainer: window.coreDataContainer, showNavigator: window.showNavigator, showInspector: window.showInspector, showCodeView: window.showCodeView)
+        self.addTab(mainWindowIdx: parentWindowIdx, tabIdx: windowIdx, workspaceId: window.workspaceId, coreDataContainer: window.coreDataContainer, showNavigator: window.showNavigator, showInspector: window.showInspector, showCodeView: window.showCodeView, projectId: window.projectId, requestId: window.requestId)
         self.windows.removeValue(forKey: windowIdx)
     }
     
