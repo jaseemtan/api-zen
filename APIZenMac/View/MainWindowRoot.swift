@@ -38,8 +38,6 @@ struct MainWindowRoot: View {
     @State private var isTabbed = false
     @State private var window: NSWindow?
     
-    
-    
     private let windowRegistry = WindowRegistry.shared
     private let db = CoreDataService.shared
     
