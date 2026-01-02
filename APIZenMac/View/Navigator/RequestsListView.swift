@@ -97,7 +97,7 @@ struct RequestsListView: View {
         Group {
             List(selection: $selectedRequestIds) {
                 ForEach(requests) { req in
-                    NameDescView(name: "\(req.getName()) - \(req.order!)", isDisplayDragIndicator: isDragMode)
+                    NameDescView(name: "\(req.getName())", isDisplayDragIndicator: isDragMode)
                         .padding(.vertical, 6)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .contentShape(Rectangle())

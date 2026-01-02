@@ -45,7 +45,7 @@ struct WorkspaceListView: View {
     var body: some View {
         List(selection: $selectedWorkspaceId) {
             ForEach(workspaces) { workspace in
-                NameDescView(imageName: "workspace", name: "\(workspace.getName()) - \(workspace.order!)", desc: workspace.desc, isDisplayCheckmark: workspace.getId() == selectedWorkspaceId)
+                NameDescView(imageName: "workspace", name: "\(workspace.getName())", desc: workspace.desc, isDisplayCheckmark: workspace.getId() == selectedWorkspaceId)
                     .padding(.vertical, 4)
                     .contentShape(Rectangle())
                     .tag(workspace.getId())

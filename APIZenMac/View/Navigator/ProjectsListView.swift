@@ -105,7 +105,7 @@ struct ProjectsListView: View {
             // Selection is specified so that selected item tracking works properly when in drag mode. When not in drag mode, the tap gesture takes precedence.
             List(selection: $selectedProjectIds) {  // The scroll offset is automatically preserved when navigated back.
                 ForEach(projects) { proj in
-                    NameDescView(imageName: "project", name: "\(proj.getName()) - \(proj.order!)", desc: proj.desc, isDisplayDragIndicator: isDragMode)
+                    NameDescView(imageName: "project", name: "\(proj.getName())", desc: proj.desc, isDisplayDragIndicator: isDragMode)
                         .padding(.vertical, 6)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .contentShape(Rectangle())
