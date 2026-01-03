@@ -27,8 +27,6 @@ public protocol Entity: NSManagedObject, Hashable, Identifiable {
     func getVersion() -> Int64
     func setMarkedForDelete(_ status: Bool)
     func willSave()
-//    func fromDictionary(_ dict: [String: Any])
-//    func toDictionary() -> [String: Any]
 }
 
 extension Entity {

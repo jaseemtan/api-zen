@@ -39,4 +39,3 @@ class APITesterProModel2WorkspaceMigration: NSEntityMigrationPolicy {
         }
     }
 }
-
