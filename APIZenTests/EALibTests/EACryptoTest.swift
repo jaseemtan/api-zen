@@ -8,10 +8,11 @@
 
 import XCTest
 import Foundation
-@testable import APITesterPro
+import AZCommon
+@testable import APIZen
 
 class EACryptoTests: XCTestCase {
-    private let utils = EAUtils.shared
+    private let utils = AZUtils.shared
     
     /// This function can be used to generate a random AES key string
     func testGenRandomAES256Key() {

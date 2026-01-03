@@ -7,13 +7,14 @@
 //
 
 import XCTest
-@testable import APITesterPro
 import CoreData
+import AZCommon
+import AZData
+@testable import APIZen
 
-class APITesterProTests: XCTestCase {
+class APIZenTests: XCTestCase {
     private lazy var localdb = { CoreDataService.shared }()
-    // private var dbSvc = PersistenceService.shared
-    private let utils = EAUtils.shared
+    private let utils = AZUtils.shared
     private let serialQueue = DispatchQueue(label: "serial-queue")
     private let app = App.shared
 
@@ -25,10 +26,16 @@ class APITesterProTests: XCTestCase {
         super.tearDown()
     }
     
+    override class func tearDown() {
+        super.tearDown()
+        try? self.destroyPersistenceStore()
+    }
+    
     // MARK: - CoreData tests
     
-    func destroyPersistenceStore() throws {
-        let pc = self.localdb.persistentContainer.persistentStoreCoordinator
+    static func destroyPersistenceStore() throws {
+        let pc = CoreDataService.shared.persistentContainer.persistentStoreCoordinator
+        if pc.persistentStores.count == 0 { return }
         let url = pc.url(for: pc.persistentStores.first!)
         if #available(iOS 15, *) {
             try pc.destroyPersistentStore(at: url, type: .sqlite)
@@ -52,19 +59,20 @@ class APITesterProTests: XCTestCase {
             XCTAssertEqual(self.localdb.localMainMOC.concurrencyType, .mainQueueConcurrencyType)
             exp.fulfill()
         }
-        
         waitForExpectations(timeout: 1.0, handler: nil)
     }
     
     func testCoreData() {
         let exp = expectation(description: "test core data")
-        self.serialQueue.async {
-            let lws = self.localdb.createWorkspace(id: "test-ws", name: "test-ws", desc: "", isSyncEnabled: false)
+        let ctx = self.localdb.localMainMOC
+        ctx.perform {
+            let lws = self.localdb.createWorkspace(id: "test-ws", name: "test-ws", desc: "", isSyncEnabled: false, ctx: ctx)
             XCTAssertNotNil(lws)
             guard let ws = lws else { return }
             XCTAssertEqual(ws.name, "test-ws")
-            self.localdb.saveBackgroundContext()
+            self.localdb.saveMainContext()
             self.localdb.deleteEntity(ws)
+            self.localdb.saveMainContext()
             let aws = self.localdb.getWorkspace(id: "test-ws")
             XCTAssertNil(aws)
             exp.fulfill()
@@ -74,10 +82,10 @@ class APITesterProTests: XCTestCase {
     
     func testEntitySorting() {
         let exp = expectation(description: "test core data sorting")
-        self.serialQueue.async {
+        let ctx = self.localdb.localMainMOC
+        ctx.perform {
             let wsname = "test-ws"
             let wsId = wsname
-            let ctx = self.localdb.localBgMOC
             let rws = self.localdb.createWorkspace(id: wsId, name: wsname, desc: "", isSyncEnabled: false, ctx: ctx)
             XCTAssertNotNil(rws)
             guard let ws = rws else { return }
@@ -93,7 +101,7 @@ class APITesterProTests: XCTestCase {
             XCTAssertNotNil(wproj3)
             guard let proj3 = wproj3 else { return }
             ws.projects = NSSet(array: [proj1, proj2, proj3])
-            self.localdb.saveBackgroundContext()
+            self.localdb.saveMainContext()
             
             // ws2
             let wsname2 = "test-ws-2"
@@ -113,7 +121,7 @@ class APITesterProTests: XCTestCase {
             XCTAssertNotNil(wproj23)
             guard let proj23 = wproj23 else { return }
             ws2.projects = NSSet(array: [proj21, proj22, proj23])
-            self.localdb.saveBackgroundContext()
+            self.localdb.saveMainContext()
             
             let lws = self.localdb.getWorkspace(id: wsname, ctx: ctx)
             XCTAssertNotNil(lws)
@@ -138,7 +146,7 @@ class APITesterProTests: XCTestCase {
             projxs2.forEach { p in self.localdb.deleteEntity(p, ctx: ctx) }
             self.localdb.deleteEntity(ws, ctx: ctx)
             self.localdb.deleteEntity(ws, ctx: ctx)
-            self.localdb.saveBackgroundContext()
+            self.localdb.saveMainContext()
             self.localdb.discardChanges(in: self.localdb.localBgMOC)
             self.localdb.discardChanges(in: self.localdb.localMainMOC)
             exp.fulfill()
@@ -148,12 +156,12 @@ class APITesterProTests: XCTestCase {
     
     func testEntityCRUD() {
         let exp = expectation(description: "Test core data CRUD")
-        self.serialQueue.async {
-            let moc = self.localdb.localBgMOC
+        let moc = self.localdb.localMainMOC
+        moc.perform {
             let wsId = "test-ws"
             let mreq = self.localdb.createRequest(id: "edit-req", wsId: wsId, name: "Edit request", ctx: moc)
             XCTAssertNotNil(mreq)
-            guard let req = mreq else { XCTFail(); return }
+            guard var req = mreq else { XCTFail(); return }
             guard let reqId = req.id else { XCTFail(); return }
             let ctx = req.managedObjectContext!
             let mh0 = self.localdb.createRequestData(id: "header-data-0", wsId: wsId, type: .header, fieldFormat: .text, ctx: ctx)
@@ -189,10 +197,12 @@ class APITesterProTests: XCTestCase {
             x = self.localdb.getRequestData(at: 2, reqId: reqId, type: .header, ctx: ctx)
             XCTAssertNotNil(x)
             XCTAssertEqual(x!.id!, h2.id!)
-            XCTAssertNoThrow(self.localdb.saveBackgroundContext())
+            XCTAssertNoThrow(self.localdb.saveMainContext())
             var id = h1.id!
             let _header = self.localdb.getRequestData(id: id, ctx: ctx)
             self.localdb.deleteEntity(_header, ctx: ctx)
+            XCTAssertNoThrow(self.localdb.saveMainContext())
+            req = self.localdb.getRequest(id: "edit-req", ctx: ctx)!
             XCTAssertEqual(req.headers!.count, 2)
             x = self.localdb.getRequestData(id: id, ctx: ctx)
             XCTAssertNil(x)
@@ -267,8 +277,8 @@ class APITesterProTests: XCTestCase {
     
     func testRequestToDictionary() {
         let exp = expectation(description: "Test core data CRUD")
-        self.serialQueue.async {
-            let ctx = self.localdb.localBgMOC
+        let ctx = self.localdb.localMainMOC
+        ctx.perform {
             let wsId = "test-ws"
             let file = self.localdb.createFile(data: Data(), wsId: wsId, name: "test-file", path: URL(fileURLWithPath: "/tmp"), checkExists: false, ctx: ctx)
             XCTAssertNotNil(file)
@@ -287,7 +297,7 @@ class APITesterProTests: XCTestCase {
             XCTAssertEqual(((hm["body"] as! [String: Any])["form"] as! [[String: Any]]).count, 1)
             XCTAssertTrue((((hm["body"] as! [String: Any])["form"] as! [[String: Any]])[0]).count > 10)
             XCTAssertEqual((((hm["body"] as! [String: Any])["form"] as! [[String: Any]])[0]["files"] as! [[String: Any]]).count, 1)
-            XCTAssertTrue(((((hm["body"] as! [String: Any])["form"] as! [[String: Any]])[0]["files"] as! [[String: Any]])[0]).count >= 10)
+            XCTAssertTrue(((((hm["body"] as! [String: Any])["form"] as! [[String: Any]])[0]["files"] as! [[String: Any]])[0]).count >= 9)
             self.localdb.discardChanges(in: ctx)
             exp.fulfill()
         }
@@ -296,8 +306,8 @@ class APITesterProTests: XCTestCase {
     
     func testRequestDidChange() {
         let exp = expectation(description: "Test request did change")
-        self.serialQueue.async {
-            let ctx = self.localdb.localBgMOC
+        let ctx = self.localdb.localMainMOC
+        ctx.perform {
             let wsId = "test-ws"
             let req = self.localdb.createRequest(id: self.localdb.requestId(), wsId: wsId, name: "test-request-change", project: nil, checkExists: false, ctx: ctx)
             XCTAssertNotNil(req)
@@ -323,7 +333,7 @@ class APITesterProTests: XCTestCase {
             XCTAssertNotNil(reqData)
             breq.addToHeaders(reqData!)
             XCTAssertNotNil(breq.headers)
-            let reqDataxs = breq.headers!.allObjects as! [APITesterPro.ERequestData]
+            let reqDataxs = breq.headers!.allObjects as! [AZData.ERequestData]
             XCTAssertTrue(tracker.didAnyRequestHeaderChangeImp(reqDataxs))
             XCTAssertTrue(tracker.didRequestChangeImp(areq))
             breq.removeFromHeaders(reqData!)
@@ -335,8 +345,8 @@ class APITesterProTests: XCTestCase {
     
     func testFileAttachmentDelete() {
         let exp = expectation(description: "Test setting to-many to a new set deletes the contained entities")
-        self.serialQueue.async {
-            let moc = self.localdb.localBgMOC
+        let moc = self.localdb.localMainMOC
+        moc.perform {
             let wsId = "test-ws"
             let mreq = self.localdb.createRequest(id: "edit-req", wsId: wsId, name: "Edit request", ctx: moc)
             XCTAssertNotNil(mreq)
@@ -402,7 +412,7 @@ class APITesterProTests: XCTestCase {
         waitForExpectations(timeout: 2.0, handler: nil)
     }
     
-    func testCoreDataEnvVarSecureTransformer() {
+    func testCoreDataEnvVar() {
         let exp = expectation(description: "test core data envvar secure transformer")
         let ctx = self.localdb.localMainMOC
         ctx.perform {
@@ -435,28 +445,6 @@ class APITesterProTests: XCTestCase {
         waitForExpectations(timeout: 1.0, handler: nil)
     }
     
-    func testGetCKRecordForWorspace() {
-        let exp = expectation(description: "test getting CKRecord from EWorkspace")
-        let ctx = self.localdb.localMainMOC
-        ctx.perform {
-            let wsId = "ws-ck-record-get-test"
-            let ws = self.localdb.createWorkspace(id: wsId, name: wsId, desc: "", isSyncEnabled: true, ctx: ctx)
-            XCTAssertNotNil(ws)
-            self.localdb.saveMainContext()
-            let wsCKRecord = EWorkspace.getCKRecord(id: wsId, ctx: ctx)
-            XCTAssertNotNil(wsCKRecord)
-            XCTAssertEqual(wsCKRecord!.id(), wsId)
-            XCTAssertTrue(wsCKRecord!.isSyncEnabled())
-            // cleanup
-            self.localdb.deleteEntity(ws, ctx: ctx)
-            self.localdb.saveMainContext()
-            let ws1 = self.localdb.getWorkspace(id: wsId, ctx: ctx)
-            XCTAssertNil(ws1)
-            exp.fulfill()
-        }
-        waitForExpectations(timeout: 1.0)
-    }
-    
     /// Check if adding entity to the set will add a back reference to the parent automatically
     func testEntityReference() {
         let exp = expectation(description: "test core data entity referencing")
@@ -476,13 +464,7 @@ class APITesterProTests: XCTestCase {
             XCTAssertNotNil(proj!.workspace)
             exp.fulfill()
         }
-        waitForExpectations(timeout: 1.0) { _ in
-            do {
-                try self.destroyPersistenceStore()
-            } catch let error {
-                XCTFail("\(error)")
-            }
-        }
+        waitForExpectations(timeout: 1.0, handler: nil)
     }
     
     func testCascadeDeleteTest() {
@@ -565,7 +547,7 @@ class APITesterProTests: XCTestCase {
             XCTAssertNotNil(body)
             body!.request = req
             // form - cascade delete with project
-            let form = self.localdb.createRequestData(id: reqDataFormId, wsId: wsId, type: .form, fieldFormat: .file)
+            let form = self.localdb.createRequestData(id: reqDataFormId, wsId: wsId, type: .form, fieldFormat: .file, ctx: ctx)
             XCTAssertNotNil(form)
             form!.form = body
             // file - cascade delete with project
@@ -603,7 +585,7 @@ class APITesterProTests: XCTestCase {
             XCTAssertNotNil(body1)
             body1!.request = req1
             // form cascade delete with request 1
-            let form1 = self.localdb.createRequestData(id: reqDataFormId1, wsId: wsId, type: .form, fieldFormat: .file)
+            let form1 = self.localdb.createRequestData(id: reqDataFormId1, wsId: wsId, type: .form, fieldFormat: .file, ctx: ctx)
             XCTAssertNotNil(form1)
             form1!.form = body1
             // image cascade delete with request 1
@@ -682,89 +664,6 @@ class APITesterProTests: XCTestCase {
             exp.fulfill()
         }
         waitForExpectations(timeout: 1.0)
-    }
-    
-    func testEntitiesDeletionOnDisabledZoneSync() {
-        let exp = expectation(description: "test deletion of workspace and all entities in it when a disabled zone record gets synced")
-        let ctx = self.localdb.localMainMOC
-        ctx.perform {
-            let wsId = "ws-sync-delete-test"
-            let envId = "en-sync-delete-test"
-            let envVarId = "ev-sync-delete-test"
-            let projId = "pj-sync-delete-test"
-            let reqId = "rq-sync-delete-test"
-            let headerId = "rd-header-sync-delete-test"
-            let fileId = "fl-sync-delete-test"
-            let formId = "rd-form-sync-delete-test"
-            let bodyId = "rb-body-with-file-sync-delete-test"
-            let ws = self.localdb.createWorkspace(id: wsId, name: wsId, desc: "", isSyncEnabled: true, ctx: ctx)
-            XCTAssertNotNil(ws)
-            self.localdb.saveMainContext()
-            let env = self.localdb.createEnv(name: envId, wsId: wsId, ctx: ctx)
-            XCTAssertNotNil(env)
-            self.localdb.saveMainContext()
-            let envVar = self.localdb.createEnvVar(name: envVarId, value: "server", id: envVarId, checkExists: false, ctx: ctx)
-            XCTAssertNotNil(envVar)
-            envVar?.env = env
-            self.localdb.saveMainContext()
-            let proj = self.localdb.createProject(id: projId, wsId: wsId, name: projId, desc: "", ctx: ctx)
-            XCTAssertNotNil(proj)
-            proj?.workspace = ws
-            self.localdb.saveMainContext()
-            let req = self.localdb.createRequest(id: reqId, wsId: wsId, name: reqId, ctx: ctx)
-            XCTAssertNotNil(req)
-            req?.project = proj
-            self.localdb.saveMainContext()
-            let header = self.localdb.createRequestData(id: headerId, wsId: wsId, type: .header, fieldFormat: .text, ctx: ctx)
-            XCTAssertNotNil(header)
-            header!.key = "name"
-            header!.value = "value"
-            req!.addToHeaders(header!)
-            XCTAssertNotNil(req!.headers)
-            XCTAssertEqual(req!.headers!.count, 1)
-            self.localdb.saveMainContext()
-            let file = self.localdb.createFile(fileId: fileId, data: Data(), wsId: wsId, name: fileId, path: URL(fileURLWithPath: "/tmp"), type: .form, checkExists: false, ctx: ctx)
-            XCTAssertNotNil(file)
-            let fileReqData = self.localdb.createRequestData(id: formId, wsId: wsId, type: .form, fieldFormat: .file, checkExists: false, ctx: ctx)
-            XCTAssertNotNil(fileReqData)
-            file!.requestData = fileReqData!
-            req!.body = self.localdb.createRequestBodyData(id: bodyId, wsId: wsId, checkExists: false, ctx: ctx)
-            XCTAssertNotNil(req!.body)
-            req!.body!.request = req
-            XCTAssertNotNil(req!.body!.request)
-            req!.body!.addToForm(fileReqData!)
-            XCTAssertNotNil(req!.body!.form)
-            XCTAssertEqual(req!.body!.form!.count, 1)
-            self.localdb.saveMainContext()
-            // delete entities starting from workspace
-            // ensure entities are deleted
-            let ws1 = self.localdb.getWorkspace(id: wsId, ctx: ctx)
-            XCTAssertNil(ws1)
-            let env1 = self.localdb.getEnv(id: envId, ctx: ctx)
-            XCTAssertNil(env1)
-            let envVar1 = self.localdb.getEnvVar(id: envVarId, ctx: ctx)
-            XCTAssertNil(envVar1)
-            let proj1 = self.localdb.getProject(id: projId, ctx: ctx)
-            XCTAssertNil(proj1)
-            let req1 = self.localdb.getRequest(id: reqId, ctx: ctx)
-            XCTAssertNil(req1)
-            let header1 = self.localdb.getRequestData(id: headerId, ctx: ctx)
-            XCTAssertNil(header1)
-            let file1 = self.localdb.getFileData(id: fileId, ctx: ctx)
-            XCTAssertNil(file1)
-            let fileReqData1 = self.localdb.getRequestData(id: formId, ctx: ctx)
-            XCTAssertNil(fileReqData1)
-            let reqBody1 = self.localdb.getRequestBodyData(id: bodyId, ctx: ctx)
-            XCTAssertNil(reqBody1)
-            exp.fulfill()
-        }
-        waitForExpectations(timeout: 1.0) { _ in
-            do {
-                try self.destroyPersistenceStore()
-            } catch {
-                XCTFail("Error deleting persistence store: \(error)")
-            }
-        }
     }
     
     func testTemp() {

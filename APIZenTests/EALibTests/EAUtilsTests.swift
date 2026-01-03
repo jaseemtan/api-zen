@@ -8,10 +8,11 @@
 
 import XCTest
 import Foundation
-@testable import APITesterPro
+import AZCommon
+@testable import APIZen
 
 class EAUtilsTests: XCTestCase {
-    private let utils = EAUtils.shared
+    private let utils = AZUtils.shared
     
     override func setUp() {
         super.setUp()
@@ -40,15 +41,5 @@ class EAUtilsTests: XCTestCase {
         Log.debug("active cpu: \(EASystem.activeProcessorCount())")
         Log.debug("total cpu: \(EASystem.processorCount())")
         XCTAssertTrue(mem > 0.0)
-    }
-    
-    func notestURLRequestToCurlString() {
-        var req = URLRequest(url: URL(string: "https://piperway.org/api/test")!)
-        req.httpMethod = "POST"
-        req.httpBody = "{\"hello\": \"world\"}".data(using: .utf8)
-        req.allHTTPHeaderFields = ["fruit": "apple", "banana": "orange", "melon": "kiwi"]  // dictionary order can change
-        print(req.curl(pretty: false))
-        XCTAssertEqual(req.curl(pretty: false), "curl -i -X POST -H \"banana: orange\" -H \"melon: kiwi\" -H \"fruit: apple\" -d \"{\"hello\": \"world\"}\" \"https://piperway.org/api/test\"")
-        XCTAssertEqual(req.curl(pretty: true), "curl -i \\\n-X POST \\\n-H \"fruit: apple\" \\\n-H \"banana: orange\" \\\n-H \"melon: kiwi\" \\\n-d \"{\"hello\": \"world\"}\" \\n\"https://piperway.org/api/test\"")
     }
 }

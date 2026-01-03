@@ -8,7 +8,8 @@
 
 import XCTest
 import Foundation
-@testable import APITesterPro
+import AZCommon
+@testable import APIZen
 
 class EAExtensionsTests: XCTestCase {
     func testDateConversion() {

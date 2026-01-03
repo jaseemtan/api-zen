@@ -8,7 +8,8 @@
 
 import XCTest
 import Foundation
-@testable import APITesterPro
+import AZCommon
+@testable import APIZen
 
 class PersonCacheValue: EACacheValue {
     private var name: String
@@ -58,9 +59,9 @@ class PersonCacheValue: EACacheValue {
 
 class EALFUCacheTests: XCTestCase {
     private var cache = EALFUCache(size: 2)
-    private var val = PersonCacheValue(name: "Olive", key: "ea-olive", ts: Date().currentTimeNanos(), accessCount: 0)
-    private var val1 = PersonCacheValue(name: "Olivia", key: "ea-olivia", ts: Date().currentTimeNanos(), accessCount: 0)
-    private var val2 = PersonCacheValue(name: "Liv", key: "ea-live", ts: Date().currentTimeNanos(), accessCount: 0)
+    private var val = PersonCacheValue(name: "Foo", key: "ea-foo", ts: Date().currentTimeNanos(), accessCount: 0)
+    private var val1 = PersonCacheValue(name: "Bar", key: "ea-bar", ts: Date().currentTimeNanos(), accessCount: 0)
+    private var val2 = PersonCacheValue(name: "Baz", key: "ea-baz", ts: Date().currentTimeNanos(), accessCount: 0)
     
     override func setUp() {
         super.setUp()

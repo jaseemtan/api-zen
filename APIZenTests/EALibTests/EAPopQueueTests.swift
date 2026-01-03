@@ -8,7 +8,8 @@
 
 import Foundation
 import XCTest
-@testable import APITesterPro
+import AZCommon
+@testable import APIZen
 
 final class EAPopQueueTests: XCTestCase {
     func testPopQueue() {

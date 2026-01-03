@@ -8,7 +8,8 @@
 
 import XCTest
 import Foundation
-@testable import APITesterPro
+import AZCommon
+@testable import APIZen
 
 // This test needs to be run individually. Enabling from test plan is causing failure.
 class EAQueueTests: XCTestCase {
