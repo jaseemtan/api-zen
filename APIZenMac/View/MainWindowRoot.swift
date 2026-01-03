@@ -49,11 +49,11 @@ struct MainWindowRoot: View {
                 workspaceName: $workspaceName,
                 project: $project,
                 request: $request,
-                windowIndex: windowIndex,
                 showNavigator: $showNavigator,
                 showInspector: $showInspector,
                 showRequestComposer: $showRequestComposer,
                 showCodeView: $showCodeView,
+                windowIndex: windowIndex
             )
             .frame(minWidth: 1024, idealWidth: 1280, minHeight: 600, idealHeight: 700, alignment: .center)
             .environment(\.coreDataContainer, $coreDataContainer)
