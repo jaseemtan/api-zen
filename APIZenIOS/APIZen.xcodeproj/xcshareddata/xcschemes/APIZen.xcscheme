@@ -29,7 +29,7 @@
       shouldUseLaunchSchemeArgsEnv = "YES">
       <TestPlans>
          <TestPlanReference
-            reference = "container:APITesterProTests/APITesterPro.xctestplan"
+            reference = "container:APIZenTests/APIZen.xctestplan"
             default = "YES">
          </TestPlanReference>
       </TestPlans>

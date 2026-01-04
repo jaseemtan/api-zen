@@ -1,5 +1,5 @@
 //
-//  APITesterProUITestsLaunchTests.swift
+//  APIZenUITestsLaunchTests.swift
 //  APIZenUITests
 //
 //  Created by Jaseem V V on 03/11/23.
@@ -7,7 +7,7 @@
 
 import XCTest
 
-final class APITesterProUITestsLaunchTests: XCTestCase {
+final class APIZenUITestsLaunchTests: XCTestCase {
 
     override class var runsForEachTargetApplicationUIConfiguration: Bool {
         true

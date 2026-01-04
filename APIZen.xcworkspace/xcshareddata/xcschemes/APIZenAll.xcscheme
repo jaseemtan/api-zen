@@ -60,7 +60,7 @@
                BlueprintIdentifier = "9E81D0272AF44BE7004095CF"
                BuildableName = "APIZen.app"
                BlueprintName = "APIZen"
-               ReferencedContainer = "container:API Zen iOS/APIZen.xcodeproj">
+               ReferencedContainer = "container:APIZenIOS/APIZen.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -82,16 +82,6 @@
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "9E81D0272AF44BE7004095CF"
-            BuildableName = "APIZen.app"
-            BlueprintName = "APIZen"
-            ReferencedContainer = "container:API Zen iOS/APIZen.xcodeproj">
-         </BuildableReference>
-      </BuildableProductRunnable>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
@@ -99,16 +89,15 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
+      <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "9E81D0272AF44BE7004095CF"
-            BuildableName = "APIZen.app"
-            BlueprintName = "APIZen"
-            ReferencedContainer = "container:API Zen iOS/APIZen.xcodeproj">
+            BlueprintIdentifier = "9EFB714D2D9921260089AC7A"
+            BuildableName = "AZCommon.framework"
+            BlueprintName = "AZCommon"
+            ReferencedContainer = "container:AZCommon/AZCommon.xcodeproj">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">

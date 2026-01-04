@@ -1,5 +1,5 @@
 //
-//  APITesterProUITests.swift
+//  APIZenUITests.swift
 //  APIZenUITests
 //
 //  Created by Jaseem V V on 02/12/19.
@@ -8,7 +8,7 @@
 
 import XCTest
 
-class APITesterProUITests: XCTestCase {
+class APIZenUITests: XCTestCase {
 
     override func setUp() {
         // Put setup code here. This method is called before the invocation of each test method in the class.
