@@ -1975,7 +1975,7 @@ public class CoreDataService {
             data.id = envId
             data.wsId = wsId
             data.name = name
-            data.created = x == nil ? date: x!.created
+            data.created = x == nil ? date : x!.created
             data.modified = date
             data.version = x == nil ? CoreDataService.modelVersion : x!.version
             x = data
@@ -1994,7 +1994,7 @@ public class CoreDataService {
             data.id = envVarId
             data.name = name
             data.value = value
-            data.created = x == nil ? date: x!.created
+            data.created = x == nil ? date : x!.created
             data.modified = date
             data.version = x == nil ? CoreDataService.modelVersion : x!.version
             x = data
@@ -2011,7 +2011,7 @@ public class CoreDataService {
             if let isExists = checkExists, isExists, let data = self.getEnvVar(id: envVarId, ctx: ctx) { x = data }
             let data = x != nil ? x! : EEnvVar(context: moc)
             data.id = envVarId
-            data.created = x == nil ? date: x!.created
+            data.created = x == nil ? date : x!.created
             data.modified = date
             data.version = x == nil ? CoreDataService.modelVersion : x!.version
             x = data
@@ -2028,7 +2028,7 @@ public class CoreDataService {
             if let isExists = checkExists, isExists, let data = self.getDonation(id: donationId, ctx: ctx) { x = data }
             let data = x != nil ? x! : EDonation(context: moc)
             data.id = donationId
-            data.created = x == nil ? date: x!.created
+            data.created = x == nil ? date : x!.created
             data.modified = date
             data.version = x == nil ? CoreDataService.modelVersion : x!.version
             x = data
@@ -2090,8 +2090,6 @@ public class CoreDataService {
     
     public func saveLocalMainContext(_ callback: ((Bool) -> Void)? = nil) {
         Log.debug("local save main context")
-        // TODO: remove this global check
-        // if AppState.isRequestEdit { Log.debug("Edit request in progress. Skipping main context save."); callback?(false); return }
         self.localMainMOC.perform {
             do {
                 if !self.localMainMOC.hasChanges { Log.debug("local main context does not have changes"); callback?(true); return }
