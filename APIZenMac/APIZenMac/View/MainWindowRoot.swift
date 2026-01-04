@@ -21,14 +21,14 @@ struct MainWindowRoot: View {
     @State var parentWindowIndx: Int = -1
     // Indicates if the workspace is local or cloud based.
     @State private var coreDataContainer: CoreDataContainer = CoreDataContainer.local
-    // Per-window workspace id (each window has its own copy)
+    // Per-window workspace id. Each window has its own copy.
     @State private var workspaceId: String = CoreDataService.shared.defaultWorkspaceId
     @State private var workspaceName: String = CoreDataService.shared.defaultWorkspaceName
     /// Selected project for the current workspace if present.
     @State private var project: EProject?
     /// Selected request for the project if present.
     @State private var request: ERequest?
-    // Pane preference is saved in the window registry because it's window specific. If I have same workspace in two different window and if I save workspace specific preference, then I can't have per window pane display. Hiding navigator will hide in all windows with the same workspace.
+    // Pane preference is saved in the window registry because it's window specific. If we have same workspace in two different window and if we save workspace specific preference, then we can't have per window pane display. Hiding navigator will hide in all windows with the same workspace.
     // And this is saved for the open windows. If we close a window, these settings are cleared. The preference for the last window is saved.
     @State private var showNavigator: Bool = true  // Left pane
     @State private var showInspector: Bool = true // Right pane
