@@ -231,7 +231,6 @@ class OptionsPickerViewController: UIViewController, UITableViewDelegate, UITabl
         let row = indexPath.row
         if self.pickerType == .requestMethod {
             if self.modelxs.count > row {
-                // if AppState.editRequest?.project == nil { return false } TODO: check why this was added
                 if self.project == nil { return false }  // project is required for checking if any requests uses custom methods
                 return (self.modelxs[row] as? ERequestMethodData)?.isCustom ?? false
             }

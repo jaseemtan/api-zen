@@ -322,11 +322,6 @@ class App: NSObject {
         if (container == .cloud) { return "iCloud" }
         return "Local"
     }
-    
-    /// Checks if the selected request can be moved to the given project. We cannot move the request to the same project as the original.
-    func canMoveRequest(_ req: ERequest?, toProj: EProject) -> Bool {
-        return true  // TODO: FIXME
-    }
 
     // MARK: - Theme
     public struct Color {

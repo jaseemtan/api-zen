@@ -308,7 +308,6 @@ public class EditRequestTracker {
                 x?.raw != body["raw"] as? String ||
                 x?.selected != body["selected"] as? Int64 ||
                 x?.xml != body["xml"] as? String ||
-                // x?.markForDelete != self.requestDict["markForDelete"] as? Bool {  // TODO: check this is correct - orig
                 x?.markForDelete != body["markForDelete"] as? Bool {
                 self.updateModified(x)
                 return true
@@ -387,7 +386,6 @@ public class EditRequestTracker {
                    let formDict = formsList.first(where: { dict in
                        dict["id"] as! String == reqDataId
                    }) {
-                    // if self.didRequestDataChangeImp(x: reqData, y: request, type: type) { body.isSynced = false; return true }  // TODO: check if this is correct - orig
                     if self.didRequestDataChangeImp(x: reqData, reqData: formDict, type: type) { return true }
                 }
                 

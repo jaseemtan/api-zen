@@ -1595,8 +1595,6 @@ class KVEditBodyFieldTableView: UITableView, UITableViewDelegate, UITableViewDat
                                 ctx.performAndWait {
                                     file.requestData = form
                                     if let image = form.image {  // remove image if present as file is picked
-                                        // TODO: ck mark image for delete
-                                        // self.db.markForDelete(image: form.image, ctx: form.image?.managedObjectContext)
                                         self.localdbSvc.markEntityForDelete(image: image, ctx: ctx)
                                         self.editTVDelegate?.getRequestTracker().trackDeletedEntity(image)
                                     }
