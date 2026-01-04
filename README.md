@@ -1,12 +1,12 @@
 ## API Zen
 
-### Subtitle
+#### Subtitle
 
 Find the zen in API testing.
 
-### Description
+#### Description
 
-API Zen brings the convenience of HTTP API endpoint testing on the go. With its intuitive request composer and detailed response information, it helps developers test endpoints with ease.
+API Zen brings the convenience of HTTP API endpoint testing on iOS. With its intuitive request composer and detailed response information, it helps developers test endpoints with ease.
 
 Main features  
 • Simple and intuitive request composer and viewer  
@@ -22,46 +22,61 @@ Main features
 • Supports dark mode  
 • Import/Export workspace data
 
-### Keywords
+---
+
+`APIZenIOS` is the iOS project.  
+`APIZenMac` is the macOS project in its initial stages.  
+`AZCommon` framework contains code that is common across all platforms.  
+`AZPhone` framework contains code that is specific to iOS.  
+`AZData` framework contains Core Data layer common across all platforms.  
+
+`APIZenIOS/Design` contains design files for the iOS app.  
+`APIZenMac/Design` contains design files for macOS app.
+
+API Zen for iOS uses UIKit.  
+API Zen for macOS uses SwiftUI.  
+Both are written in Swift.  
+
+The project needs to be opened using the `APIZen.xcworkspace` in Xcode. All these modules are part of this single workspace.  
+
+---
+
+#### Keywords
 
 api zen, http api testing, api tester, rest api, https api tester, http, https, api, rest
 
-### Copyright
+#### Copyright
 
 2019 Jaseem Valiya Valappil  
 All Rights Reserved.
 
-### SKU
-
-202311030116
-
-### Apple ID
+#### Apple ID
 
 6471152115
 
-### Category
+#### Category
 
 Developer Tools  
 Utility
 
-### Version Release
+#### Version Release
 
 Automatically release this version
 
-### Pricing
-
-Price: Free with optional donations
-
-### iPhone and iPad Apps on Apple Silicon Macs
+#### iPhone and iPad Apps on Apple Silicon Macs
 
 Make this app available: Automatic macOS 11.0
 
-### App Privacy
+#### App Privacy
 
 Data not collected
 
 https://jsloop.net/app-privacy-policy
 
-### Marketing URL
+#### Marketing URL
 
 https://www.jsloop.net/api-zen
+
+#### Version History
+
+[API Zen Release Notes](/APIZenIOS/AppStore/API%20Zen%20Release%20Notes.md)

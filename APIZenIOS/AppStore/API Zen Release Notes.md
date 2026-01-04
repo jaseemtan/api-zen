@@ -153,7 +153,7 @@ Friday 15 December 2023 01:55 PM
 App Name: API Tester Pro  
 Published under individual account.
 
-Approved on Thursday 21 December 2023 05:48 AM through appeal
+Approved on Thursday 21 December 2023 05:48 AM through appeal.
 
 |ACTIVITY|USER|DATE|COMMENT|
 |---|---|---|---|
@@ -169,13 +169,20 @@ Approved on Thursday 21 December 2023 05:48 AM through appeal
 |Ready for Review|jaseemvv@icloud.com|Dec 15, 2023 at 1:54 PM||
 |Prepare for Submission|Apple|Nov 3, 2023 at 1:17 AM||
 
-**Appeal**
-
 Appeal submitted on Saturday 16 December 2023 01:44 AM
 
-![Appeal Submitted](/APIZenIOS/AppStore/Appeal.png)
-
-![Response to rejection](/APIZenIOS/AppStore/Response%20to%20rejection%20-%202023-12-16%20at%201.43.44%20AM.png)
+- Simple and intuitive request composer and viewer  
+- Supports headers, request parameters, request body with JSON, XML, raw input, forms with file, image attachments, multipart and binary data  
+- Organize endpoints into workspaces and projects  
+- Option to add custom HTTP methods per project  
+- Detailed response information which includes headers, cookies, metrics and connection information  
+- View raw response with syntax highlighting  
+- Preview HTML response output as web page  
+- View all response history  
+- SSL validation per request  
+- Environment group with variables per workspace with option to select different environment per request  
+- Supports dark mode  
+- Import/Export workspace data
 
 ---
 
