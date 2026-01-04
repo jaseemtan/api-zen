@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workspace
+   version = "1.0">
+   <FileRef
+      location = "group:AZCommon/AZCommon.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:AZPhone/AZPhone.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:AZData/AZData.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:APIZenIOS/APIZen.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:APIZenMac/APIZenMac.xcodeproj">
+   </FileRef>
+</Workspace>
