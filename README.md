@@ -1,5 +1,7 @@
 ## API Zen
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18535413.svg)](https://doi.org/10.5281/zenodo.18535413)
+
 #### Subtitle
 
 Find the zen in API testing.
